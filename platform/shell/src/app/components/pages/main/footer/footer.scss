@@ -1,0 +1,26 @@
+.content-wrapper {
+  height: 2rem;
+  margin: 0.25rem 0.25rem;
+  display: flex;
+  align-items: center;
+  background-color: var(--core-finance-surface);
+  border: 0.0625rem solid var(--core-finance-border);
+  color: var(--core-finance-on-surface);
+  padding: 0 0.5rem;
+  overflow: hidden;
+
+  mat-icon {
+    margin-right: 0.5rem;
+  }
+
+  span {
+    margin-right: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .right {
+    margin-left: auto;
+    display: flex;
+    gap: 1rem;
+  }
+}

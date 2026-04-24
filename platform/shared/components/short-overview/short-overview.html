@@ -1,0 +1,25 @@
+<div class="short-overview-section">
+  <h1 class="short-overview-heading">
+    @if (titleTranslationKey()) {
+      {{ titleTranslationKey() | transloco }}
+    } @else {
+      {{ title() }}
+    }
+  </h1>
+
+  @for (section of sections(); track section.titleTranslationKey) {
+    <mat-card class="short-overview-card">
+      <mat-card-title class="section-title">
+        {{ section.titleTranslationKey | transloco }}
+      </mat-card-title>
+      <mat-card-content class="short-overview-content">
+        @for (field of section.fields; track field.labelTranslationKey) {
+          <div class="short-overview-field">
+            {{ field.labelTranslationKey | transloco }}:
+            {{ field.value ?? '' }}
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

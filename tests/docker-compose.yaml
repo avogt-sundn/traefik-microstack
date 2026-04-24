@@ -1,0 +1,53 @@
+networks:
+  default:
+    name: docker-default-network
+    external: true
+services:
+  e2e-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      BASE_URL: https://gateway
+    volumes:
+      - e2e-results:/tests/target/results
+      - e2e-report:/tests/target/report
+    depends_on:
+      app-one:
+        condition: service_healthy
+      app-two:
+        condition: service_healthy
+      app-three:
+        condition: service_healthy
+      app-three-native:
+        condition: service_healthy
+      shell:
+        condition: service_healthy
+      loans:
+        condition: service_healthy
+      ekf:
+        condition: service_healthy
+      partner-search:
+        condition: service_healthy
+      gateway:
+        condition: service_healthy
+      app-spring-partner-search:
+        condition: service_healthy
+
+  e2e-report-server:
+    build:
+      context: report-server
+      dockerfile: Dockerfile
+    ports:
+      - "9090:3000"
+    volumes:
+      - e2e-results:/results:ro
+      - e2e-report:/report:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - COMPOSE_PROJECT_NAME=traefik-microstack
+    restart: unless-stopped
+
+volumes:
+  e2e-results:
+  e2e-report:

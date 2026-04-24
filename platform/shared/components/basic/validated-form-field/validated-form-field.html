@@ -1,0 +1,47 @@
+<mat-form-field [class]="cssClass()" appearance="outline">
+  <mat-label>{{ labelKey() | transloco }}</mat-label>
+
+  @if (fieldType() === 'input') {
+    <input
+      (blur)="onTouched(); internalControl.markAsTouched()"
+      (input)="internalControl.markAsDirty()"
+      [formControl]="internalControl"
+      [placeholder]="placeholder()"
+      [type]="inputType()"
+      matInput>
+  }
+
+  @if (fieldType() === 'select') {
+    <mat-select
+      (blur)="onTouched(); internalControl.markAsTouched()"
+      (selectionChange)="internalControl.markAsDirty(); internalControl.markAsTouched()"
+      [formControl]="internalControl"
+      [placeholder]="placeholder()">
+      @if (allowEmpty()) {
+        <mat-option value="">{{ emptyOptionKey() | transloco }}</mat-option>
+      }
+      @for (option of options(); track option.value) {
+        <mat-option [value]="option.value" [disabled]="option.disabled">
+          {{ option.label }}
+        </mat-option>
+      }
+    </mat-select>
+  }
+
+  @if (showClearButton() && hasValue && fieldType() === 'input') {
+    <button
+      matSuffix
+      matIconButton
+      aria-label="Clear"
+      (click)="clearField()"
+      type="button"
+      id="clear-button">
+      <mat-icon class="icon-size">close</mat-icon>
+    </button>
+  }
+
+  @if (hasError()) {
+    <mat-error>{{ getErrorMessage() }}</mat-error>
+  }
+
+</mat-form-field>

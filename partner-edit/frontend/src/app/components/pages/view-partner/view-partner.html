@@ -1,0 +1,52 @@
+<shared-mfe-content>
+
+  <div ngProjectAs="interaction-header">
+    <partner-subnavbar></partner-subnavbar>
+  </div>
+
+  <div ngProjectAs="interaction-content">
+    <div class="partner-view-container">
+      <mat-tab-group id="edit-partner-tab-group"
+                     cypressid="cypress-edit-partner-tab-group"
+                     animationDuration="0ms"
+                     [disablePagination]="true">
+        <mat-tab label="{{ 'partner.view.tabs.address' | transloco }}">
+          <partner-address-tab
+            [partner]="displayPartner()"
+            [isEditMode]="isEditMode()"
+            (partnerTabChanged)="onAddressTabChanged($event)">
+          </partner-address-tab>
+        </mat-tab>
+        <mat-tab label="{{ 'partner.view.tabs.groupOfPartners' | transloco }}">
+          <partner-group-tab
+            [partner]="displayPartner()"
+            [isEditMode]="isEditMode()"
+            (partnerTabChanged)="onGroupTabChanged($event)">
+          </partner-group-tab>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+
+  <div ngProjectAs="interaction-footer">
+    <div class="button-group">
+      @if (!isEditMode()) {
+        <button mat-raised-button color="accent" cypressid="cypress-partner-create-edit" (click)="enableEditMode()">
+          {{ 'common.edit' | transloco }}
+        </button>
+        <button mat-raised-button color="primary" cypressid="cypress-partner-view-close"
+                (click)="closePartnerDetails()">
+          {{ 'common.close' | transloco }}
+        </button>
+      } @else {
+        <button mat-raised-button color="primary" cypressid="cypress-partner-create-save" (click)="savePartner()">
+          {{ 'common.save' | transloco }}
+        </button>
+        <button mat-raised-button cypressid="cypress-partner-view-cancel" (click)="cancelEdit()">
+          {{ 'common.cancel' | transloco }}
+        </button>
+      }
+    </div>
+  </div>
+
+</shared-mfe-content>

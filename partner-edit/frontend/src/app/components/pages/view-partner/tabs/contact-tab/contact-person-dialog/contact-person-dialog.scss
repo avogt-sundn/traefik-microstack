@@ -1,0 +1,20 @@
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0 0.5rem 0;
+
+  .row-of-fields {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-bottom: 0.25rem;
+
+    shared-validated-form-field {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+}

@@ -1,0 +1,27 @@
+networks:
+  default:
+    name: docker-default-network
+    external: true
+
+services:
+  loans:
+    image: loans
+    build:
+      context: ..
+      dockerfile: loans/frontend/Dockerfile
+      network: host
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.loans.rule=PathPrefix(`/loans`)"
+      - "traefik.http.middlewares.loans-strip.stripprefix.prefixes=/loans"
+      - "traefik.http.routers.loans.middlewares=loans-strip@docker"
+      - "traefik.http.routers.loans.entrypoints=web,websecure"
+      - "traefik.http.services.loans.loadbalancer.server.port=80"
+      - "traefik.http.services.loans.loadbalancer.healthcheck.path=/"
+      - "traefik.http.services.loans.loadbalancer.healthcheck.port=80"
+      - "traefik.http.routers.loans.priority=120"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 10s
+      timeout: 10s
+      retries: 10

@@ -1,0 +1,33 @@
+<form>
+  <mat-form-field class="chip-list">
+    <mat-chip-grid #chipGrid cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)">
+      @for (column of selectedColumns(); track column.key) {
+        <mat-chip-row [attr.cypressid]="'cypress-config-chip-' + column.key" (removed)="remove(column)" cdkDrag>
+          {{ column.header | transloco }}
+          <button matChipRemove [attr.cypressid]="'cypress-config-chip-' + column.key + '-remove'">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+      }
+    </mat-chip-grid>
+    <input
+      matInput
+      name="config-search-term"
+      [matChipInputFor]="chipGrid"
+      [placeholder]="'editableTable.selectColumns' | transloco"
+      #columnInput
+      [(ngModel)]="searchText"
+      [matAutocomplete]="auto"
+    />
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      (optionSelected)="selected($event); columnInput.value = ''"
+      autoActiveFirstOption>
+      @for (column of availableColumns(); track column.key) {
+        <mat-option [attr.cypressid]="'cypress-config-chip-select-option-' + column.key" [value]="column">
+          {{ column.header | transloco }}
+        </mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+</form>

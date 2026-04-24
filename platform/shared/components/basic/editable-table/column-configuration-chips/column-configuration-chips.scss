@@ -1,0 +1,16 @@
+.chip-list {
+  width: 100%;
+}
+
+.cdk-drag-preview {
+  overflow: hidden;
+}
+
+.cdk-drag-animating, mat-chip-grid.cdk-drop-list-dragging mat-chip-row:not(.cdk-drag-placeholder) {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+}
+

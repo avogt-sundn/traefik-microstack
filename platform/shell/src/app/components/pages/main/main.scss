@@ -1,0 +1,26 @@
+:host {
+  display: block;
+  height: 100vh;
+}
+
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+  justify-content: center;
+  width: 100%;
+}
+
+app-header {
+  justify-content: start;
+}
+
+app-footer {
+  justify-content: end;
+}

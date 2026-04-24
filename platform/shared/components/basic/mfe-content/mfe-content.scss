@@ -1,0 +1,62 @@
+:host {
+  --mfe-side-width: 15rem;
+
+  display: grid;
+  height: 100%;
+  width: 100%;
+  grid-template-columns: var(--mfe-side-width) 1fr var(--mfe-side-width);
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+}
+
+:host > shared-sidebar-container,
+:host > shared-interaction-container,
+:host > shared-information-container {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+}
+
+.scroll-wrapper {
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+shared-sidebar-container:empty,
+shared-interaction-container:empty,
+shared-information-container:empty {
+  display: none;
+}
+
+:host(:has(> shared-sidebar-container:empty)) {
+  grid-template-columns: 1fr var(--mfe-side-width);
+}
+
+:host(:has(> shared-information-container:empty)) {
+  grid-template-columns: var(--mfe-side-width) 1fr;
+}
+
+:host(:has(> shared-interaction-container:empty)) {
+  grid-template-columns: 1fr 1fr;
+}
+
+:host(:has(> shared-sidebar-container:empty):has(> shared-interaction-container:empty)),
+:host(:has(> shared-sidebar-container:empty):has(> shared-information-container:empty)),
+:host(:has(> shared-interaction-container:empty):has(> shared-information-container:empty)) {
+  grid-template-columns: 1fr;
+}
+
+shared-interaction-container > .scroll-wrapper {
+  border: 0.0625rem solid var(--core-finance-border);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+}
+
+.button-bar {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding: 0.5rem;
+}

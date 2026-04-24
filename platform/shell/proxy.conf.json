@@ -1,0 +1,29 @@
+{
+    "/loans": {
+        "target": "http://localhost:4201",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/loans": ""
+        }
+    },
+    "/partner": {
+        "target": "http://localhost:4202",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/partner": ""
+        }
+    },
+    "/ekf": {
+        "target": "http://localhost:4203",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/ekf": ""
+        }
+    },
+}

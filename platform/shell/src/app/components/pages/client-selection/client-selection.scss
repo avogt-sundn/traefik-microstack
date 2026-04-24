@@ -1,0 +1,69 @@
+.content-wrapper {
+  margin: 0 auto;
+  max-width: 75rem;
+  padding: 5rem 1rem;
+}
+
+.client-wrapper {
+  padding: 1.5rem;
+}
+
+mat-toolbar {
+  background: none;
+}
+
+.title {
+  text-align: center;
+}
+
+.client-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  justify-content: center;
+  margin-top: 1.25rem;
+}
+
+.client-card {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  width: 12.5rem;
+  padding: 1.25rem;
+  background-color: var(--core-finance-surface);
+  border: 0.0625rem solid var(--core-finance-border);
+  border-radius: 0.5rem;
+}
+
+.client-card:hover {
+  transform: translateY(-0.25rem);
+  box-shadow: 0 0.25rem 1.25rem var(--core-finance-shadow);
+}
+
+.client-logo {
+  width: 6rem;
+  height: 6rem;
+  object-fit: contain;
+  margin: 0 auto;
+  display: block;
+}
+
+mat-toolbar {
+  color: var(--core-finance-primary);
+}
+
+.centered-toolbar {
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.centered-toolbar mat-icon {
+  font-size: 3rem;
+  height: 3rem;
+  width: auto;
+}
+
+.centered-toolbar span {
+  font-size: 3rem;
+  font-weight: bold;
+}

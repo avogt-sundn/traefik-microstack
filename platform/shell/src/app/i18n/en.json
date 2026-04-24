@@ -1,0 +1,176 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "reset": "Reset",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "refresh": "Refresh",
+    "export": "Export",
+    "import": "Import",
+    "print": "Print",
+    "download": "Download",
+    "upload": "Upload"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "loans": "Loans",
+    "partners": "Partner",
+    "ekf": "EKF Management",
+    "settings": "Settings",
+    "profile": "Profile",
+    "logout": "Logout",
+    "menu": "Menu"
+  },
+  "dates": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "tomorrow": "Tomorrow",
+    "thisWeek": "This Week",
+    "lastWeek": "Last Week",
+    "nextWeek": "Next Week",
+    "thisMonth": "This Month",
+    "lastMonth": "Last Month",
+    "nextMonth": "Next Month",
+    "thisYear": "This Year",
+    "lastYear": "Last Year",
+    "nextYear": "Next Year"
+  },
+  "pagination": {
+    "itemsPerPage": "Items per page",
+    "page": "Page",
+    "of": "of",
+    "showing": "Showing",
+    "to": "to",
+    "items": "items",
+    "firstPage": "First page",
+    "lastPage": "Last page",
+    "nextPage": "Next page",
+    "previousPage": "Previous page"
+  },
+  "language": {
+    "select": "Select Language",
+    "english": "English",
+    "german": "Deutsch",
+    "current": "Current Language"
+  },
+  "app": {
+    "title": "traefik-microstack",
+    "modules": {
+      "loans": "Loans",
+      "partner": "Partner",
+      "ekf": "EKF"
+    }
+  },
+  "header": {
+    "account": {
+      "ariaLabel": "Account menu",
+      "logout": "Logout"
+    },
+    "language": {
+      "ariaLabel": "Language menu",
+      "german": "German",
+      "english": "English",
+      "french": "French"
+    },
+    "client": {
+      "logoAlt": "{{clientName}} Logo"
+    }
+  },
+  "clientSelection": {
+    "welcome": "Welcome!",
+    "selectClient": "Please select a client.",
+    "clientLogoAlt": "{{clientName}} Logo"
+  },
+  "footer": {
+    "session": "Session",
+    "environment": "Environment",
+    "version": "Version",
+    "debug": "Debug"
+  },
+  "auth": {
+    "login": {
+      "button": {
+        "login": "Sign In",
+        "loading": "Signing In...",
+        "retry": "Try Again",
+        "ariaLabel": "Sign in to your account"
+      }
+    },
+    "logout": {
+      "button": {
+        "logout": "Sign Out",
+        "loading": "Signing Out...",
+        "retry": "Try Again",
+        "ariaLabel": "Sign out of your account"
+      },
+      "dialog": {
+        "title": "Confirm Sign Out",
+        "message": "Are you sure you want to sign out?",
+        "messageWithUser": "Are you sure you want to sign out, {{userName}}?",
+        "cancel": "Cancel",
+        "confirm": "Sign Out",
+        "info": {
+          "session": "Your current session will be terminated",
+          "tokens": "All authentication tokens will be revoked",
+          "redirect": "You will be redirected to the login page"
+        }
+      }
+    },
+    "profile": {
+      "roles": "Roles",
+      "permissions": "Permissions",
+      "groups": "Groups",
+      "more": "more",
+      "menu": {
+        "edit": "Edit Profile",
+        "info": "Profile Information",
+        "ariaLabel": "User profile menu"
+      },
+      "token": {
+        "valid": "Token Valid",
+        "invalid": "Token Invalid",
+        "expiring": "Token Expiring",
+        "expiringDetail": "Your session will expire soon"
+      }
+    },
+    "status": {
+      "initializing": "Initializing",
+      "loading": "Loading",
+      "authenticated": "Authenticated",
+      "unauthenticated": "Not Authenticated",
+      "error": "Authentication Error",
+      "unknown": "Unknown Status",
+      "tokenExpiring": "Token Expiring",
+      "tokenInvalid": "Token Invalid",
+      "tokenExpiringDetail": "Your session will expire soon",
+      "tokenInvalidDetail": "Please sign in again",
+      "authenticatedAs": "Signed in as {{name}}",
+      "sessionActive": "Session Active",
+      "notAuthenticated": "Please sign in",
+      "tokenStatus": "Token Status",
+      "tokenValid": "Valid",
+      "errorOccurred": "Authentication Error",
+      "actions": {
+        "login": "Sign In",
+        "logout": "Sign Out",
+        "refresh": "Refresh Session"
+      }
+    }
+  }
+}

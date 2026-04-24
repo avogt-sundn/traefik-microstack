@@ -1,0 +1,17 @@
+<shared-sidebar-container>
+    <div class="scroll-wrapper">
+        <ng-content select="sidebar-content"></ng-content>
+    </div>
+</shared-sidebar-container>
+<shared-interaction-container>
+    <ng-content select="interaction-header"></ng-content>
+    <div class="scroll-wrapper">
+        <ng-content select="interaction-content"></ng-content>
+    </div>
+    <div class="button-bar">
+        <ng-content select="interaction-footer"></ng-content>
+    </div>
+</shared-interaction-container>
+<shared-information-container class="scroll-wrapper">
+    <ng-content select="information-content"></ng-content>
+</shared-information-container>

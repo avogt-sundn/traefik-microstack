@@ -1,0 +1,50 @@
+networks:
+  default:
+    name: docker-default-network
+    external: true
+
+services:
+  ekf:
+    image: ekf
+    build:
+      context: ..
+      dockerfile: ekf/frontend/Dockerfile
+      network: host
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ekf.rule=PathPrefix(`/ekf`)"
+      - "traefik.http.middlewares.ekf-strip.stripprefix.prefixes=/ekf"
+      - "traefik.http.routers.ekf.middlewares=ekf-strip@docker"
+      - "traefik.http.routers.ekf.entrypoints=web,websecure"
+      - "traefik.http.services.ekf.loadbalancer.server.port=80"
+      - "traefik.http.services.ekf.loadbalancer.healthcheck.path=/"
+      - "traefik.http.services.ekf.loadbalancer.healthcheck.port=80"
+      - "traefik.http.routers.ekf.priority=120"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  forward-ng-ekf:
+    image: forward:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.forward-ng-ekf.rule=PathPrefix(`/ekf`)"
+      - "traefik.http.middlewares.forward-ng-ekf-strip.stripprefix.prefixes=/ekf"
+      - "traefik.http.routers.forward-ng-ekf.middlewares=forward-ng-ekf-strip@docker"
+      - "traefik.http.routers.forward-ng-ekf.entrypoints=web,websecure"
+      - "traefik.http.services.forward-ng-ekf.loadbalancer.server.port=4203"
+      - "traefik.http.services.forward-ng-ekf.loadbalancer.healthcheck.path=/"
+      - "traefik.http.services.forward-ng-ekf.loadbalancer.healthcheck.port=4203"
+      - "traefik.http.routers.forward-ng-ekf.priority=1020"
+    environment:
+      - LISTEN_PORT=4203
+      - TARGET_HOST=traefik-microstack
+      - TARGET_PORT=4203
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4203/"]
+      interval: 10s
+      timeout: 10s
+      retries: 10

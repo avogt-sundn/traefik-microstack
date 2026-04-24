@@ -1,0 +1,60 @@
+// Centralized color scheme for the entire product (design tokens) - single source of truth
+// Supports theming by remapping system tokens or providing alternate sets
+// Use semantic tokens (primary, secondary, accent, warn, error, success, info) in components
+:root { // Root scope for all CSS custom properties (design tokens)
+
+  --core-finance-primary: var(--mat-sys-primary); // Semantic primary color
+  --core-finance-on-primary: var(--mat-sys-on-primary); // Text/icon color to be used on top of the primary color
+  --core-finance-primary-container: var(--mat-sys-primary-container); // Container/background variant of primary for surfaces
+  --core-finance-on-primary-container: var(--mat-sys-on-primary-container); // Text/icon color for primary-container surfaces
+
+  --core-finance-secondary: var(--mat-sys-secondary); // Semantic secondary color
+  --core-finance-on-secondary: var(--mat-sys-on-secondary); // Text/icon color to be used on top of the secondary color
+  --core-finance-secondary-container: var(--mat-sys-secondary-container); // Container/background variant of secondary for surfaces
+  --core-finance-on-secondary-container: var(--mat-sys-on-secondary-container); // Text/icon color for secondary-container surfaces
+
+  --core-finance-background: var(--mat-sys-background); // App/page background color from the design system
+  --core-finance-on-background: var(--mat-sys-on-background); // Primary text/icon color for use on the background
+
+  --core-finance-surface: var(--mat-sys-surface); // Surface color for cards, sheets and elevated surfaces
+  --core-finance-on-surface: var(--mat-sys-on-surface); // Primary text/icon color for use on surfaces
+
+  --core-finance-tertiary: var(--mat-sys-tertiary); // Tertiary semantic color for accents or supportive UI elements
+  --core-finance-on-tertiary: var(--mat-sys-on-tertiary); // Text/icon color for use on the tertiary color
+
+  // Buttons / interactive tokens
+  --core-finance-button-primary-bg: var(--core-finance-primary); // Background color for primary buttons
+  --core-finance-button-primary-on: var(--core-finance-on-primary); // Text/icon color for primary buttons
+  --core-finance-button-primary-hover: color-mix(in srgb, var(--core-finance-primary) 90%, black 10%); // Hover state: slightly darker mix of primary
+  --core-finance-button-primary-active: color-mix(in srgb, var(--core-finance-primary) 85%, black 15%); // Active/pressed state: darker mix of primary
+
+  --core-finance-button-secondary-bg: var(--core-finance-secondary); // Background color for secondary buttons
+  --core-finance-button-secondary-on: var(--core-finance-on-secondary); // Text/icon color for secondary buttons
+
+  --core-finance-button-ghost-bg: transparent; // Background for ghost/transparent buttons
+  --core-finance-button-ghost-border: var(--core-finance-surface); // Border color for ghost buttons (uses surface token)
+
+  --core-finance-focus-ring: var(--core-finance-primary-container); // Focus ring color used for keyboard focus outlines
+  --core-finance-border: var(--mat-sys-outline); // Generic border color mapped to Material outline token
+
+  // Custom colors as supplement to Material colors - use only in special cases
+  --core-finance-icon-primary: #1976d2; // Primary icon color (default / active)
+  --core-finance-icon-secondary: #4caf50; // Secondary icon color (positive / success)
+  --core-finance-icon-tertiary: #424242; // Tertiary / neutral icon color (disabled / supportive)
+
+  // Validation Colors
+  --core-finance-error: var(--mat-sys-error); // Semantic error color
+  --core-finance-on-error: var(--mat-sys-on-error); // Text/icon color to be used on error backgrounds
+  --core-finance-error-container: var(--mat-sys-error-container); // Error container/background color
+  --core-finance-on-error-container: var(--mat-sys-on-error-container); // Text/icon color for error container backgrounds
+
+  --core-finance-validation-success-primary: var(--core-finance-icon-secondary); // Success color for text and icons (confirmation states)
+  --core-finance-validation-info-background: var(--mat-sys-background); // Background for info/hint containers (uses system background)
+  --core-finance-validation-info-border: var(--mat-sys-surface); // Border color for info/hint containers (uses surface token)
+  --core-finance-validation-info-text: var(--mat-sys-on-surface-variant); // Text color for info, hints and secondary copy
+}
+
+// Usage example: components should consume semantic tokens (do not hardcode hex values)
+.core-finance-button {
+  background-color: var(--core-finance-primary); // Use the semantic primary token for button background
+}

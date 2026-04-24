@@ -1,0 +1,32 @@
+<mat-toolbar>
+  <a routerLink="/" class="logo-and-title" [attr.cypressid]="'cypress-shellHeaderLogoAndTitle'">
+    <mat-icon>home</mat-icon>
+    <span>{{ 'app.title' | transloco }}</span>
+  </a>
+  <div class="actions">
+    @for (module of modules; track $index) {
+      <button mat-stroked-button class="module-button" (click)="activeModule.set(module.label)"
+              [class.active-link]="activeModule() === module.label" routerLink="{{ module.label }}"
+              [attr.cypressid]="'cypress-shellHeaderModuleButton-' + module.label">
+        {{ module.nameKey | transloco }}
+      </button>
+    }
+    <button mat-icon-button [matMenuTriggerFor]="accountMenu" [attr.aria-label]="'header.account.ariaLabel' | transloco"
+            [attr.cypressid]="'cypress-shellHeaderAccountMenuButton'">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <mat-menu #accountMenu="matMenu" xPosition="before" yPosition="below">
+      <button mat-menu-item [attr.cypressid]="'cypress-shellHeaderLogoutButton'">
+        <mat-icon>logout</mat-icon>
+        <span>{{ 'header.account.logout' | transloco }}</span>
+      </button>
+    </mat-menu>
+
+    <shell-language-menu></shell-language-menu>
+
+    @if (client) {
+      <img [src]="client.logoUrl" [alt]="'header.client.logoAlt' | transloco: {clientName: client.name}"
+           class="client-logo">
+    }
+  </div>
+</mat-toolbar>

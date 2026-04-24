@@ -1,0 +1,32 @@
+storage: /verdaccio/storage
+auth:
+  htpasswd:
+    file: /verdaccio/storage/htpasswd
+    max_users: -1  # disable self-registration
+
+uplinks:
+  npmjs:
+    url: https://registry.npmjs.org/
+    cache: true
+    maxage: 30m
+
+packages:
+  '@traefik-microstack/*':
+    access: $all
+    publish: $all
+    storage: true
+
+  '@*/*':
+    access: $all
+    publish: $authenticated
+    proxy: npmjs
+
+  '**':
+    access: $all
+    publish: $authenticated
+    proxy: npmjs
+
+log:
+  type: stdout
+  format: pretty
+  level: warn

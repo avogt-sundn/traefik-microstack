@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E2E Test Dashboard</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #1a1f2e;
+      border-bottom: 1px solid #2d3748;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #f7fafc;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    #last-run {
+      font-size: 0.8rem;
+      color: #718096;
+    }
+
+    .links {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .links a {
+      font-size: 0.8rem;
+      color: #63b3ed;
+      text-decoration: none;
+    }
+
+    .links a:hover { text-decoration: underline; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 1rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: background 0.15s;
+    }
+
+    .btn-primary {
+      background: #3182ce;
+      color: #fff;
+    }
+
+    .btn-primary:hover:not(:disabled) { background: #2b6cb0; }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    main {
+      padding: 1.5rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .card .label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #718096;
+      margin-bottom: 0.4rem;
+    }
+
+    .card .value {
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+
+    .card.total .value { color: #e2e8f0; }
+    .card.passed .value { color: #68d391; }
+    .card.failed .value { color: #fc8181; }
+    .card.skipped .value { color: #f6ad55; }
+    .card.duration .value { font-size: 1.25rem; color: #90cdf4; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    thead {
+      background: #2d3748;
+    }
+
+    th {
+      text-align: left;
+      padding: 0.65rem 1rem;
+      font-weight: 500;
+      color: #a0aec0;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    td {
+      padding: 0.6rem 1rem;
+      border-top: 1px solid #2d3748;
+      vertical-align: top;
+    }
+
+    tr:hover td { background: #232937; }
+
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 9999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-passed { background: #1c4532; color: #68d391; }
+    .badge-failed  { background: #4a1d1d; color: #fc8181; }
+    .badge-skipped { background: #3c2a0e; color: #f6ad55; }
+
+    .error-msg {
+      margin-top: 0.3rem;
+      font-size: 0.75rem;
+      color: #fc8181;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #718096;
+    }
+
+    .empty-state p { margin-bottom: 0.5rem; }
+
+    #run-status {
+      font-size: 0.8rem;
+      color: #90cdf4;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>E2E Test Dashboard</h1>
+  <div class="header-right">
+    <span id="last-run"></span>
+    <div class="links">
+      <a href="/report/" target="_blank">Playwright Report</a>
+      <a href="/results/smoke.xml" target="_blank">Raw XML</a>
+    </div>
+    <span id="run-status">Running tests...</span>
+    <button class="btn btn-primary" id="run-btn" onclick="runTests()">
+      <span class="spinner" id="spinner"></span>
+      Run Tests
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="cards" id="cards" style="display:none">
+    <div class="card total">
+      <div class="label">Total</div>
+      <div class="value" id="c-total">0</div>
+    </div>
+    <div class="card passed">
+      <div class="label">Passed</div>
+      <div class="value" id="c-passed">0</div>
+    </div>
+    <div class="card failed">
+      <div class="label">Failed</div>
+      <div class="value" id="c-failed">0</div>
+    </div>
+    <div class="card skipped">
+      <div class="label">Skipped</div>
+      <div class="value" id="c-skipped">0</div>
+    </div>
+    <div class="card duration">
+      <div class="label">Duration</div>
+      <div class="value" id="c-duration">0s</div>
+    </div>
+  </div>
+
+  <div id="table-wrap"></div>
+</main>
+
+<script>
+  let pollInterval = null;
+
+  async function loadResults() {
+    let data;
+    try {
+      const r = await fetch('/api/results');
+      data = await r.json();
+    } catch {
+      return;
+    }
+
+    if (!data) {
+      document.getElementById('cards').style.display = 'none';
+      document.getElementById('table-wrap').innerHTML =
+        '<div class="empty-state"><p>No test results found.</p><p>Click <strong>Run Tests</strong> to start.</p></div>';
+      document.getElementById('last-run').textContent = '';
+      return;
+    }
+
+    const { totals, testcases, timestamp } = data;
+
+    document.getElementById('cards').style.display = 'grid';
+    document.getElementById('c-total').textContent   = totals.tests;
+    document.getElementById('c-passed').textContent  = totals.passed;
+    document.getElementById('c-failed').textContent  = totals.failed;
+    document.getElementById('c-skipped').textContent = totals.skipped;
+    document.getElementById('c-duration').textContent = totals.duration.toFixed(2) + 's';
+
+    if (timestamp) {
+      document.getElementById('last-run').textContent = 'Last run: ' + new Date(timestamp).toLocaleString();
+    }
+
+    let rows = '';
+    for (const tc of testcases) {
+      const badgeClass = 'badge-' + tc.status;
+      const durationStr = tc.duration ? tc.duration.toFixed(3) + 's' : '—';
+      const errorHtml = tc.errorMessage
+        ? `<div class="error-msg">${escHtml(tc.errorMessage.slice(0, 400))}</div>`
+        : '';
+      rows += `
+        <tr>
+          <td>
+            ${escHtml(tc.name)}
+            ${errorHtml}
+          </td>
+          <td><span class="badge ${badgeClass}">${tc.status}</span></td>
+          <td>${durationStr}</td>
+        </tr>`;
+    }
+
+    document.getElementById('table-wrap').innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Test Name</th>
+            <th>Status</th>
+            <th>Duration</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  async function runTests() {
+    const btn = document.getElementById('run-btn');
+    btn.disabled = true;
+    document.getElementById('spinner').style.display = 'block';
+    document.getElementById('run-status').style.display = 'inline';
+
+    try {
+      await fetch('/api/run', { method: 'POST' });
+    } catch {
+      setIdle();
+      return;
+    }
+
+    pollInterval = setInterval(async () => {
+      try {
+        const r = await fetch('/api/status');
+        const { running } = await r.json();
+        if (!running) {
+          clearInterval(pollInterval);
+          pollInterval = null;
+          await loadResults();
+          setIdle();
+        }
+      } catch {
+        // ignore transient errors, keep polling
+      }
+    }, 2000);
+  }
+
+  function setIdle() {
+    document.getElementById('run-btn').disabled = false;
+    document.getElementById('spinner').style.display = 'none';
+    document.getElementById('run-status').style.display = 'none';
+  }
+
+  // Initial load + check if a run is already in progress
+  (async () => {
+    await loadResults();
+    try {
+      const r = await fetch('/api/status');
+      const { running } = await r.json();
+      if (running) {
+        document.getElementById('run-btn').disabled = true;
+        document.getElementById('spinner').style.display = 'block';
+        document.getElementById('run-status').style.display = 'inline';
+        pollInterval = setInterval(async () => {
+          try {
+            const sr = await fetch('/api/status');
+            const { running: still } = await sr.json();
+            if (!still) {
+              clearInterval(pollInterval);
+              pollInterval = null;
+              await loadResults();
+              setIdle();
+            }
+          } catch {}
+        }, 2000);
+      }
+    } catch {}
+  })();
+</script>
+</body>
+</html>

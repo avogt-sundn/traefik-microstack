@@ -1,0 +1,25 @@
+services:
+  npm-mirror:
+    profiles: [mirrors]
+    container_name: npm-mirror
+    hostname: npm-mirror
+    image: verdaccio/verdaccio-custom
+    build:
+      dockerfile: Dockerfile
+    volumes:
+      - npm-mirror-storage:/verdaccio/storage
+      - npm-mirror-plugins:/verdaccio/plugins
+    environment:
+      - NODE_ENV=production
+    ports:
+      - 4873:4873
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "http://localhost:4873"]
+      interval: 10s
+      timeout: 5s
+      retries: 1
+
+volumes:
+  npm-mirror-storage:
+  npm-mirror-plugins:

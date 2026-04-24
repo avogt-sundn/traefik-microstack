@@ -1,0 +1,34 @@
+// Core Finance Theme Configuration
+// This file provides a shared Material theme for all microfrontends
+
+// This automatically provides CSS custom properties like --mat-sys-primary, --mat-sys-on-primary, etc.
+@use 'sass:map';
+@use 'base';
+@use '@angular/material' as mat;
+@use './theme-colors' as corefinance-theme;
+@use 'colors';
+@use 'material-styles';
+@use 'form-in-tab-styles';
+
+html {
+  color-scheme: light dark;
+  @include mat.theme((
+    color: (
+     primary: corefinance-theme.$primary-palette,
+      tertiary: corefinance-theme.$tertiary-palette,
+    ),
+    typography: Roboto,
+    density: -2
+  ));
+
+}
+
+.search-form-row{
+  display: flex;
+  gap: 1rem;
+}
+
+.mfe-footer-button-group {
+  display: flex;
+  gap: 0.5rem;
+}

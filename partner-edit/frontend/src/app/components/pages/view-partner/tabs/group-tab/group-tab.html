@@ -1,0 +1,32 @@
+<form [formGroup]="groupForm" class="tab-container">
+  <shared-validated-form-field
+    [readonly]="!isEditMode()"
+    [showClearButton]="false"
+    [dtoValidator]="null"
+    dtoField="type"
+    cssClass="group-form"
+    formControlName="type"
+    labelKey="partner.view.type">
+  </shared-validated-form-field>
+
+  <shared-validated-form-field
+    [readonly]="!isEditMode()"
+    [showClearButton]="false"
+    [dtoValidator]="null"
+    dtoField="groupType"
+    cssClass="group-form"
+    formControlName="groupType"
+    labelKey="partner.view.groupType">
+  </shared-validated-form-field>
+
+  <shared-validated-form-field
+    [readonly]="!isEditMode()"
+    [showClearButton]="false"
+    [dtoValidator]="null"
+    dtoField="groupNumber"
+    cssClass="group-form"
+    formControlName="groupNumber"
+    inputType="number"
+    labelKey="partner.view.groupNumber">
+  </shared-validated-form-field>
+</form>

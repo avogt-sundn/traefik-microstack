@@ -1,0 +1,119 @@
+<shared-mfe-content>
+  <div ngProjectAs="interaction-header">
+    <loans-subnavbar></loans-subnavbar>
+  </div>
+
+  <div ngProjectAs="interaction-content">
+    <form [formGroup]="searchForm" class="search-container">
+      <div class="search-form-row">
+        <shared-validated-form-field
+          (cleared)="resetField('contractNumber')" [validators]="contractNumberValidators"
+          [allowWildcard]="true"
+          errorType="alphanumeric"
+          formControlName="contractNumber"
+          labelKey="loans.search.fields.contractNumber">
+        </shared-validated-form-field>
+        <shared-validated-form-field
+          (cleared)="resetField('applicationNumber')"
+          [validators]="applicationNumberValidators"
+          [allowWildcard]="true"
+          errorType="alphanumeric"
+          formControlName="applicationNumber"
+          labelKey="loans.search.fields.applicationNumber">
+        </shared-validated-form-field>
+        <shared-validated-form-field
+          (cleared)="resetField('partnerNumber')"
+          [validators]="partnerNrValidators"
+          [allowWildcard]="true"
+          errorType="numbersOnly"
+          formControlName="partnerNumber"
+          labelKey="loans.search.fields.partnerNumber">
+        </shared-validated-form-field>
+      </div>
+
+      <div class="search-form-row">
+        <shared-validated-form-field
+          (cleared)="resetField('firstName')"
+          [validators]="firstNameValidators"
+          formControlName="firstName"
+          labelKey="loans.search.fields.firstName">
+        </shared-validated-form-field>
+        <shared-validated-form-field
+          (cleared)="resetField('lastName')"
+          [validators]="nameValidators"
+          formControlName="name"
+          labelKey="loans.search.fields.lastName">
+        </shared-validated-form-field>
+        <shared-validated-form-field
+          (cleared)="resetField('dateOfBirth')"
+          [validators]="birthDateValidators"
+          formControlName="dateOfBirth"
+          labelKey="loans.search.fields.birthDate">
+        </shared-validated-form-field>
+      </div>
+
+      <div class="search-form-row">
+        <shared-validated-form-field
+          (cleared)="resetField('postalCode')"
+          [validators]="postalCodeValidators"
+          formControlName="postalCode"
+          labelKey="forms.fields.postalCode">
+        </shared-validated-form-field>
+        <shared-validated-form-field
+          (cleared)="resetField('city')"
+          [validators]="cityValidators"
+          formControlName="city"
+          labelKey="forms.fields.city">
+        </shared-validated-form-field>
+        <shared-validated-form-field
+          (cleared)="resetField('vehicleLicensePlate')"
+          [validators]="licenseValidators"
+          formControlName="vehicleLicensePlate"
+          labelKey="loans.search.fields.license">
+        </shared-validated-form-field>
+      </div>
+
+      @if (searchForm.touched && searchForm.hasError('atLeastOneField')) {
+        <shared-info-panel
+          type="info"
+          [title]="'forms.validation.insufficientCriteria.title' | transloco"
+          [textItems]="['forms.validation.insufficientCriteria.atLeastOneField' | transloco: {minLength: 3}]">
+        </shared-info-panel>
+      }
+    </form>
+
+    @if(this.searchPerformed() && resultTableData().length > 0){
+      <loans-search-loan-result-table [resultTableData]="resultTableData()"></loans-search-loan-result-table>
+    }
+    @if (this.searchPerformed() && resultTableData().length === 0) {
+      <shared-info-panel
+        type="info"
+        [title]="'messages.search.noResults.title' | transloco"
+        [textItems]="[
+          'messages.search.noResults.description' | transloco,
+          'messages.search.noResults.suggestion' | transloco
+        ]">
+      </shared-info-panel>
+    }
+
+  </div>
+
+  <div ngProjectAs="interaction-footer" class="mfe-footer-button-group">
+    <button
+      (click)="resetForm()"
+      color="primary"
+      matButton="filled"
+      cypressid="cypress-loan-search-reset">
+      {{ 'common.reset' | transloco }}
+    </button>
+    <button
+      type="submit"
+      (click)="searchLoan()"
+      color="primary"
+      matButton="filled"
+      cypressid="cypress-loan-search-reset">
+      {{ 'common.search' | transloco }}
+    </button>
+  </div>
+
+</shared-mfe-content>

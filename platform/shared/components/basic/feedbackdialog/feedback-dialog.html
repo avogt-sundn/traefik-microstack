@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Feedback geben</h1>
+<div mat-dialog-content>
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Dein Feedback</mat-label>
+    <textarea matInput rows="5" [(ngModel)]="feedback"></textarea>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Abbrechen</button>
+  <button mat-button color="primary" [disabled]="!feedback.trim()" (click)="onSubmit()">Senden</button>
+</div>

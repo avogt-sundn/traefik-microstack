@@ -1,0 +1,36 @@
+button[mat-icon-button] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 1.5rem;
+  padding: 1.125rem;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  mat-icon {
+    color: var(--core-finance-primary);
+    font-size: 2.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
+
+mat-menu {
+  button[mat-menu-item] {
+    display: flex;
+    justify-content: space-between;
+    min-width: 10rem;
+  }
+}
+
+.active-indicator {
+  margin-left: auto;
+}
+
+.empty-indicator {
+  margin-left: auto;
+  visibility: hidden;
+}

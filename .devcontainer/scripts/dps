@@ -1,0 +1,9 @@
+#/usr/bin/env bash
+set -e
+printf "%-20s %-20s %-30s\n" NAME HOSTNAME PORTS
+docker ps --format '{{.ID}}\t{{.Names}}\t{{.Ports}}' | \
+while IFS=$'\t' read -r id name ports; do
+  host=$(docker inspect --format '{{.Config.Hostname}}' "$id" 2>/dev/null || echo "")
+  printf "name:$name \thost:$host \tports:$ports"
+#  printf "%-20s %-20s %-30s\n" "$(printf '%.20s' "$name")" "$(printf '%.20s' "$host")" "$(printf '%.30s' "$ports")"
+done

@@ -1,0 +1,27 @@
+.admin-tab-label {
+  border: 0.0625rem solid;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+
+  button {
+    font-size: 1rem;
+    height: 2rem;
+  }
+}
+
+.partner-view-container {
+  display: flex;
+  flex-direction: row;
+
+  & > * {
+    margin-right: 1rem;
+  }
+}

@@ -1,0 +1,54 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f9fa;
+}
+
+.content-wrapper {
+  flex: 1;
+  padding: 2rem;
+  max-width: 75rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.microfrontend-container {
+  flex: 1;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  min-height: 25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 48rem) {
+  .content-wrapper {
+    padding: 1rem;
+  }
+
+  .welcome-section {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+  }
+
+  .microfrontend-container {
+    padding: 1.5rem;
+  }
+}

@@ -1,0 +1,93 @@
+<form [formGroup]="addressForm" class="tab-container">
+  <shared-validated-form-field
+    [readonly]="!isEditMode()"
+    [showClearButton]="false"
+    [dtoValidator]="null"
+    dtoField="name1"
+    cssClass="address-form"
+    formControlName="company1"
+    labelKey="forms.fields.company">
+  </shared-validated-form-field>
+
+  <shared-validated-form-field
+    [readonly]="!isEditMode()"
+    [showClearButton]="false"
+    [dtoValidator]="null"
+    dtoField="name2"
+    cssClass="address-form"
+    formControlName="company2"
+    labelKey="forms.fields.company">
+  </shared-validated-form-field>
+
+  <shared-validated-form-field
+    [readonly]="!isEditMode()"
+    [showClearButton]="false"
+    [dtoValidator]="null"
+    dtoField="name3"
+    cssClass="address-form"
+    formControlName="company3"
+    labelKey="forms.fields.company">
+  </shared-validated-form-field>
+
+  <shared-validated-form-field
+    [readonly]="!isEditMode()"
+    [showClearButton]="false"
+    [dtoValidator]="null"
+    dtoField="firstname"
+    cssClass="address-form"
+    formControlName="firstname"
+    labelKey="forms.fields.firstname">
+  </shared-validated-form-field>
+
+  <div class="row-of-fields">
+    <shared-validated-form-field
+      [readonly]="!isEditMode()"
+      [showClearButton]="false"
+      [dtoValidator]="null"
+      dtoField="street"
+      cssClass="street"
+      formControlName="street"
+      labelKey="forms.fields.street">
+    </shared-validated-form-field>
+    <shared-validated-form-field
+      [readonly]="!isEditMode()"
+      [showClearButton]="false"
+      [dtoValidator]="null"
+      dtoField="houseNumber"
+      cssClass="house-number"
+      formControlName="houseNumber"
+      labelKey="forms.fields.houseNumber">
+    </shared-validated-form-field>
+  </div>
+
+  <div class="row-of-fields">
+    <shared-validated-form-field
+      [readonly]="!isEditMode()"
+      [showClearButton]="false"
+      [dtoValidator]="null"
+      dtoField="postalCode"
+      cssClass="postcode"
+      formControlName="postalCode"
+      labelKey="forms.fields.postalCode">
+    </shared-validated-form-field>
+    <shared-validated-form-field
+      [readonly]="!isEditMode()"
+      [showClearButton]="false"
+      [dtoValidator]="null"
+      dtoField="city"
+      cssClass="place"
+      formControlName="city"
+      labelKey="forms.fields.city">
+    </shared-validated-form-field>
+  </div>
+
+  <shared-validated-form-field
+    [readonly]="!isEditMode()"
+    [showClearButton]="false"
+    [dtoValidator]="null"
+    dtoField="alphaCode"
+    cssClass="alpha-code"
+    formControlName="alphacode"
+    labelKey="partner.view.alphacode">
+  </shared-validated-form-field>
+</form>

@@ -1,0 +1,67 @@
+<!-- eslint-disable -->
+@if (initialLoading) {
+  <div class="initial-loading">
+    <mat-spinner [diameter]="50"></mat-spinner>
+  </div>
+} @else {
+  <table mat-table [dataSource]="dataSource">
+
+    @for (column of displayedColumns(); track column.key) {
+      <ng-container [matColumnDef]="column.key">
+        <th mat-header-cell *matHeaderCellDef> {{ column.label }}</th>
+        <td mat-cell *matCellDef="let node">
+          @if (column.key === treeColumn()) {
+            <div class="tree-cell" [style.--tree-level]="node.level">
+              <div class="cell-content">
+                @if (node.expandable) {
+                  <mat-icon
+                    (click)="onToggleClick($event, node)"
+                    (keyup)="onKeyUp($event, node)"
+                    class="toggle-icon">
+                    {{ isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+                  </mat-icon>
+                  <mat-icon
+                    class="node-icon"
+                    [style.color]="getIconColor(column.key, node)"
+                    (click)="onNodeIconClick($event, node)"
+                    (keyup)="onKeyUp($event, node)">
+                    {{ getIcon(column.key, node) }}
+                  </mat-icon>
+                } @else {
+                  <mat-icon
+                    class="node-icon leaf-icon"
+                    [style.color]="getIconColor(column.key, node)"
+                    (click)="onNodeIconClick($event, node)"
+                    (keyup)="onKeyUp($event, node)">
+                    {{ getIcon(column.key, node) }}
+                  </mat-icon>
+                }
+                @if (isLoading(node)) {
+                  <mat-spinner [diameter]="20" class="loading-spinner"></mat-spinner>
+                }
+                <span class="node-text" [innerHTML]="getFullName(node) | highlight:highlightTerms()"></span>
+              </div>
+            </div>
+          }
+          @if (column.key !== treeColumn()) {
+            <div class="cell-content">
+              @if (column.key === 'name') {
+                <span [innerHTML]="getFullName(node) | highlight:highlightTerms()"></span>
+              } @else if (column.key === 'address') {
+                <span [innerHTML]="getAddress(node) | highlight:highlightTerms()"></span>
+              } @else {
+                <span [innerHTML]="node.data[column.key] | highlight:highlightTerms()"></span>
+              }
+            </div>
+          }
+        </td>
+      </ng-container>
+    }
+    <tr mat-header-row *matHeaderRowDef="columnKeys"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnKeys;"
+        [attr.data-level]="row.level"
+        (click)="onRowClick(row)"
+        (keyup)="$event.key === 'Enter' ? onRowClick(row) : null"
+        class="clickable-row"></tr>
+  </table>
+}

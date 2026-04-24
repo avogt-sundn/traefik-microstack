@@ -1,0 +1,18 @@
+networks:
+  default:
+    name: docker-default-network
+    external: true
+
+include:
+  - npm-mirror/docker-compose.yaml
+  - maven-mirror/docker-compose.yaml
+
+services:
+  build-services:
+    profiles: [mirrors]
+    image: alpine
+    depends_on:
+      bootstrap-maven-mirror:
+        condition: service_healthy
+      npm-mirror:
+        condition: service_healthy

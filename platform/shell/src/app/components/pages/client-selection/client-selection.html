@@ -1,0 +1,22 @@
+<div class="content-wrapper">
+  <mat-toolbar class="centered-toolbar">
+    <mat-icon>home</mat-icon>
+    <span>{{ 'app.title' | transloco }}</span>
+  </mat-toolbar>
+
+  <div class="client-wrapper">
+    <h1 class="title">{{ 'clientSelection.welcome' | transloco }}</h1>
+    <h2 class="title">{{ 'clientSelection.selectClient' | transloco }}</h2>
+    <div class="client-list">
+      @for (client of clients; track client.label) {
+        <a class="client-card-link" [routerLink]="['/', client.label]"
+           [attr.cypressid]="'cypress-shellClientCard-' + client.label">
+          <mat-card class="client-card">
+            <img mat-card-image [src]="client.logoUrl"
+                 [alt]="'clientSelection.clientLogoAlt' | transloco: {clientName: client.name}" class="client-logo">
+          </mat-card>
+        </a>
+      }
+    </div>
+  </div>
+</div>

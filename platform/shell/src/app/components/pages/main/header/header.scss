@@ -1,0 +1,92 @@
+mat-toolbar {
+  color: var(--core-finance-primary);
+  background: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 3.5rem;
+  border-bottom: 0.0625rem solid var(--core-finance-border);
+}
+
+a.logo-and-title {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  &:focus {
+    text-decoration: none;
+  }
+
+  &:active {
+    text-decoration: none;
+  }
+
+  &:visited {
+    text-decoration: none;
+  }
+
+  span {
+    font-size: 2rem;
+    margin-left: 1rem;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  mat-icon {
+    color: var(--core-finance-primary);
+    font-size: 2.5rem;
+    width: auto;
+    height: 2.5rem;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+
+  mat-icon {
+    color: var(--core-finance-primary);
+    font-size: 2.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  button {
+    display:flex;
+    align-items: center;
+    justify-content: center;;
+    margin-left: 1.5rem;
+    font-size: 1rem;
+    padding: 1.125rem;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  button[mat-stroked-button] {
+    border-radius: 0.5rem;
+  }
+
+  .active-link {
+      background-color: var(--core-finance-primary);
+      color: var(--core-finance-on-primary);
+    }
+}
+
+.client-logo {
+  width: auto;
+  height: 2.5rem;
+  object-fit: contain;
+  margin-left: 2rem;
+}
+

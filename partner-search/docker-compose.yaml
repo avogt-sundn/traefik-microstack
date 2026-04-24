@@ -1,0 +1,184 @@
+networks:
+  default:
+    name: docker-default-network
+    external: true
+
+services:
+  elasticsearch-partner-search:
+    image: elasticsearch-partner-search
+    build:
+      context: ./elasticsearch
+      dockerfile: Dockerfile
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    volumes:
+      - es-partner-search-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health | grep -qE '\"status\":\"(green|yellow)\"'"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 30s
+
+  app-spring-partner-search:
+    image: app-spring-partner-search
+    build:
+      context: ./spring
+      dockerfile: Dockerfile
+      network: host
+    depends_on:
+      app-spring-partner-edit:
+        condition: service_healthy
+      elasticsearch-partner-search:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost/actuator/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app-spring-partner-search.rule=PathPrefix(`/api/partner/spring`)"
+      - "traefik.http.routers.app-spring-partner-search.entrypoints=web,websecure"
+      - "traefik.http.services.app-spring-partner-search.loadbalancer.server.port=443"
+      - "traefik.http.services.app-spring-partner-search.loadbalancer.server.scheme=https"
+      - "traefik.http.services.app-spring-partner-search.loadbalancer.healthcheck.path=/actuator/health"
+      - "traefik.http.services.app-spring-partner-search.loadbalancer.healthcheck.port=443"
+      - "traefik.http.routers.app-spring-partner-search.priority=1000"
+      # CLAUDE-12 canonical path: /api/partner-search/spring — rewrites to /api/partner/spring before forwarding
+      - "traefik.http.routers.app-spring-partner-search-canonical.rule=PathPrefix(`/api/partner-search/spring`)"
+      - "traefik.http.routers.app-spring-partner-search-canonical.entrypoints=web,websecure"
+      - "traefik.http.routers.app-spring-partner-search-canonical.service=app-spring-partner-search"
+      - "traefik.http.routers.app-spring-partner-search-canonical.middlewares=partner-search-rewrite@docker"
+      - "traefik.http.routers.app-spring-partner-search-canonical.priority=1000"
+      - "traefik.http.middlewares.partner-search-rewrite.replacepathregex.regex=^/api/partner-search/spring(.*)"
+      - "traefik.http.middlewares.partner-search-rewrite.replacepathregex.replacement=/api/partner/spring$${1}"
+
+  app-quarkus-partner-search:
+    image: app-quarkus-partner-search.jvm
+    build:
+      context: ./quarkus
+      dockerfile: Dockerfile
+      network: host
+    depends_on:
+      app-spring-partner-edit:
+        condition: service_healthy
+      elasticsearch-partner-search:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost/q/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app-quarkus-partner-search.rule=PathPrefix(`/api/partner/quarkus`)"
+      - "traefik.http.routers.app-quarkus-partner-search.entrypoints=web,websecure"
+      - "traefik.http.services.app-quarkus-partner-search.loadbalancer.server.port=443"
+      - "traefik.http.services.app-quarkus-partner-search.loadbalancer.server.scheme=https"
+      - "traefik.http.services.app-quarkus-partner-search.loadbalancer.healthcheck.path=/q/health"
+      - "traefik.http.services.app-quarkus-partner-search.loadbalancer.healthcheck.port=443"
+      - "traefik.http.routers.app-quarkus-partner-search.priority=1000"
+
+  partner-search:
+    image: partner-search
+    build:
+      context: ..
+      dockerfile: partner-search/frontend/Dockerfile
+      network: host
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.partner-search.rule=PathPrefix(`/partner`)"
+      - "traefik.http.middlewares.partner-search-strip.stripprefix.prefixes=/partner"
+      - "traefik.http.routers.partner-search.middlewares=partner-search-strip@docker"
+      - "traefik.http.routers.partner-search.entrypoints=web,websecure"
+      - "traefik.http.services.partner-search.loadbalancer.server.port=80"
+      - "traefik.http.services.partner-search.loadbalancer.healthcheck.path=/"
+      - "traefik.http.services.partner-search.loadbalancer.healthcheck.port=80"
+      - "traefik.http.routers.partner-search.priority=120"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  forward-ng-partner-search:
+    image: forward:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.forward-ng-partner-search.rule=PathPrefix(`/partner`)"
+      - "traefik.http.middlewares.forward-ng-partner-search-strip.stripprefix.prefixes=/partner"
+      - "traefik.http.routers.forward-ng-partner-search.middlewares=forward-ng-partner-search-strip@docker"
+      - "traefik.http.routers.forward-ng-partner-search.entrypoints=web,websecure"
+      - "traefik.http.services.forward-ng-partner-search.loadbalancer.server.port=4202"
+      - "traefik.http.services.forward-ng-partner-search.loadbalancer.healthcheck.path=/"
+      - "traefik.http.services.forward-ng-partner-search.loadbalancer.healthcheck.port=4202"
+      - "traefik.http.routers.forward-ng-partner-search.priority=1020"
+    environment:
+      - LISTEN_PORT=4202
+      - TARGET_HOST=traefik-microstack
+      - TARGET_PORT=4202
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4202/"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  forward-api-spring-partner-search:
+    image: forward:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.forward-api-spring-partner-search.rule=PathPrefix(`/api/partner/spring`)"
+      - "traefik.http.routers.forward-api-spring-partner-search.entrypoints=web,websecure"
+      - "traefik.http.services.forward-api-spring-partner-search.loadbalancer.server.port=8445"
+      - "traefik.http.services.forward-api-spring-partner-search.loadbalancer.server.scheme=https"
+      - "traefik.http.services.forward-api-spring-partner-search.loadbalancer.healthcheck.path=/actuator/health"
+      - "traefik.http.services.forward-api-spring-partner-search.loadbalancer.healthcheck.port=8445"
+      - "traefik.http.routers.forward-api-spring-partner-search.priority=1100"
+      # CLAUDE-12 canonical path forwarded to same dev target with path rewrite
+      - "traefik.http.routers.forward-api-spring-partner-search-canonical.rule=PathPrefix(`/api/partner-search/spring`)"
+      - "traefik.http.routers.forward-api-spring-partner-search-canonical.entrypoints=web,websecure"
+      - "traefik.http.routers.forward-api-spring-partner-search-canonical.service=forward-api-spring-partner-search"
+      - "traefik.http.routers.forward-api-spring-partner-search-canonical.middlewares=partner-search-rewrite@docker"
+      - "traefik.http.routers.forward-api-spring-partner-search-canonical.priority=1100"
+    environment:
+      - LISTEN_PORT=8445
+      - TARGET_HOST=traefik-microstack
+      - TARGET_PORT=8445
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost:8445/actuator/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  forward-api-quarkus-partner-search:
+    image: forward:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.forward-api-quarkus-partner-search.rule=PathPrefix(`/api/partner/quarkus`)"
+      - "traefik.http.routers.forward-api-quarkus-partner-search.entrypoints=web,websecure"
+      - "traefik.http.services.forward-api-quarkus-partner-search.loadbalancer.server.port=8443"
+      - "traefik.http.services.forward-api-quarkus-partner-search.loadbalancer.server.scheme=https"
+      - "traefik.http.services.forward-api-quarkus-partner-search.loadbalancer.healthcheck.path=/q/health"
+      - "traefik.http.services.forward-api-quarkus-partner-search.loadbalancer.healthcheck.port=8443"
+      - "traefik.http.routers.forward-api-quarkus-partner-search.priority=1100"
+    environment:
+      - LISTEN_PORT=8443
+      - TARGET_HOST=traefik-microstack
+      - TARGET_PORT=8443
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost:8443/q/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+volumes:
+  es-partner-search-data:

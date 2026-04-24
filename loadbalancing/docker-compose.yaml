@@ -1,0 +1,65 @@
+
+networks:
+  backends:
+  default:
+    name: docker-default-network
+    external: true
+
+services:
+  whoami:
+    profiles: [loadbalancing]
+    image: whoami-tls:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command:
+      - --port=8443
+      - --cert=/certs/server.crt
+      - --key=/certs/server.key
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.web.rule=Host(`server.my.localhost`)"
+      - "traefik.http.routers.web.entrypoints=web,websecure"
+      - "traefik.http.services.web.loadbalancer.server.port=8443"
+      - "traefik.http.services.web.loadbalancer.server.scheme=https"
+      - "traefik.http.services.web.loadbalancer.sticky.cookie=false"
+    networks:
+      - backends
+      - default
+    deploy:
+      replicas: 3
+
+  test-loadbalancing:
+    profiles: [loadbalancing]
+    image: curlimages/curl:latest
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        cat > /tmp/test-http-200-check.sh << 'EOF'
+        #!/bin/sh
+        curl -k -f -v \
+          -H "Host: server.my.localhost" \
+          -w '\nHTTP Status: %{http_code}\n' \
+          https://gateway
+        exit $?
+        EOF
+        chmod ugo+x /tmp/test-http-200-check.sh;
+        while true; do
+            /tmp/test-http-200-check.sh; sleep 10;
+        done
+        sleep infinity
+    depends_on:
+      whoami:
+        condition: service_started
+    networks:
+      - edge
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - /tmp/test-http-200-check.sh
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 1s

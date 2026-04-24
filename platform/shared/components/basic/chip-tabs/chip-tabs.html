@@ -1,0 +1,11 @@
+<mat-chip-listbox hideSingleSelectionIndicator [value]="selectedIndex()" (change)="select($event.value)">
+  @for (tab of tabs(); track tab; let i = $index) {
+    <mat-chip-option [value]="i" [attr.cypressid]=tab.cypressid()>
+      {{ tab.label() }}
+    </mat-chip-option>
+  }
+</mat-chip-listbox>
+
+@if (currentContent()) {
+  <ng-container [ngTemplateOutlet]="currentContent()"></ng-container>
+}

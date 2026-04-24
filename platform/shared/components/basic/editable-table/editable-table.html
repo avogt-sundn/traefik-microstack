@@ -1,0 +1,56 @@
+<shared-column-configuration-chips
+  [allColumns]="columns()"
+  [inputLabel]="'editableTable.selectedColumns' | transloco"
+  (selectedColumnsOutput)="changeCols($event)"
+></shared-column-configuration-chips>
+
+<table mat-table [dataSource]="tableData()">
+
+  @for (column of configuredColumns(); track column.key) {
+    <ng-container [matColumnDef]="column.key">
+      <th mat-header-cell *matHeaderCellDef>{{ column.header | transloco }}</th>
+      <td mat-cell *matCellDef="let row; let i = index">
+        {{ column.displayFormatter ? column.displayFormatter(row[column.key]) : row[column.key] }}
+      </td>
+    </ng-container>
+  }
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let row; let i = index">
+      <button
+        mat-icon-button
+        [attr.cypressid]="'cypress-edit-table-row-' + i"
+        color="primary"
+        [disabled]="editingDisabled()"
+        (click)="editTableRow(i)"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        [attr.cypressid]="'cypress-delete-table-row-' + i"
+        color="warn"
+        [disabled]="editingDisabled()"
+        (click)="deleteTableRow(i)"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns();"></tr>
+</table>
+
+@if (!hideAddButton()) {
+  <button
+    (click)="addNewTableRow()"
+    [disabled]="editingDisabled()"
+    class="add-row-button"
+    color="primary"
+    mat-raised-button>
+    <mat-icon>add</mat-icon>
+    {{ 'editableTable.addRow' | transloco }}
+  </button>
+}

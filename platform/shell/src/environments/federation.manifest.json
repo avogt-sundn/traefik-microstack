@@ -1,0 +1,6 @@
+{
+"partner-search": "/partner/remoteEntry.json",
+"partner-edit": "/partner-edit/remoteEntry.json",
+"loans": "/loans/remoteEntry.json",
+"ekf": "/ekf/remoteEntry.json"
+}

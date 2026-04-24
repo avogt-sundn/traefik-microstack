@@ -1,0 +1,60 @@
+.info-panel {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border-left: 0.25rem solid var(--border-color);
+  background-color: var(--background-color);
+
+  mat-icon {
+    flex-shrink: 0;
+    color: var(--icon-color);
+    font-size: 1.5rem !important;
+  }
+
+  div:last-child {
+    flex: 1;
+    min-width: 0;
+  }
+
+  h4, p {
+    margin: 0;
+    color: var(--text-color);
+  }
+
+  h4 {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  p {
+    line-height: 1.5;
+
+    &:not(:last-child) {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  &--info {
+    --background-color: var(--core-finance-validation-info-background);
+    --border-color: var(--core-finance-primary);
+    --icon-color: var(--core-finance-primary);
+    --text-color: var(--core-finance-validation-info-text);
+  }
+
+  &--success {
+    --background-color: var(--core-finance-surface);
+    --border-color: var(--core-finance-validation-success-primary);
+    --icon-color: var(--core-finance-validation-success-primary);
+    --text-color: var(--core-finance-on-surface);
+  }
+
+  &--error {
+    --background-color: var(--core-finance-error-container);
+    --border-color: var(--core-finance-error);
+    --icon-color: var(--core-finance-error);
+    --text-color: var(--core-finance-on-error-container);
+  }
+}

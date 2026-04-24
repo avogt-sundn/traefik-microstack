@@ -1,0 +1,190 @@
+:host {
+  background-color: var(--mat-sys-surface-container-lowest);
+}
+
+.search-input-wrapper {
+  max-width: 50rem;
+
+  .search-field {
+    width: 100%;
+  }
+}
+
+// ── Token chips ────────────────────────────────────────────────────────
+
+.token-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.25rem 0 0.5rem;
+
+  mat-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    cursor: default;
+
+    .chip-label {
+      font-weight: 600;
+      opacity: 0.75;
+    }
+
+    .chip-icon {
+      font-size: 0.9rem;
+      width: 0.9rem;
+      height: 0.9rem;
+    }
+  }
+
+  .token-confirmed {
+    background-color: color-mix(in srgb, var(--mat-sys-primary) 15%, transparent);
+  }
+
+  .token-locked {
+    background-color: color-mix(in srgb, var(--mat-sys-secondary) 15%, transparent);
+  }
+
+  .token-completing {
+    opacity: 0.65;
+  }
+
+  .token-classifying {
+    background-color: color-mix(in srgb, var(--mat-sys-surface-variant) 60%, transparent);
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.chip-spin {
+  animation: spin 1.2s linear infinite;
+}
+
+// ── Keyboard help bar ──────────────────────────────────────────────────
+
+.keyboard-help {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--mat-sys-on-surface-variant, #666);
+  margin-bottom: 0.75rem;
+
+  .help-sep {
+    opacity: 0.4;
+  }
+}
+
+// ── Search engine source indicator ─────────────────────────────────────
+
+.search-source-indicator {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin: 8px 0 4px;
+  font-size: 11px;
+  font-family: monospace;
+}
+
+.engine-badge {
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid currentColor;
+  color: var(--mat-sys-outline);
+  opacity: 0.6;
+  transition: opacity 0.15s, background-color 0.15s;
+
+  &--active {
+    background-color: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+    opacity: 1;
+    border-color: transparent;
+  }
+}
+
+.engine-toggle {
+  --mat-slide-toggle-track-height: 14px;
+  --mat-slide-toggle-track-width: 28px;
+  --mat-slide-toggle-handle-height: 10px;
+  --mat-slide-toggle-handle-width: 10px;
+  width: 28px;
+  overflow: hidden;
+}
+
+// ── Result count ────────────────────────────────────────────────────────
+
+.search-result-count {
+  font-size: 11px;
+  font-family: monospace;
+  color: var(--mat-sys-on-surface-variant);
+  margin: 2px 0 6px;
+}
+
+.result-count-matched {
+  font-weight: 600;
+}
+
+// ── Examples panel ─────────────────────────────────────────────────────
+
+.examples-panel {
+  margin-bottom: 1rem;
+  max-width: 50rem;
+
+  .examples-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0;
+    font-size: 0.85rem;
+    color: var(--mat-sys-on-surface-variant, #666);
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .examples-list {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--mat-sys-outline-variant, #ddd);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 0.25rem;
+
+    .example-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      padding: 0.4rem 0.75rem;
+      background: none;
+      border: none;
+      border-bottom: 1px solid var(--mat-sys-outline-variant, #eee);
+      cursor: pointer;
+      text-align: left;
+      font-size: 0.85rem;
+
+      &:last-child { border-bottom: none; }
+
+      &:hover {
+        background-color: color-mix(in srgb, var(--mat-sys-primary) 8%, transparent);
+      }
+
+      .example-query {
+        font-family: monospace;
+        font-size: 0.82rem;
+        min-width: 14rem;
+        color: var(--mat-sys-primary, #1976d2);
+      }
+
+      .example-sep {
+        opacity: 0.4;
+      }
+
+      .example-desc {
+        color: var(--mat-sys-on-surface-variant, #555);
+      }
+    }
+  }
+}

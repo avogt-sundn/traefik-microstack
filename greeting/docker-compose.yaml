@@ -1,0 +1,183 @@
+networks:
+  default:
+    name: docker-default-network
+    external: true
+
+services:
+  postgres-one:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app-one-db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  app-one:
+    image: app-one
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+      network: host
+    depends_on:
+      postgres-one:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost/actuator/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app-one.rule=PathPrefix(`/api/one`)"
+      - "traefik.http.routers.app-one.entrypoints=web,websecure"
+      - "traefik.http.services.app-one.loadbalancer.server.port=443"
+      - "traefik.http.services.app-one.loadbalancer.server.scheme=https"
+      - "traefik.http.services.app-one.loadbalancer.sticky.cookie=false"
+      - "traefik.http.services.app-one.loadbalancer.healthcheck.path=/actuator/health"
+      - "traefik.http.services.app-one.loadbalancer.healthcheck.port=443"
+      - "traefik.http.routers.app-one.priority=1000"
+
+  postgres-two:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app-two-db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  app-two:
+    image: app-two
+    build:
+      context: ./spring
+      dockerfile: Dockerfile
+      network: host
+    depends_on:
+      postgres-two:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost/actuator/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app-two.rule=PathPrefix(`/api/two`)"
+      - "traefik.http.routers.app-two.entrypoints=web,websecure"
+      - "traefik.http.services.app-two.loadbalancer.server.port=443"
+      - "traefik.http.services.app-two.loadbalancer.server.scheme=https"
+      - "traefik.http.services.app-two.loadbalancer.healthcheck.path=/actuator/health"
+      - "traefik.http.services.app-two.loadbalancer.healthcheck.port=443"
+      - "traefik.http.routers.app-two.priority=1000"
+
+  postgres-three:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app-three-db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  app-three:
+    image: app-three.jvm
+    build:
+      context: ./quarkus
+      dockerfile: Dockerfile
+      network: host
+    depends_on:
+      postgres-three:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost/q/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app-three.rule=PathPrefix(`/api/three`)"
+      - "traefik.http.routers.app-three.entrypoints=web,websecure"
+      - "traefik.http.services.app-three.loadbalancer.server.port=443"
+      - "traefik.http.services.app-three.loadbalancer.server.scheme=https"
+      - "traefik.http.services.app-three.loadbalancer.healthcheck.path=/q/health"
+      - "traefik.http.services.app-three.loadbalancer.healthcheck.port=443"
+
+  app-three-native:
+    image: app-three.native
+    build:
+      context: ./quarkus
+      dockerfile: Dockerfile.native
+      network: host
+    depends_on:
+      postgres-three:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost/q/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app-three-native.rule=PathPrefix(`/api/three`)"
+      - "traefik.http.routers.app-three-native.entrypoints=web,websecure"
+      - "traefik.http.services.app-three-native.loadbalancer.server.port=443"
+      - "traefik.http.services.app-three-native.loadbalancer.server.scheme=https"
+      - "traefik.http.services.app-three-native.loadbalancer.healthcheck.path=/q/health"
+      - "traefik.http.services.app-three-native.loadbalancer.healthcheck.port=443"
+
+  forward-api-one:
+    image: forward:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.forward-api-one.rule=PathPrefix(`/api/one`)"
+      - "traefik.http.routers.forward-api-one.entrypoints=web,websecure"
+      - "traefik.http.services.forward-api-one.loadbalancer.server.port=8443"
+      - "traefik.http.services.forward-api-one.loadbalancer.server.scheme=https"
+      - "traefik.http.services.forward-api-one.loadbalancer.healthcheck.path=/actuator/health"
+      - "traefik.http.services.forward-api-one.loadbalancer.healthcheck.port=8443"
+      - "traefik.http.routers.forward-api-one.priority=1100"
+    environment:
+      - LISTEN_PORT=8443
+      - TARGET_HOST=traefik-microstack
+      - TARGET_PORT=8443
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost:8443/actuator/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  forward-api-two:
+    image: forward:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.forward-api-two.rule=PathPrefix(`/api/two`)"
+      - "traefik.http.routers.forward-api-two.entrypoints=web,websecure"
+      - "traefik.http.services.forward-api-two.loadbalancer.server.port=8444"
+      - "traefik.http.services.forward-api-two.loadbalancer.server.scheme=https"
+      - "traefik.http.services.forward-api-two.loadbalancer.healthcheck.path=/actuator/health"
+      - "traefik.http.services.forward-api-two.loadbalancer.healthcheck.port=8444"
+      - "traefik.http.routers.forward-api-two.priority=1100"
+    environment:
+      - LISTEN_PORT=8444
+      - TARGET_HOST=traefik-microstack
+      - TARGET_PORT=8444
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost:8444/actuator/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+volumes:
+  postgres_data:

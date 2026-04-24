@@ -1,0 +1,176 @@
+{
+  "common": {
+    "loading": "Laden...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "search": "Suchen",
+    "filter": "Filter",
+    "reset": "Zurücksetzen",
+    "confirm": "Bestätigen",
+    "yes": "Ja",
+    "no": "Nein",
+    "ok": "OK",
+    "close": "Schließen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "previous": "Vorherige",
+    "refresh": "Aktualisieren",
+    "export": "Exportieren",
+    "import": "Importieren",
+    "print": "Drucken",
+    "download": "Herunterladen",
+    "upload": "Hochladen"
+  },
+  "navigation": {
+    "home": "Startseite",
+    "dashboard": "Dashboard",
+    "loans": "Kredite",
+    "partners": "Partner",
+    "ekf": "EKF-Verwaltung",
+    "settings": "Einstellungen",
+    "profile": "Profil",
+    "logout": "Abmelden",
+    "menu": "Menü"
+  },
+  "dates": {
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "tomorrow": "Morgen",
+    "thisWeek": "Diese Woche",
+    "lastWeek": "Letzte Woche",
+    "nextWeek": "Nächste Woche",
+    "thisMonth": "Dieser Monat",
+    "lastMonth": "Letzter Monat",
+    "nextMonth": "Nächster Monat",
+    "thisYear": "Dieses Jahr",
+    "lastYear": "Letztes Jahr",
+    "nextYear": "Nächstes Jahr"
+  },
+  "pagination": {
+    "itemsPerPage": "Elemente pro Seite",
+    "page": "Seite",
+    "of": "von",
+    "showing": "Zeige",
+    "to": "bis",
+    "items": "Elemente",
+    "firstPage": "Erste Seite",
+    "lastPage": "Letzte Seite",
+    "nextPage": "Nächste Seite",
+    "previousPage": "Vorherige Seite"
+  },
+  "language": {
+    "select": "Sprache auswählen",
+    "english": "English",
+    "german": "Deutsch",
+    "current": "Aktuelle Sprache"
+  },
+  "app": {
+    "title": "traefik-microstack",
+    "modules": {
+      "loans": "Kredit",
+      "partner": "Partner",
+      "ekf": "EKF"
+    }
+  },
+  "header": {
+    "account": {
+      "ariaLabel": "Konto-Menü",
+      "logout": "Abmelden"
+    },
+    "language": {
+      "ariaLabel": "Sprach-Menü",
+      "german": "Deutsch",
+      "english": "Englisch",
+      "french": "Französisch"
+    },
+    "client": {
+      "logoAlt": "{{clientName}} Logo"
+    }
+  },
+  "clientSelection": {
+    "welcome": "Willkommen!",
+    "selectClient": "Wählen Sie einen Mandanten.",
+    "clientLogoAlt": "{{clientName}} Logo"
+  },
+  "footer": {
+    "session": "Session",
+    "environment": "Umgebung",
+    "version": "Version",
+    "debug": "Debug"
+  },
+  "auth": {
+    "login": {
+      "button": {
+        "login": "Anmelden",
+        "loading": "Anmeldung läuft...",
+        "retry": "Erneut versuchen",
+        "ariaLabel": "Bei Ihrem Konto anmelden"
+      }
+    },
+    "logout": {
+      "button": {
+        "logout": "Abmelden",
+        "loading": "Abmeldung läuft...",
+        "retry": "Erneut versuchen",
+        "ariaLabel": "Von Ihrem Konto abmelden"
+      },
+      "dialog": {
+        "title": "Abmeldung bestätigen",
+        "message": "Sind Sie sicher, dass Sie sich abmelden möchten?",
+        "messageWithUser": "Sind Sie sicher, dass Sie sich abmelden möchten, {{userName}}?",
+        "cancel": "Abbrechen",
+        "confirm": "Abmelden",
+        "info": {
+          "session": "Ihre aktuelle Sitzung wird beendet",
+          "tokens": "Alle Authentifizierungs-Token werden widerrufen",
+          "redirect": "Sie werden zur Anmeldeseite weitergeleitet"
+        }
+      }
+    },
+    "profile": {
+      "roles": "Rollen",
+      "permissions": "Berechtigungen",
+      "groups": "Gruppen",
+      "more": "weitere",
+      "menu": {
+        "edit": "Profil bearbeiten",
+        "info": "Profilinformationen",
+        "ariaLabel": "Benutzerprofil-Menü"
+      },
+      "token": {
+        "valid": "Token gültig",
+        "invalid": "Token ungültig",
+        "expiring": "Token läuft ab",
+        "expiringDetail": "Ihre Sitzung läuft bald ab"
+      }
+    },
+    "status": {
+      "initializing": "Initialisierung",
+      "loading": "Laden",
+      "authenticated": "Authentifiziert",
+      "unauthenticated": "Nicht authentifiziert",
+      "error": "Authentifizierungsfehler",
+      "unknown": "Unbekannter Status",
+      "tokenExpiring": "Token läuft ab",
+      "tokenInvalid": "Token ungültig",
+      "tokenExpiringDetail": "Ihre Sitzung läuft bald ab",
+      "tokenInvalidDetail": "Bitte melden Sie sich erneut an",
+      "authenticatedAs": "Angemeldet als {{name}}",
+      "sessionActive": "Sitzung aktiv",
+      "notAuthenticated": "Bitte melden Sie sich an",
+      "tokenStatus": "Token-Status",
+      "tokenValid": "Gültig",
+      "errorOccurred": "Authentifizierungsfehler",
+      "actions": {
+        "login": "Anmelden",
+        "logout": "Abmelden",
+        "refresh": "Sitzung aktualisieren"
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+.history
+.idea
+.DS_Store
+.continue
+.env
+**/test-results/.last-run.json
+.youtube/**/generated/
+**/target/
+dist/
+**/node_modules/
+**/.angular/
+**/*.tokens.md
+.build-state/
+.claude/worktrees/

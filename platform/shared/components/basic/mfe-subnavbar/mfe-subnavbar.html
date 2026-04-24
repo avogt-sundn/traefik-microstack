@@ -1,0 +1,5 @@
+<mat-nav-list>
+    @for (item of navigationItems(); track $index) {
+    <button matButton="outlined" mat-list-item routerLink="{{ item.route }}">{{ item.label }}</button>
+    }
+</mat-nav-list>
