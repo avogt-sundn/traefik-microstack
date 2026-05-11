@@ -1,0 +1,180 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "reset": "Réinitialiser",
+    "confirm": "Confirmer",
+    "yes": "Oui",
+    "no": "Non",
+    "ok": "OK",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "refresh": "Actualiser",
+    "export": "Exporter",
+    "import": "Importer",
+    "print": "Imprimer",
+    "download": "Télécharger",
+    "upload": "Charger"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "partners": "Partenaire",
+    "settings": "Paramètres",
+    "profile": "Profil",
+    "logout": "Déconnexion",
+    "menu": "Menu"
+  },
+  "dates": {
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "tomorrow": "Demain",
+    "thisWeek": "Cette semaine",
+    "lastWeek": "Semaine dernière",
+    "nextWeek": "Semaine prochaine",
+    "thisMonth": "Ce mois",
+    "lastMonth": "Mois dernier",
+    "nextMonth": "Mois prochain",
+    "thisYear": "Cette année",
+    "lastYear": "Année dernière",
+    "nextYear": "Année prochaine"
+  },
+  "pagination": {
+    "itemsPerPage": "Éléments par page",
+    "page": "Page",
+    "of": "de",
+    "showing": "Affichage",
+    "to": "à",
+    "items": "éléments",
+    "firstPage": "Première page",
+    "lastPage": "Dernière page",
+    "nextPage": "Page suivante",
+    "previousPage": "Page précédente"
+  },
+  "language": {
+    "select": "Sélectionner la langue",
+    "english": "Anglais",
+    "german": "Allemand",
+    "current": "Langue actuelle"
+  },
+  "app": {
+    "title": "traefik-microstack",
+    "modules": {
+      "partner": "Partenaire",
+      "partner-edit": "Modifier Partenaire"
+    }
+  },
+  "nav": {
+    "home": "Accueil",
+    "partner": "Recherche Partenaire",
+    "partnerEdit": "Modifier Partenaire",
+    "openMenu": "Ouvrir le menu de navigation",
+    "closeMenu": "Fermer le menu de navigation"
+  },
+  "header": {
+    "account": {
+      "ariaLabel": "Menu du compte",
+      "logout": "Déconnexion"
+    },
+    "language": {
+      "ariaLabel": "Menu de langue",
+      "german": "Allemand",
+      "english": "Anglais",
+      "french": "Français"
+    },
+    "client": {
+      "logoAlt": "Logo {{clientName}}"
+    }
+  },
+  "clientSelection": {
+    "welcome": "Bienvenue!",
+    "selectClient": "Veuillez sélectionner un client.",
+    "clientLogoAlt": "Logo {{clientName}}"
+  },
+  "footer": {
+    "session": "Session",
+    "environment": "Environnement",
+    "version": "Version",
+    "debug": "Debug"
+  },
+  "auth": {
+    "login": {
+      "button": {
+        "login": "Se connecter",
+        "loading": "Connexion en cours...",
+        "retry": "Réessayer",
+        "ariaLabel": "Se connecter à votre compte"
+      }
+    },
+    "logout": {
+      "button": {
+        "logout": "Déconnexion",
+        "loading": "Déconnexion en cours...",
+        "retry": "Réessayer",
+        "ariaLabel": "Se déconnecter de votre compte"
+      },
+      "dialog": {
+        "title": "Confirmer la déconnexion",
+        "message": "Êtes-vous sûr de vouloir vous déconnecter?",
+        "messageWithUser": "Êtes-vous sûr de vouloir vous déconnecter, {{userName}}?",
+        "cancel": "Annuler",
+        "confirm": "Déconnexion",
+        "info": {
+          "session": "Votre session actuelle sera terminée",
+          "tokens": "Tous les jetons d'authentification seront révoqués",
+          "redirect": "Vous serez redirigé vers la page de connexion"
+        }
+      }
+    },
+    "profile": {
+      "roles": "Rôles",
+      "permissions": "Autorisations",
+      "groups": "Groupes",
+      "more": "plus",
+      "menu": {
+        "edit": "Modifier le profil",
+        "info": "Informations du profil",
+        "ariaLabel": "Menu du profil utilisateur"
+      },
+      "token": {
+        "valid": "Jeton valide",
+        "invalid": "Jeton invalide",
+        "expiring": "Jeton expire",
+        "expiringDetail": "Votre session va bientôt expirer"
+      }
+    },
+    "status": {
+      "initializing": "Initialisation",
+      "loading": "Chargement",
+      "authenticated": "Authentifié",
+      "unauthenticated": "Non authentifié",
+      "error": "Erreur d'authentification",
+      "unknown": "Statut inconnu",
+      "tokenExpiring": "Jeton expire",
+      "tokenInvalid": "Jeton invalide",
+      "tokenExpiringDetail": "Votre session va bientôt expirer",
+      "tokenInvalidDetail": "Veuillez vous reconnecter",
+      "authenticatedAs": "Connecté en tant que {{name}}",
+      "sessionActive": "Session active",
+      "notAuthenticated": "Veuillez vous connecter",
+      "tokenStatus": "Statut du jeton",
+      "tokenValid": "Valide",
+      "errorOccurred": "Erreur d'authentification",
+      "actions": {
+        "login": "Se connecter",
+        "logout": "Déconnexion",
+        "refresh": "Actualiser la session"
+      }
+    }
+  }
+}

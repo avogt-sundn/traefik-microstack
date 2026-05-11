@@ -1,0 +1,26 @@
+
+name: traefik-microstack
+
+networks:
+  default:
+    name: docker-default-network
+    external: true
+
+services:
+  forward:
+    image: forward:latest
+    build:
+      context: infrastructure/forward-devcontainer
+    deploy:
+      replicas: 0
+
+include:
+  - infrastructure/traefik/docker-compose.yaml
+  - infrastructure/build-services/docker-compose.yaml
+  - greeting/docker-compose.yaml
+  - partner-search/docker-compose.yaml
+  - partner-edit/docker-compose.yaml
+  - ux/docker-compose.yaml
+  - platform/docker-compose.yaml
+  - loadbalancing/docker-compose.yaml
+  - tests/docker-compose.yaml

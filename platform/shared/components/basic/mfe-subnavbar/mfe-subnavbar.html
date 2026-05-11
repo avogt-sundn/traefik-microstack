@@ -1,0 +1,8 @@
+<nav class="subnav-bar">
+  @for (item of navigationItems(); track $index) {
+    <a class="subnav-item" routerLink="{{ item.route }}" routerLinkActive="subnav-item--active"
+       [routerLinkActiveOptions]="{exact: false}">
+      {{ item.label }}
+    </a>
+  }
+</nav>

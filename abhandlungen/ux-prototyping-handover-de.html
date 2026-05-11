@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rapid UX Prototyping — Handover an UI-Entwicklung in verteilten Teams</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #ffffff;
+    --bg-card:   #f5f5f5;
+    --bg-panel:  #fafafa;
+    --border:    #cccccc;
+    --border-hi: #1565c0;
+    --text:      #1a1a1a;
+    --text-dim:  #4a4a4a;
+    --text-faint:#666666;
+    --blue:      #1565c0;
+    --blue-lt:   #0d47a1;
+    --green:     #2e7d32;
+    --green-lt:  #1b5e20;
+    --amber:     #f57f17;
+    --red-lt:    #b71c1c;
+    --mono:      "JetBrains Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+    --sans:      -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --max:       880px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 44px 24px 90px;
+  }
+
+  .wrapper { max-width: var(--max); margin: 0 auto; }
+
+  .doc-header { border-bottom: 2px solid var(--border-hi); padding-bottom: 30px; margin-bottom: 44px; }
+  .doc-header h1 { font-size: 23px; font-weight: 700; color: var(--text); letter-spacing: -0.4px; margin-bottom: 6px; }
+  .doc-header .meta { color: var(--text-faint); font-size: 12px; font-family: var(--mono); margin-bottom: 20px; }
+  .kurzfassung {
+    padding: 18px 22px; background: var(--bg-panel);
+    border-left: 3px solid var(--blue); border-radius: 4px;
+    color: var(--text-dim); font-size: 14px; line-height: 1.7;
+  }
+  .kurzfassung strong { color: var(--text); }
+
+  h2 {
+    font-size: 17px; font-weight: 600; color: var(--blue-lt);
+    margin: 52px 0 16px;
+    border-bottom: 1px solid var(--border); padding-bottom: 8px;
+    letter-spacing: -0.2px;
+  }
+  h3 {
+    font-size: 13px; font-weight: 600; color: var(--text-faint);
+    margin: 30px 0 10px; text-transform: uppercase; letter-spacing: 0.7px;
+  }
+  p  { color: var(--text-dim); margin-bottom: 14px; }
+  p strong { color: var(--text); }
+  ul, ol { color: var(--text-dim); padding-left: 22px; margin-bottom: 16px; }
+  li { margin-bottom: 7px; }
+  li strong { color: var(--text); }
+  code {
+    font-family: var(--mono); font-size: 12px;
+    background: #fafafa; border: 1px solid var(--border);
+    padding: 1px 5px; border-radius: 3px; color: var(--blue-lt);
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 13px; }
+  th {
+    background: var(--bg-panel); color: var(--text-dim); font-weight: 600;
+    padding: 8px 12px; text-align: left; border: 1px solid var(--border);
+  }
+  td { padding: 7px 12px; border: 1px solid var(--border); color: var(--text-dim); vertical-align: top; }
+  td:first-child { color: var(--text); font-size: 13px; }
+  tr:nth-child(even) td { background: #f8f8fb; }
+
+  figure.diagram { margin: 30px 0 34px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+  figure.diagram figcaption {
+    font-size: 12px; color: var(--text-faint); font-family: var(--mono);
+    padding: 9px 16px; background: var(--bg-card); border-top: 1px solid var(--border);
+  }
+  figure.diagram svg { display: block; width: 100%; height: auto; }
+
+  pre {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px;
+    padding: 14px 16px; font-family: var(--mono); font-size: 12px; line-height: 1.6;
+    color: var(--blue-lt); overflow-x: auto; margin: 14px 0 22px;
+    white-space: pre;
+  }
+
+  .box {
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 16px 20px; background: var(--bg-card); margin: 20px 0;
+  }
+  .box.blau  { border-left: 3px solid var(--blue); }
+  .box.gruen { border-left: 3px solid var(--green); }
+  .box.gelb  { border-left: 3px solid var(--amber); }
+  .box.rot   { border-left: 3px solid #ef4444; }
+  .box p { margin: 0; font-size: 13.5px; }
+  .box .label {
+    font-family: var(--mono); font-size: 10px; color: var(--text-faint);
+    text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 7px;
+  }
+
+  .mit td:first-child { color: #b71c1c; }
+  .mit td:nth-child(2) { color: var(--green-lt); }
+
+  .abw td:first-child { color: #b71c1c; font-weight: 600; }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 44px 0; }
+
+  .lit { font-size: 13px; color: var(--text-faint); }
+  .lit li { margin-bottom: 9px; }
+
+  .nr {
+    display: inline-block; background: var(--blue); color: #fff;
+    font-size: 11px; font-family: var(--mono); font-weight: 700;
+    padding: 2px 8px; border-radius: 3px; margin-right: 10px; vertical-align: middle;
+  }
+
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 18px 0 24px; }
+  .zwei .spalte {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 6px; padding: 14px 16px;
+  }
+  .zwei .spalte h4 { font-size: 12px; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .zwei .spalte ul { margin: 0; padding-left: 18px; }
+  .zwei .spalte li { font-size: 13px; margin-bottom: 6px; }
+  .zwei .negativ h4 { color: #c62828; }
+  .zwei .positiv h4 { color: var(--green-lt); }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<header class="doc-header">
+  <h1>Rapid UX Prototyping — Handover an UI-Entwicklung in verteilten Teams</h1>
+  <div class="meta">abhandlungen/ · traefik-microstack · Mai 2026 · Vers. 1</div>
+  <div class="kurzfassung">
+    <strong>Zusammenfassung.</strong> Vier Teams mit je vier Entwicklerinnen und Architektinnen,
+    einem Product Owner und einem Projektmanager sollen eine einzige kohärente Webanwendung
+    liefern — erweiterbar auf zehn bis fünfzehn Teams. Diese Abhandlung beschreibt einen
+    Prozess, der das leistet: eine geschichtete UX-Architektur aus Foundations, Patterns,
+    Screen-Specs und laufenden Prototypen, verbunden durch einen definierten Handover-Kanal
+    zur Angular-Implementierung. Das Verfahren nutzt ein einziges Monorepo mit strikten
+    Ordner-Grenzen, Angular Native Federation als Laufzeit-Kompositions­mechanismus und eine
+    gemeinsame Bibliothek als einzigen Koordinationspunkt zwischen Teams. Die Abhandlung
+    argumentiert ausdrücklich gegen Multi-Repo-Aufteilung, Design-System-First ohne Prototyping
+    und strukturlosen Freestyle — und belegt die Überlegenheit des vorgeschlagenen Weges
+    anhand der Praxis in diesem Repository.
+  </div>
+</header>
+
+
+<!-- §1 -->
+<h2><span class="nr">1</span>Das Problem: Kohärenz bei verteilter Entwicklung</h2>
+
+<p>Eine Webanwendung, die von vier Teams parallel entwickelt wird, tendiert ohne expliziten
+Gegendruck zur <strong>lokalen Optimierung</strong>: Jedes Team löst seine Bildschirme nach
+eigenem Gutdünken — eigene Abstände, eigene Interaktionsmetaphern, eigene Komponentenbezeichnungen.
+Das Ergebnis ist keine Anwendung, sondern eine Sammlung von vier Mini-Anwendungen mit
+einer gemeinsamen Navigationsleiste. Nutzerinnen bemerken die Brüche sofort; sie lernen
+nicht eine Anwendung, sie lernen vier.</p>
+
+<table>
+  <tr><th>Symptom</th><th>Ursache</th><th>Konsequenz</th></tr>
+  <tr><td>Inkonsistente Abstände und Typografie</td><td>Kein gemeinsames Token-Set</td><td>Visuelles Rauschen, Wahrnehmung mangelnder Qualität</td></tr>
+  <tr><td>Gleiche Aktion heißt in Team A „Speichern", in Team B „Übernehmen"</td><td>Kein Glossar, keine Patterns</td><td>Sachbearbeiterinnen müssen pro Bereich neu lernen</td></tr>
+  <tr><td>Team A baut eine Tabelle mit Inline-Edit, Team B baut ein Modal</td><td>Keine Pattern-Vereinbarung</td><td>Inkonsistentes mentales Modell der Nutzerin</td></tr>
+  <tr><td>Prototyp-Feedback kommt nach Sprint 6, wenn Architektur feststeht</td><td>Kein frühzeitiger Handover-Kanal</td><td>Teure Nacharbeiten, demotivierte Teams</td></tr>
+  <tr><td>Neue Teams reißen bestehende Routen auf</td><td>Keine Extension-Point-Disziplin</td><td>Shell bricht bei jedem Onboarding</td></tr>
+</table>
+
+<p>Das Problem ist nicht Inkompetenz — es ist fehlendes Koordinationssystem. Vier kompetente
+Teams ohne gemeinsame Architektur produzieren zuverlässig Fragmentierung. Die Lösung ist
+kein Meeting mehr. Sie ist ein <strong>Prozess mit definierten Artefakten, Grenzen und
+Übergabepunkten</strong>.</p>
+
+
+<!-- §2 -->
+<h2><span class="nr">2</span>Die Lösung: Prototyp-getriebene Entwicklung</h2>
+
+<p>Prototyp-getriebene Entwicklung (PGE) stellt den laufenden Prototypen ans Anfang, nicht
+ans Ende. Der Prototyp ist kein Wegwerfartefakt vor dem „echten" Sprint — er ist das
+<strong>verbindliche Kommunikationsmedium zwischen UX-Design und Implementierung</strong>.
+Jede Interaction-Entscheidung, die im Prototypen getroffen wird, muss nicht mehr in einem
+Sprint-Review neu verhandelt werden.</p>
+
+<p>PGE gliedert sich in drei Phasen, die sich überlappen und iterieren:</p>
+
+<table>
+  <tr><th>Phase</th><th>Artefakt</th><th>Verantwortlich</th><th>Handover-Kanal</th></tr>
+  <tr><td><strong>Foundation</strong></td><td>Mentale Modelle, Zones, Design-Token-Spec, Pattern-Katalog</td><td>UX-Lead + Architektinnen</td><td>Leserecht aller Teams auf <code>ux/foundations/</code> und <code>ux/patterns/</code></td></tr>
+  <tr><td><strong>Prototype</strong></td><td>Statische HTML-Frames + laufende Preact-SPA</td><td>UX-Team</td><td><code>figma-make-prompt.md</code> → <code>/prototype</code>-Skill → HTML-Frames; Forward-Container im Stack</td></tr>
+  <tr><td><strong>Implementation</strong></td><td>Angular-Komponenten, Storybook-Stories, REST-Backend</td><td>Domain-Teams</td><td><code>@traefik-microstack/shared</code> aus Verdaccio; Remote-Entry-Kontrakt</td></tr>
+</table>
+
+<div class="box blau">
+  <div class="label">Kernregel</div>
+  <p><strong>Eine Interaction-Entscheidung wird genau einmal getroffen — im Prototypen —
+  und danach in Code übersetzt.</strong> Teams implementieren keine Screens, die keinen
+  Prototyp-Nachweis haben. Teams erfinden keine Patterns, die nicht im Katalog stehen.</p>
+</div>
+
+
+<!-- §3 -->
+<h2><span class="nr">3</span>Die UX-Schichtenarchitektur</h2>
+
+<p>Das Repository kodiert eine strikte Abhängigkeitsreihenfolge im Ordner <code>ux/</code>,
+die durch die Sibling-Ordering-Regel aus <code>CLAUDE-16</code> erzwungen wird: eine
+spätere Schicht darf frühere lesen, aber nie umgekehrt.</p>
+
+<figure class="diagram">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 420" font-family="monospace" font-size="13">
+    <rect width="860" height="420" fill="#ffffff"/>
+    <text x="430" y="32" text-anchor="middle" fill="#1a1a1a" font-size="15" font-weight="bold">UX-Schichtenarchitektur — gerichtete Abhängigkeitskette</text>
+
+    <!-- Layer 1: foundations -->
+    <rect x="40" y="54" width="780" height="62" rx="6" fill="#e8eaf6" stroke="#3949ab" stroke-width="1.5"/>
+    <text x="64" y="76" fill="#1a237e" font-size="12" font-weight="bold">01 — FOUNDATIONS</text>
+    <text x="64" y="96" fill="#3949ab" font-size="11">Mentale Modelle · Designprinzipien · Metaphern · ux/foundations/</text>
+    <text x="796" y="88" text-anchor="end" fill="#5c6bc0" font-size="10">WARUM</text>
+
+    <!-- arrow -->
+    <line x1="430" y1="116" x2="430" y2="138" stroke="#888" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <polygon points="424,136 436,136 430,146" fill="#888"/>
+
+    <!-- Layer 2: patterns -->
+    <rect x="40" y="148" width="780" height="62" rx="6" fill="#e8f5e9" stroke="#388e3c" stroke-width="1.5"/>
+    <text x="64" y="170" fill="#1b5e20" font-size="12" font-weight="bold">02 — PATTERNS</text>
+    <text x="64" y="190" fill="#388e3c" font-size="11">Suchergebnisse · Detailformular · Vergleichsansicht · sofortige Auflösung · ux/patterns/</text>
+    <text x="796" y="182" text-anchor="end" fill="#43a047" font-size="10">WAS</text>
+
+    <!-- arrow -->
+    <line x1="430" y1="210" x2="430" y2="232" stroke="#888" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <polygon points="424,230 436,230 430,240" fill="#888"/>
+
+    <!-- Layer 3: screens -->
+    <rect x="40" y="242" width="780" height="62" rx="6" fill="#fff8e1" stroke="#f9a825" stroke-width="1.5"/>
+    <text x="64" y="264" fill="#e65100" font-size="12" font-weight="bold">03 — SCREENS</text>
+    <text x="64" y="284" fill="#f9a825" font-size="11">figma-make-prompt.md · SCREEN.md · Screenshots · ux/screens/{screen}/</text>
+    <text x="796" y="276" text-anchor="end" fill="#f9a825" font-size="10">WIE</text>
+
+    <!-- arrow -->
+    <line x1="430" y1="304" x2="430" y2="326" stroke="#888" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <polygon points="424,324 436,324 430,334" fill="#888"/>
+
+    <!-- Layer 4: prototype -->
+    <rect x="40" y="336" width="780" height="62" rx="6" fill="#fce4ec" stroke="#c62828" stroke-width="1.5"/>
+    <text x="64" y="358" fill="#b71c1c" font-size="12" font-weight="bold">04 — PROTOTYPE</text>
+    <text x="64" y="378" fill="#c62828" font-size="11">Laufende Preact-SPA · statische HTML-Frames · ux/prototype/app/ · /prototype-Skill</text>
+    <text x="796" y="370" text-anchor="end" fill="#c62828" font-size="10">BEWEIS</text>
+
+    <!-- read-only arrows back up, faint -->
+    <text x="18" y="290" fill="#cccccc" font-size="10" transform="rotate(-90 18 290)">nur lesen ←</text>
+  </svg>
+  <figcaption>Abb. 1 — Vier Schichten, eine Pfeilrichtung. Jede Schicht konsumiert alle darüber liegenden Schichten. Keine Schicht schreibt in eine höhere. Die Reihenfolge ist durch numerische Präfixe in ux/ erzwungen (CLAUDE-16 §5).</figcaption>
+</figure>
+
+<table>
+  <tr><th>Schicht</th><th>Ordner</th><th>Schlüsselartefakte</th><th>Leser</th></tr>
+  <tr><td>Foundations</td><td><code>ux/foundations/</code></td><td><code>clerk-mental-model.md</code>, <code>single-screen-rationale.md</code>, SVG-Diagramme</td><td>Alle Teams, POs, PMs</td></tr>
+  <tr><td>Patterns</td><td><code>ux/patterns/</code></td><td><code>search-results.mdx</code>, <code>detail-form.mdx</code>, <code>comparison-view.mdx</code>, <code>instant-command-resolution.mdx</code></td><td>Domain-Architektinnen, Frontend-Leads</td></tr>
+  <tr><td>Screens</td><td><code>ux/screens/{screen}/</code></td><td><code>figma-make-prompt.md</code>, <code>SCREEN.md</code>, Iterations-Screenshots</td><td>Implementierende Entwicklerinnen, Storybook-Autorinnen</td></tr>
+  <tr><td>Prototype</td><td><code>ux/prototype/app/</code></td><td>Preact-SPA, <code>src/components/*.tsx</code>, <code>src/data/</code></td><td>POs (Akzeptanztest), Architektinnen (API-Kontrakt-Ableitung)</td></tr>
+</table>
+
+<p>Die Storybook-Instanz (<code>ux/frontend/</code>) ist der fünfte Kanal: sie rendert
+Angular-Komponenten, die aus den Pattern-Definitionen abgeleitet wurden. Storybook ist
+der Nachweis, dass die Implementierung mit dem Pattern übereinstimmt — nicht mit einem
+Design-Tool-Export.</p>
+
+
+<!-- §4 -->
+<h2><span class="nr">4</span>Der Handover-Prozess</h2>
+
+<p>Der Übergang vom UX-Prototypen zur Angular-Implementierung ist kein Übergabedokument
+und kein Ticket mit Anhang. Er ist ein <strong>definiierter Kanal aus vier Stationen</strong>,
+von denen jede ein versioniertes Artefakt produziert.</p>
+
+<figure class="diagram">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 280" font-family="monospace" font-size="12">
+    <rect width="860" height="280" fill="#ffffff"/>
+    <text x="430" y="30" text-anchor="middle" fill="#1a1a1a" font-size="14" font-weight="bold">Handover-Pipeline: figma-make-prompt → Angular-Remote</text>
+
+    <!-- Station 1 -->
+    <rect x="20" y="52" width="150" height="80" rx="6" fill="#e8eaf6" stroke="#3949ab" stroke-width="1.5"/>
+    <text x="95" y="74" text-anchor="middle" fill="#1a237e" font-size="11" font-weight="bold">SCREEN-SPEC</text>
+    <text x="95" y="92" text-anchor="middle" fill="#3949ab" font-size="10">figma-make-prompt.md</text>
+    <text x="95" y="108" text-anchor="middle" fill="#5c6bc0" font-size="10">Design-Tokens</text>
+    <text x="95" y="122" text-anchor="middle" fill="#5c6bc0" font-size="10">Komponenten · Frames</text>
+
+    <!-- arrow -->
+    <line x1="170" y1="92" x2="202" y2="92" stroke="#888" stroke-width="1.5"/>
+    <polygon points="200,87 210,92 200,97" fill="#888"/>
+    <text x="186" y="86" text-anchor="middle" fill="#888" font-size="9">/prototype</text>
+    <text x="186" y="78" text-anchor="middle" fill="#888" font-size="9">Skill</text>
+
+    <!-- Station 2 -->
+    <rect x="210" y="52" width="150" height="80" rx="6" fill="#fff8e1" stroke="#f9a825" stroke-width="1.5"/>
+    <text x="285" y="74" text-anchor="middle" fill="#e65100" font-size="11" font-weight="bold">HTML-FRAMES</text>
+    <text x="285" y="92" text-anchor="middle" fill="#f9a825" font-size="10">statische Snapshots</text>
+    <text x="285" y="108" text-anchor="middle" fill="#795548" font-size="10">browseröffenbar</text>
+    <text x="285" y="122" text-anchor="middle" fill="#795548" font-size="10">kein Build nötig</text>
+
+    <!-- arrow -->
+    <line x1="360" y1="92" x2="392" y2="92" stroke="#888" stroke-width="1.5"/>
+    <polygon points="390,87 400,92 390,97" fill="#888"/>
+    <text x="376" y="86" text-anchor="middle" fill="#888" font-size="9">PO-Review</text>
+
+    <!-- Station 3 -->
+    <rect x="400" y="52" width="150" height="80" rx="6" fill="#fce4ec" stroke="#c62828" stroke-width="1.5"/>
+    <text x="475" y="74" text-anchor="middle" fill="#b71c1c" font-size="11" font-weight="bold">PREACT-SPA</text>
+    <text x="475" y="92" text-anchor="middle" fill="#c62828" font-size="10">ux/prototype/app/</text>
+    <text x="475" y="108" text-anchor="middle" fill="#795548" font-size="10">Interaktion testbar</text>
+    <text x="475" y="122" text-anchor="middle" fill="#795548" font-size="10">kein Angular nötig</text>
+
+    <!-- arrow -->
+    <line x1="550" y1="92" x2="582" y2="92" stroke="#888" stroke-width="1.5"/>
+    <polygon points="580,87 590,92 580,97" fill="#888"/>
+    <text x="566" y="86" text-anchor="middle" fill="#888" font-size="9">Storybook</text>
+    <text x="566" y="78" text-anchor="middle" fill="#888" font-size="9">Story</text>
+
+    <!-- Station 4 -->
+    <rect x="590" y="52" width="150" height="80" rx="6" fill="#e8f5e9" stroke="#388e3c" stroke-width="1.5"/>
+    <text x="665" y="74" text-anchor="middle" fill="#1b5e20" font-size="11" font-weight="bold">STORYBOOK</text>
+    <text x="665" y="92" text-anchor="middle" fill="#388e3c" font-size="10">ux/frontend/stories/</text>
+    <text x="665" y="108" text-anchor="middle" fill="#2e7d32" font-size="10">HTML-vite-Story</text>
+    <text x="665" y="122" text-anchor="middle" fill="#2e7d32" font-size="10">Pattern-Nachweis</text>
+
+    <!-- arrow -->
+    <line x1="740" y1="92" x2="772" y2="92" stroke="#888" stroke-width="1.5"/>
+    <polygon points="770,87 780,92 770,97" fill="#888"/>
+    <text x="756" y="86" text-anchor="middle" fill="#888" font-size="9">ng build</text>
+
+    <!-- Station 5 -->
+    <rect x="780" y="52" width="62" height="80" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+    <text x="811" y="77" text-anchor="middle" fill="#0d47a1" font-size="10" font-weight="bold">ANGULAR</text>
+    <text x="811" y="93" text-anchor="middle" fill="#1565c0" font-size="10">Remote</text>
+    <text x="811" y="109" text-anchor="middle" fill="#1565c0" font-size="10">Entry</text>
+    <text x="811" y="122" text-anchor="middle" fill="#1565c0" font-size="10">deployed</text>
+
+    <!-- Legend -->
+    <rect x="20" y="162" width="820" height="96" rx="4" fill="#fafafa" stroke="#cccccc" stroke-width="1"/>
+    <text x="40" y="182" fill="#1a1a1a" font-size="11" font-weight="bold">Artefakt-Verträge</text>
+    <text x="40" y="202" fill="#4a4a4a" font-size="11">figma-make-prompt.md: vollständige Spec (Design-Tokens, Komponentendefinitionen, Frame-Beschreibungen) — Eingabe für /prototype-Skill</text>
+    <text x="40" y="220" fill="#4a4a4a" font-size="11">HTML-Frames: selbstständige Dateien (keine externen Ressourcen) — reviewbar ohne lokale Dev-Umgebung</text>
+    <text x="40" y="238" fill="#4a4a4a" font-size="11">Preact-SPA: kein Angular, kein API, kein Auth — isolierter Interaktionsbeweis, Vite dev-Port 5174 → Traefik /prototype/</text>
+    <text x="40" y="256" fill="#4a4a4a" font-size="11">Storybook-Story: Angular-Komponente gegen Pattern validiert — Brücke zwischen UX-Spec und Produktionscode</text>
+  </svg>
+  <figcaption>Abb. 2 — Handover-Pipeline. Jede Station produziert ein lauffähiges, versioniertes Artefakt. PO-Reviews finden an Station 2 statt (keine Dev-Umgebung nötig). Architektur-Reviews finden an Station 3 statt. Pattern-Konformität wird an Station 4 geprüft.</figcaption>
+</figure>
+
+<h3>Der figma-make-prompt.md als Handover-Kontrakt</h3>
+
+<p>Das Schlüsselartefakt ist nicht ein Figma-Export, kein Screenshot und kein Confluence-Dokument.
+Es ist die <code>figma-make-prompt.md</code> — eine strukturierte Spezifikation in drei
+Abschnitten:</p>
+
+<ol>
+  <li><strong>Design-Tokens:</strong> Farbwerte, Typografie, Abstands­gitter, Radiuswerte — alle als benannte Variablen. Kein Interpretationsspielraum.</li>
+  <li><strong>Komponenten (COMP-A … COMP-N):</strong> Jede Komponente mit Zuständen, Variants und Verhaltensbeschreibung. Genug Detail für den <code>/prototype</code>-Skill und für den Angular-Entwickler.</li>
+  <li><strong>Frames (F-01 … F-N):</strong> Vollständige Screen-Beschreibungen mit Layout, Daten-Beispielen und Interaktionsübergängen.</li>
+</ol>
+
+<p>Diese Struktur macht das Dokument <strong>maschinell verwertbar</strong> (der <code>/prototype</code>-Skill
+liest es und erzeugt HTML-Frames) und <strong>menschlich lesbar</strong> (Entwicklerinnen
+implementieren daraus Angular-Komponenten ohne Rückfragen). Das Dokument ersetzt das
+Design-Tool; es ist das Design.</p>
+
+<div class="box gruen">
+  <div class="label">Handover-Prinzip</div>
+  <p>Kein Angular-Team beginnt mit der Implementierung eines Screens, für den noch kein
+  <code>figma-make-prompt.md</code> existiert. Das Dokument ist die Definition of Ready
+  für UI-Tickets. Ohne es gibt es keinen Review-Maßstab.</p>
+</div>
+
+
+<!-- §5 -->
+<h2><span class="nr">5</span>Extension Points: Wie neue Teams andocken</h2>
+
+<p>Die Anwendung ist eine einzige Shell, die zur Laufzeit Micro-Frontends per Angular
+Native Federation lädt. Neue Teams erweitern die Anwendung, ohne den bestehenden Code
+zu berühren. Es gibt drei Koordinationspunkte — alle drei sind minimal und versioniert.</p>
+
+<figure class="diagram">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 480" font-family="monospace" font-size="12">
+    <rect width="860" height="480" fill="#ffffff"/>
+    <text x="430" y="30" text-anchor="middle" fill="#1a1a1a" font-size="14" font-weight="bold">Erweiterungs-Topologie — Shell + Remotes + Shared + Gateway</text>
+
+    <!-- Traefik -->
+    <rect x="20" y="50" width="820" height="36" rx="6" fill="#1a1a1a" stroke="#cccccc" stroke-width="1"/>
+    <text x="430" y="74" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="bold">TRAEFIK GATEWAY — https://gateway — Einziger Eintrittspunkt für alle Clients</text>
+
+    <!-- Shell -->
+    <rect x="20" y="108" width="180" height="90" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+    <text x="110" y="130" text-anchor="middle" fill="#0d47a1" font-size="12" font-weight="bold">SHELL</text>
+    <text x="110" y="148" text-anchor="middle" fill="#1565c0" font-size="10">platform/shell/</text>
+    <text x="110" y="164" text-anchor="middle" fill="#1565c0" font-size="10">federation.manifest.json</text>
+    <text x="110" y="180" text-anchor="middle" fill="#1565c0" font-size="10">Catch-all Route /</text>
+
+    <!-- Shared Lib -->
+    <rect x="20" y="222" width="180" height="70" rx="6" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="1.5"/>
+    <text x="110" y="244" text-anchor="middle" fill="#4a148c" font-size="11" font-weight="bold">SHARED LIB</text>
+    <text x="110" y="262" text-anchor="middle" fill="#7b1fa2" font-size="10">@traefik-microstack/shared</text>
+    <text x="110" y="278" text-anchor="middle" fill="#7b1fa2" font-size="10">Verdaccio :4873</text>
+
+    <!-- Remote A -->
+    <rect x="240" y="108" width="160" height="90" rx="6" fill="#e8f5e9" stroke="#388e3c" stroke-width="1.5"/>
+    <text x="320" y="130" text-anchor="middle" fill="#1b5e20" font-size="11" font-weight="bold">REMOTE A</text>
+    <text x="320" y="148" text-anchor="middle" fill="#388e3c" font-size="10">partner-search/frontend/</text>
+    <text x="320" y="164" text-anchor="middle" fill="#388e3c" font-size="10">exposes ./Component</text>
+    <text x="320" y="180" text-anchor="middle" fill="#388e3c" font-size="10">Route: /partner</text>
+
+    <!-- Remote B -->
+    <rect x="420" y="108" width="160" height="90" rx="6" fill="#e8f5e9" stroke="#388e3c" stroke-width="1.5"/>
+    <text x="500" y="130" text-anchor="middle" fill="#1b5e20" font-size="11" font-weight="bold">REMOTE B</text>
+    <text x="500" y="148" text-anchor="middle" fill="#388e3c" font-size="10">partner-edit/frontend/</text>
+    <text x="500" y="164" text-anchor="middle" fill="#388e3c" font-size="10">exposes ./Component</text>
+    <text x="500" y="180" text-anchor="middle" fill="#388e3c" font-size="10">Route: /partner-edit</text>
+
+    <!-- Remote N (new team) -->
+    <rect x="600" y="108" width="160" height="90" rx="6" fill="#fff8e1" stroke="#f9a825" stroke-width="1.5" stroke-dasharray="6,3"/>
+    <text x="680" y="130" text-anchor="middle" fill="#e65100" font-size="11" font-weight="bold">REMOTE N</text>
+    <text x="680" y="148" text-anchor="middle" fill="#f9a825" font-size="10">neues-domain/frontend/</text>
+    <text x="680" y="164" text-anchor="middle" fill="#f9a825" font-size="10">exposes ./Component</text>
+    <text x="680" y="180" text-anchor="middle" fill="#f9a825" font-size="10">Route: /neues-domain</text>
+
+    <!-- Backend services -->
+    <rect x="240" y="222" width="520" height="70" rx="6" fill="#fce4ec" stroke="#c62828" stroke-width="1"/>
+    <text x="500" y="244" text-anchor="middle" fill="#b71c1c" font-size="11" font-weight="bold">BACKEND-DOMAINS — je ein Spring/Quarkus-Service pro Domain</text>
+    <text x="500" y="262" text-anchor="middle" fill="#c62828" font-size="10">/api/partner/spring · /api/partner-edit/spring · /api/neues-domain/spring</text>
+    <text x="500" y="278" text-anchor="middle" fill="#795548" font-size="10">jeder Service hinter Traefik · PathPrefix + StripPrefix · eigene Postgres-Instanz</text>
+
+    <!-- Coordination points -->
+    <rect x="20" y="320" width="820" height="138" rx="4" fill="#fafafa" stroke="#cccccc" stroke-width="1"/>
+    <text x="40" y="342" fill="#1a1a1a" font-size="11" font-weight="bold">Die drei Koordinationspunkte — alle anderen Grenzen sind team-intern</text>
+    <rect x="40" y="354" width="245" height="88" rx="4" fill="#e3f2fd" stroke="#1565c0" stroke-width="1"/>
+    <text x="163" y="374" text-anchor="middle" fill="#0d47a1" font-size="11" font-weight="bold">1. federation.manifest.json</text>
+    <text x="163" y="390" text-anchor="middle" fill="#1565c0" font-size="10">Shell lädt Remotes per URL</text>
+    <text x="163" y="406" text-anchor="middle" fill="#1565c0" font-size="10">Neues Team ergänzt einen Eintrag</text>
+    <text x="163" y="422" text-anchor="middle" fill="#1565c0" font-size="10">Kein Shell-Code verändert sich</text>
+    <rect x="305" y="354" width="245" height="88" rx="4" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="1"/>
+    <text x="428" y="374" text-anchor="middle" fill="#4a148c" font-size="11" font-weight="bold">2. @traefik-microstack/shared</text>
+    <text x="428" y="390" text-anchor="middle" fill="#7b1fa2" font-size="10">npm-Paket aus Verdaccio</text>
+    <text x="428" y="406" text-anchor="middle" fill="#7b1fa2" font-size="10">Gemeinsame Komponenten + Tokens</text>
+    <text x="428" y="422" text-anchor="middle" fill="#7b1fa2" font-size="10">Versioniert, nie Sourcepfad-Import</text>
+    <rect x="570" y="354" width="250" height="88" rx="4" fill="#e8f5e9" stroke="#388e3c" stroke-width="1"/>
+    <text x="695" y="374" text-anchor="middle" fill="#1b5e20" font-size="11" font-weight="bold">3. docker-compose include:</text>
+    <text x="695" y="390" text-anchor="middle" fill="#388e3c" font-size="10">Root-Compose bindet Domain ein</text>
+    <text x="695" y="406" text-anchor="middle" fill="#388e3c" font-size="10">Domain-Compose ist self-contained</text>
+    <text x="695" y="422" text-anchor="middle" fill="#388e3c" font-size="10">Traefik-Labels im Domain-File</text>
+  </svg>
+  <figcaption>Abb. 3 — Erweiterungs-Topologie. Ein neues Team fügt eine Zeile in federation.manifest.json, eine Zeile in docker-compose.yaml include: und ein Remote-Entry hinzu. Shell-Code und bestehende Remotes bleiben unberührt.</figcaption>
+</figure>
+
+<p>Die Konsequenz ist bemerkenswert: Ein neues Team kann produktiv werden, <strong>ohne
+bestehenden Code zu kennen</strong>. Es kennt das Kommunikationsprotokoll (drei
+Koordinationspunkte) und das Pattern-Katalog — beides ist in <code>ux/patterns/</code>
+und der <code>DOMAIN.md</code> des Repository-Roots dokumentiert.</p>
+
+<table>
+  <tr><th>Extension Point</th><th>Datei</th><th>Änderung für ein neues Team</th></tr>
+  <tr><td>Remote-Registrierung</td><td><code>platform/shell/src/environments/federation.manifest.json</code></td><td>Ein Eintrag: <code>"loans": "/loans/remoteEntry.json"</code></td></tr>
+  <tr><td>Shell-Route</td><td><code>platform/shell/src/app/components/pages/main/main.routes.ts</code></td><td>Ein <code>loadRemoteModule</code>-Eintrag für <code>path: 'loans'</code></td></tr>
+  <tr><td>Compose-Einbindung</td><td><code>docker-compose.yaml</code> (Root)</td><td>Eine Zeile: <code>- loans/docker-compose.yaml</code></td></tr>
+  <tr><td>Shared-Lib-Konsum</td><td><code>loans/frontend/package.json</code></td><td><code>"@traefik-microstack/shared": "0.0.x"</code></td></tr>
+  <tr><td>Domain-Doku</td><td><code>loans/DOMAIN.md</code></td><td>Neues Dokument nach Standard-Template</td></tr>
+</table>
+
+
+<!-- §6 -->
+<h2><span class="nr">6</span>Das Monorepo als Skalierungsinstrument</h2>
+
+<p>Ein Monorepo ist keine Entscheidung für oder gegen ein Build-Tool. Es ist eine
+<strong>Aussage über Koordinationskosten</strong>: Dinge, die sich zusammen verändern,
+leben zusammen. Die drei Koordinationspunkte aus §5 sind deshalb minimal, weil das gesamte
+System — Shell, Remotes, Backends, UX-Schichten, Infrastruktur — in einem einzigen
+Repository liegt und damit atomar refaktorierbar ist.</p>
+
+<h3>Folder-Closure als Teamgrenze</h3>
+
+<p>Die Axiom-Regel <code>CLAUDE-16</code> codiert die Teamgrenze als Ordner-Grenze:
+Alle Datei-Operationen eines Teams sind auf seinen Ordner und seine Nachfolger beschränkt.
+Kein Team schreibt in das Verzeichnis eines anderen Teams. Diese Regel ist in den
+Claude-Code-Agenten erzwungen und in jedem <code>DOMAIN.md</code> dokumentiert.</p>
+
+<div class="box blau">
+  <div class="label">Organisationsregel</div>
+  <p><strong>Team-Topologie und Ordner-Topologie sind kongruent.</strong> Das Team, das
+  <code>partner-search/</code> besitzt, berührt nichts außerhalb dieses Ordners — außer
+  den drei expliziten Koordinationspunkten. Diese Kongruenz macht Code-Reviews atomar
+  und Onboarding vorhersehbar.</p>
+</div>
+
+<h3>Warum nicht trotzdem Multi-Repo?</h3>
+
+<p>Die Gegenthese lautet: Teams arbeiten autonomer in separaten Repositories. Das ist
+richtig — aber Autonomie und Kohärenz stehen in Spannung. Das Monorepo löst diese
+Spannung durch <strong>selektive Durchlässigkeit</strong>: Teams sind autonom innerhalb
+ihrer Ordner, koordiniert an den drei definierten Punkten. Multi-Repo gibt volle Autonomie
+und erzwingt Koordination an jedem Punkt — durch Versionierung, CI-Abhängigkeiten,
+Deployment-Choreographie. Die vollständige Argumentation gegen Multi-Repo folgt in §9.</p>
+
+
+<!-- §7 -->
+<h2><span class="nr">7</span>Team-Topologie für 4×4 Teams</h2>
+
+<p>Vier Teams, je vier Entwicklerinnen und Architektinnen, ein PO, ein PM. Die
+Verantwortungsgrenzen folgen der Domain-Struktur des Repository.</p>
+
+<table>
+  <tr><th>Rolle</th><th>Anzahl</th><th>Primäre Artefakte</th><th>Review-Pflicht</th></tr>
+  <tr><td>UX-Lead</td><td>1 (domainübergreifend)</td><td><code>ux/foundations/</code>, <code>ux/patterns/</code>, <code>figma-make-prompt.md</code></td><td>Alle neuen Screens, alle Pattern-Abweichungen</td></tr>
+  <tr><td>Domain-Architektin</td><td>1 pro Team</td><td><code>{domain}/DOMAIN.md</code>, <code>federation.config.js</code>, API-Kontrakt</td><td>Shell-Koordinationspunkte, Shared-Lib-Änderungen</td></tr>
+  <tr><td>Frontend-Entwicklerin</td><td>2 pro Team</td><td>Angular-Komponenten, Storybook-Stories</td><td>Pattern-Konformität (gegen <code>ux/patterns/</code>)</td></tr>
+  <tr><td>Backend-Entwicklerin</td><td>1 pro Team</td><td>Spring/Quarkus-Service, Flyway-Migrationen</td><td>API-Pfad-Konventionen, Traefik-Labels</td></tr>
+  <tr><td>Product Owner</td><td>1 pro Team</td><td>Tickets, Akzeptanzkriterien</td><td>HTML-Frame-Review (Station 2) vor Sprint-Start</td></tr>
+  <tr><td>Project Manager</td><td>1 pro Team</td><td>Sprint-Planung, Dependency-Tracking</td><td>Koordinationspunkte-Änderungen (koordiniert mit anderen PMs)</td></tr>
+</table>
+
+<h3>Handoff-Gates</h3>
+
+<p>Drei formale Übergabepunkte verhindern, dass Teams mit unklaren Anforderungen beginnen:</p>
+
+<ol>
+  <li><strong>Gate 1 — Screen-Spec komplett:</strong> <code>figma-make-prompt.md</code> existiert, ist versioniert, wurde vom UX-Lead freigegeben. Ohne Gate 1 startet kein Prototyping-Sprint.</li>
+  <li><strong>Gate 2 — Prototyp reviewed:</strong> HTML-Frames wurden vom PO gesichtet und freigegeben. Interaktionen in der Preact-SPA wurden von der Domain-Architektin auf API-Kontrakt-Ableitbarkeit geprüft. Ohne Gate 2 beginnt kein Implementierungs-Sprint.</li>
+  <li><strong>Gate 3 — Story in Storybook:</strong> Mindestens eine Storybook-Story für die neue Komponente besteht. Story zeigt ReadOnly- und Editable-Zustand. Ohne Gate 3 wird kein Feature als „done" akzeptiert.</li>
+</ol>
+
+<div class="box gelb">
+  <div class="label">Warnung</div>
+  <p>Gates sind Qualitäts-Schwellen, keine Bürokratie. Ein Gate, das regelmäßig
+  übersprungen wird, weil es „zu aufwändig" ist, zeigt an, dass der Handover-Prozess
+  zu schwer ist — nicht, dass das Gate falsch ist. In diesem Fall muss die Tooling-Seite
+  (Skill-Automatisierung, Template-Qualität) verbessert werden.</p>
+</div>
+
+
+<!-- §8 -->
+<h2><span class="nr">8</span>Skalierung auf 10–15 Teams</h2>
+
+<p>Der Prozess ist auf 10–15 Teams skalierbar ohne strukturellen Umbau. Was sich verändert
+ist die Kapazität — nicht die Architektur.</p>
+
+<table>
+  <tr><th>Dimension</th><th>4 Teams (heute)</th><th>10–15 Teams (Ziel)</th></tr>
+  <tr><td>Shell-Koordination</td><td>PMs koordinieren mündlich</td><td>Dediziertes Platform-Team besitzt Shell und Shared-Lib; Domain-Teams stellen PRs</td></tr>
+  <tr><td>Pattern-Katalog</td><td>UX-Lead pflegt alleine</td><td>Pattern-RFC-Prozess: jedes Team kann Patterns vorschlagen; UX-Lead entscheidet</td></tr>
+  <tr><td>Shared-Lib-Versionen</td><td>Patch-Bumps nach Bedarf</td><td>Semver mit Minor-Freeze-Fenstern; Breaking Changes ankündigen 2 Sprints vorher</td></tr>
+  <tr><td>Monorepo-Größe</td><td>&lt; 50.000 LOC</td><td>Sparse-Checkout per Domain; CI prüft nur betroffene Domains; kein Full-Build nötig</td></tr>
+  <tr><td>Onboarding</td><td>UX-Lead erklärt persönlich</td><td>Automatisierte Onboarding-Tracks: <code>ux/foundations/abstract.html</code> + Domain-Scaffold-Skript</td></tr>
+  <tr><td>Review-Bottleneck</td><td>UX-Lead reviewed alle Screens</td><td>Domain-eigene UX-Reviewer; UX-Lead nur bei Pattern-Abweichungen und neuen Patterns</td></tr>
+</table>
+
+<p>Das Skalierungsmodell folgt dem <strong>Inner-Source-Muster</strong>: Das Platform-Team
+(Shell + Shared-Lib + UX-Foundations) ist der „Upstream" — gut dokumentiert, hohe
+Einstiegshürde für Änderungen. Domain-Teams sind Konsumenten und Contributor. Die
+Koordinationspunkte bleiben dieselben drei, aber ihr Governance-Prozess wird formaler.</p>
+
+<div class="box gruen">
+  <div class="label">Skalierungs-Invariante</div>
+  <p>Unabhängig von der Teamzahl gilt: <strong>ein Eintrittspunkt (Shell), ein Netz
+  (Traefik), ein Pattern-Katalog, eine Shared-Lib, ein Monorepo.</strong> Komplexität
+  wächst linear mit Teams, nicht exponentiell — weil die Koordinationspunkte konstant bleiben.</p>
+</div>
+
+
+<!-- §9 -->
+<h2><span class="nr">9</span>Alternative 1: Multi-Repo pro Team — und warum sie versagt</h2>
+
+<p>Die intuitive Alternative: Jedes Team bekommt ein eigenes Repository. Autonomie ist
+vollständig, Build-Systeme sind unabhängig, Teams können ohne Rücksicht auf andere
+deployen. Diese Architektur ist unter bestimmten Bedingungen richtig — aber nicht für
+eine kohärente Webanwendung, die von Endnutzerinnen als Einheit wahrgenommen werden muss.</p>
+
+<div class="zwei">
+  <div class="spalte positiv">
+    <h4>Scheinvorteile</h4>
+    <ul>
+      <li>Kein gemeinsamer Build — Teams deployen unabhängig</li>
+      <li>Kein Merge-Konflikt auf Root-Dateien</li>
+      <li>Technologie-Freiheit pro Team</li>
+      <li>Klare Eigentumsstruktur im Repository</li>
+    </ul>
+  </div>
+  <div class="spalte negativ">
+    <h4>Strukturelle Schwächen</h4>
+    <ul>
+      <li>Integration bricht bei jedem Deploy — getrennte Repos sehen sich nicht</li>
+      <li>Design-Token-Synchronisation erfordert eigenes Versioning-System</li>
+      <li>Shell muss Remotes über externe URLs finden — Latenz, Verfügbarkeitsrisiko</li>
+      <li>Kein atomares Refactoring über Domänengrenzen</li>
+      <li>Onboarding erfordert Kenntnis aller Repos und ihrer Abhängigkeiten</li>
+    </ul>
+  </div>
+</div>
+
+<p>Das Kernproblem ist der <strong>Integrationstest-Blindspot</strong>: In getrennten Repos
+sieht kein automatisierter Test die kombinierte Anwendung. Eine Änderung in Team A kann
+Team B brechen — und wird es erst in der Integrations­umgebung. In diesem Repository läuft
+der vollständige Stack mit <code>make up</code> — Playwright-E2E-Tests prüfen die gesamte
+Anwendung vor jedem Commit.</p>
+
+<table class="abw">
+  <tr><th>Einwand für Multi-Repo</th><th>Widerlegung</th></tr>
+  <tr><td>„Teams müssen unabhängig deployen können"</td><td>Unabhängiges Deployment ist orthogonal zur Repository-Struktur. Forward-Container ermöglichen in diesem Repo lokales Dev ohne andere Teams zu stören. Deployment-Unabhängigkeit folgt aus der Remote-Federation-Architektur, nicht aus separaten Repos.</td></tr>
+  <tr><td>„Merge-Konflikte auf Root-Dateien sind ein Problem"</td><td>Die Root-Koordinationspunkte (federation.manifest.json, docker-compose.yaml include:) ändern sich selten — bei Onboarding eines neuen Teams, nicht im laufenden Betrieb. Drei Zeilen Merge-Konflikt alle zwei Monate ist kein Argument für Multi-Repo.</td></tr>
+  <tr><td>„Technologie-Freiheit ist wichtig"</td><td>Backend-Technologie-Freiheit ist in diesem Repo bereits realisiert: partner-search betreibt Spring und Quarkus simultan (CLAUDE-13). Die einzige Constraint ist der Frontend-Framework-Standard (Angular) — erzwungen durch die shared-library und die Federation-Integration. Diese Constraint ist kein Fehler, sie ist das Design.</td></tr>
+</table>
+
+<div class="box rot">
+  <div class="label">Urteil</div>
+  <p>Multi-Repo pro Team ist geeignet für <strong>unabhängige Produkte mit losen Kopplungen</strong>
+  (Microservices ohne gemeinsames UI, separate mobile Apps). Für eine kohärente
+  Webanwendung mit geteilter UX, geteilten Komponenten und einem gemeinsamen Routing-Graph
+  ist Multi-Repo eine Wahl für Autonomie auf Kosten von Kohärenz — und die Endnutzerin
+  zahlt den Preis.</p>
+</div>
+
+
+<!-- §10 -->
+<h2><span class="nr">10</span>Alternative 2: Design-System-First ohne Prototyping — und ihre Risiken</h2>
+
+<p>Die zweite Alternative: Ein zentrales Design-System-Team liefert zuerst den vollständigen
+Komponentenkatalog — Farben, Typografie, Buttons, Inputs, Tables — und Domain-Teams bauen
+darauf auf. Kein Prototyping, kein laufender Beweis. Erst Tokens, dann Screens.</p>
+
+<div class="zwei">
+  <div class="spalte positiv">
+    <h4>Scheinvorteile</h4>
+    <ul>
+      <li>Konsistenz durch Atomic Design erzwungen</li>
+      <li>Bekannte Methodik (Storybook-driven)</li>
+      <li>Designsystem kann vorgezogen werden</li>
+      <li>Klare Trennung: Design-System-Team vs. Feature-Teams</li>
+    </ul>
+  </div>
+  <div class="spalte negativ">
+    <h4>Strukturelle Schwächen</h4>
+    <ul>
+      <li>Keine Interaktionsvalidierung vor Sprint 1</li>
+      <li>Token-Spec ohne Kontext: Welche Tokens werden gebraucht?</li>
+      <li>Design-System-Team wird Bottleneck für jeden Screen</li>
+      <li>Spaltung zwischen DS-Team und Domänenwissen</li>
+    </ul>
+  </div>
+</div>
+
+<p>Das strukturelle Problem: Ein Designsystem, das vor den Screens gebaut wird, enthält
+<strong>Komponenten ohne Kontext</strong>. Welcher Button-Zustand ist nötig? Welche
+Tabellenvariante? Das entscheidet sich erst im Screen — aber der Screen existiert noch
+nicht. Das Design-System-Team rät oder baut auf Verdacht. Ergebnis: entweder ein
+überentwickeltes System mit 40 Komponentenvarianten, von denen 30 nie benutzt werden,
+oder ein unterentwickeltes System, das die Domain-Teams zur Kompensation zwingt.</p>
+
+<p>Der Ansatz in diesem Repository kehrt die Reihenfolge um: Foundations und Pattern-Katalog
+kommen zuerst (als Markdown und SVG, kein Code), dann die Screen-Spec, dann der Prototyp,
+dann die Storybook-Story, dann das Angular-Komponent. Das Designsystem entsteht <em>aus</em>
+dem Prototypen — nicht <em>vor</em> ihm. Jede Storybook-Story ist der Beweis, dass eine
+Komponente real gebraucht wird.</p>
+
+<table class="abw">
+  <tr><th>Einwand für Design-System-First</th><th>Widerlegung</th></tr>
+  <tr><td>„Ohne Designsystem baut jeder seine eigenen Buttons"</td><td>Der Pattern-Katalog (<code>ux/patterns/</code>) und das <code>figma-make-prompt.md</code>-Format erzwingen Konsistenz ohne vollständiges Designsystem. Das Designsystem (<code>@traefik-microstack/shared</code>) wächst organisch mit den Screens — es enthält keine Komponente, die nicht gebraucht wird.</td></tr>
+  <tr><td>„Iterationen im Prototypen sind teuer"</td><td>Eine Preact-Komponente zu iterieren kostet Stunden. Eine Angular-Komponente, die in Produktion ist, zu iterieren kostet Sprints. Der Prototyp ist deshalb billig — nicht trotzdem, sondern weil er kein Produktionscode ist.</td></tr>
+</table>
+
+<div class="box rot">
+  <div class="label">Urteil</div>
+  <p>Design-System-First ist geeignet, wenn das Designsystem ein <strong>eigenständiges
+  Produkt</strong> ist (Material Design, Carbon Design System, Tailwind). Für eine
+  produktgebundene Webanwendung ist es Wasserfall-Risiko: Das System wird gebaut, bevor
+  die Anforderungen durch echtes Prototyping sichtbar sind.</p>
+</div>
+
+
+<!-- §11 -->
+<h2><span class="nr">11</span>Alternative 3: Unstrukturierter Freestyle — die stille Katastrophe</h2>
+
+<p>Die dritte Alternative existiert selten als bewusste Entscheidung. Sie entsteht durch
+Abwesenheit: kein expliziter UX-Prozess, kein Pattern-Katalog, kein Handover-Kanal.
+Jedes Team baut nach eigenem Ermessen, stimmt sich gelegentlich per Slack ab und
+hofft auf Kohärenz.</p>
+
+<p>Freestyle ist die <strong>dominante Praxis in Projekten ohne UX-Architektur</strong> —
+und der häufigste Grund für „wir müssen das Frontend komplett neu bauen" nach 18 Monaten.
+Die Pathologien sind bekannt:</p>
+
+<ul>
+  <li><strong>Terminologie-Drift:</strong> Team A nennt die Aktion „Einreichen", Team B „Absenden", Team C „Bestätigen". Endnutzerin lernt drei Synonyme.</li>
+  <li><strong>Component-Proliferation:</strong> Vier Teams bauen vier Tabellen-Komponenten. Keine davon ist schlecht — sie sind nur inkompatibel.</li>
+  <li><strong>Pattern-Inkonsistenz:</strong> Detailformulare öffnen in Team A als Inline-Panel, in Team B als Modal, in Team C als neue Route. Die Anwendung hat kein mentales Modell.</li>
+  <li><strong>Onboarding-Explosion:</strong> Neue Entwicklerinnen müssen vier verschiedene Konventionssätze lernen — einer pro Team.</li>
+  <li><strong>Refactor-Schulden:</strong> Nach zwei Jahren ist Konsistenz nur durch globales Refactoring erreichbar — das niemand budgetiert, weil das Feature-Backlog priorisiert wird.</li>
+</ul>
+
+<table class="abw">
+  <tr><th>Typische Freestyle-Rechtfertigung</th><th>Was sie tatsächlich bedeutet</th></tr>
+  <tr><td>„Wir sind agil — wir brauchen kein Upfront-Design"</td><td>Agilität bedeutet frühe Feedback-Loops, nicht Abwesenheit von Koordination. PGE ist agiler als Freestyle, weil der Prototyp früher Feedback ermöglicht als die fertige Implementierung.</td></tr>
+  <tr><td>„Jedes Team kennt seine Nutzerinnen am besten"</td><td>Das stimmt für Domänenwissen. Es stimmt nicht für Interaktionsmuster — die Nutzerin ist dieselbe Person in allen Domains und erwartet Kohärenz.</td></tr>
+  <tr><td>„Pattern-Kataloge werden nicht gelesen"</td><td>Pattern-Kataloge, die als 200-seitige PDFs ausgeliefert werden, werden nicht gelesen. MDX-Dateien mit Beispiel-Code und laufenden Storybook-Stories werden genutzt. Das Format entscheidet.</td></tr>
+</table>
+
+<div class="box rot">
+  <div class="label">Urteil</div>
+  <p>Unstrukturierter Freestyle ist <strong>kurzfristig der schnellste Weg</strong> zum ersten
+  Demo-Sprint. Er ist langfristig der teuerste Weg zur kohärenten Anwendung — weil die
+  Konsolidierungsschuld mit jeder Sprint-Iteration wächst und nie abbezahlt wird, solange
+  Features priorisiert werden.</p>
+</div>
+
+
+<!-- §12 -->
+<h2><span class="nr">12</span>Bekannte Einwände und Mitigationen</h2>
+
+<h3>Vollständig mitigiert</h3>
+
+<table class="mit">
+  <tr><th>Einwand</th><th>Mitigation</th></tr>
+  <tr><td>„figma-make-prompt.md ist zu aufwändig zu schreiben"</td><td>Das Format ist einmalig zu lernen und dann templatesierbar. Der /prototype-Skill und /wireframe-from-screenshot generieren Entwürfe automatisch. Ein vollständiges Dokument wie das sachbearbeiter-dashboard entsteht in einem halben Arbeitstag.</td></tr>
+  <tr><td>„Preact-SPA ist überflüssig wenn wir schon HTML-Frames haben"</td><td>HTML-Frames prüfen Visuelles. Die Preact-SPA prüft Interaktion: Token-Auflösung, Panel-Übergänge, Keyboard-Flows. Diese können in statischen Frames nicht getestet werden. Beide Artefakte sind komplementär, nicht redundant.</td></tr>
+  <tr><td>„Storybook ist ein zweites System neben Angular"</td><td>Storybook rendert Angular-Komponenten. Es ist kein zweites System — es ist der Test-Harness für UI-Komponenten. Eine Komponente, die keine Story hat, kann nicht gegen das Pattern validiert werden.</td></tr>
+  <tr><td>„Das Monorepo wird zu langsam"</td><td>Docker-Layer-Caching, Maven-Mirror (Reposilite), npm-Mirror (Verdaccio) und Sparse-Checkout halten Build-Zeiten bei Wachstum beherrschbar. Das Repository hat diese Infrastruktur bereits in infrastructure/build-services/.</td></tr>
+</table>
+
+<h3>Teilweise mitigiert</h3>
+
+<table class="mit">
+  <tr><th>Einwand</th><th>Mitigation</th></tr>
+  <tr><td>„UX-Lead wird Bottleneck bei 10+ Teams"</td><td>Teilweise gelöst durch dezentrale UX-Reviewer pro Domain-Cluster. Aber: Neue Patterns müssen weiterhin durch den UX-Lead freigegeben werden — das ist beabsichtigt, nicht ein Fehler. Echte Skalierung erfordert ein UX-Gremium statt einer Person.</td></tr>
+  <tr><td>„Domain-Teams können die Pattern-Grenzen nicht immer einhalten"</td><td>Pattern-Grenzen werden durch Storybook-Reviews erzwungen, nicht durch Willenskraft. Aber Storybook-Reviews sind manuell. Automatisierte Visual-Regression-Tests (z.B. Chromatic) würden diesen Punkt vollständig mitigieren — das ist offen.</td></tr>
+</table>
+
+<h3>Echte Spannungen — anerkannt, nicht aufgelöst</h3>
+
+<table>
+  <tr><th style="color:var(--amber)">Spannung</th><th>Ehrliche Position</th></tr>
+  <tr><td style="color:var(--amber)">Prototyp-Technologie (Preact) und Produktions-Technologie (Angular) sind verschieden</td><td>Die Divergenz ist beabsichtigt: Der Prototyp muss leichtgewichtig und schnell änderbar sein. Angular-Overhead in der Prototyping-Phase verlangsamt Iterationen. Die Konversion kostet Arbeit — sie ist aber einmalig und gut dokumentiert durch die Storybook-Brücke.</td></tr>
+  <tr><td style="color:var(--amber)">figma-make-prompt.md ist nicht mit Figma-Exportformaten kompatibel</td><td>Das Dokument ist bewusst kein Figma-Export. Es ist eine strukturierte Spezifikation, die menschlich und maschinell lesbar ist. Wer Figma als primäres Design-Tool beibehält, muss einen Übersetzungsschritt einplanen. Der Ansatz ist Figma-agnostisch — das ist eine Stärke, schafft aber Reibung bei Teams, die Figma-native arbeiten.</td></tr>
+</table>
+
+
+<!-- §13 -->
+<h2><span class="nr">13</span>Empfohlene Aufbaureihenfolge</h2>
+
+<p>Die Abhängigkeiten sind strikt. Foundations vor Patterns, Patterns vor Screens, Screens
+vor Implementierung. Dieser Ordnung zu folgen spart mehr Zeit als sie kostet.</p>
+
+<h3>Phase 1 — Foundation (Woche 1–3, alle Teams + UX-Lead)</h3>
+<ol>
+  <li>Mentale Modelle der Zielnutzerin dokumentieren: Konzepte, Arbeitsweisen, Vokabular — nach dem Muster von <code>ux/foundations/clerk-mental-model.md</code>.</li>
+  <li>Drei bis fünf Kernmetaphern identifizieren und in <code>ux/foundations/</code> festhalten. Keine UI-Arbeit, bevor diese stabil sind.</li>
+  <li>Design-Tokens definieren: Farben, Typografie, Abstands­gitter — als benannte Variablen in einem Token-Dokument.</li>
+  <li>Ersten Pattern-Entwurf für die häufigsten Interaktionen erstellen (<code>ux/patterns/</code>).</li>
+</ol>
+
+<h3>Phase 2 — Proof of Concept (Woche 3–6, UX-Team + je 1 Architektin pro Team)</h3>
+<ol>
+  <li>Ersten Screen als <code>figma-make-prompt.md</code> vollständig spezifizieren.</li>
+  <li><code>/prototype</code>-Skill ausführen: HTML-Frames für PO-Review.</li>
+  <li>Preact-SPA mit Kerninteraktionen aufbauen — kein API, kein Auth, Hardcoded-Daten.</li>
+  <li>API-Kontrakt aus der SPA ableiten: Welche Endpunkte braucht der Screen?</li>
+  <li>Erste Storybook-Story für eine Komponente — beweist die Pipeline.</li>
+</ol>
+
+<h3>Phase 3 — Parallele Domain-Entwicklung (ab Woche 6, alle Teams)</h3>
+<ol>
+  <li>Jedes Team bekommt seinen Ordner und seine drei Koordinationspunkte eingerichtet.</li>
+  <li>Teams entwickeln gegen eigene Screen-Specs — alle durch Gates 1–3 qualifiziert.</li>
+  <li>Shared-Lib wächst organisch: neue Komponenten, wenn mindestens zwei Teams sie brauchen.</li>
+  <li>E2E-Tests (<code>tests/</code>) wachsen mit jedem neuen Route/API-Endpunkt.</li>
+</ol>
+
+<h3>Phase 4 — Skalierung (ab Team 5+)</h3>
+<ol>
+  <li>Platform-Team formalisieren: Shell + Shared-Lib + UX-Foundations als eigenständiger Verantwortungsbereich.</li>
+  <li>Pattern-RFC-Prozess einführen: Neue Patterns werden vorgeschlagen, reviewed, merged — nicht einseitig entschieden.</li>
+  <li>Sparse-Checkout und CI-Domain-Segmentierung einrichten.</li>
+  <li>Onboarding-Track automatisieren: Domain-Scaffold-Skript, <code>abstract.html</code>-Einführung, Pair-Session mit Platform-Team.</li>
+</ol>
+
+
+<!-- Literatur -->
+<hr>
+<h2><span class="nr">Lit</span>Literatur</h2>
+<ul class="lit">
+  <li>Brooks, F. P. (1975). <em>The Mythical Man-Month.</em> Addison-Wesley. — Kommunikationspfade wachsen quadratisch mit Teamgröße; Koordinationspunkte müssen minimal und explizit sein.</li>
+  <li>Conway, M. E. (1968). How Do Committees Invent? <em>Datamation.</em> — Systemstruktur spiegelt Kommunikationsstruktur. Monorepo mit Ordner-Grenzen erzwingt, dass Systemgrenzen und Teamgrenzen kongruent sind.</li>
+  <li>Skelton, M. &amp; Pais, M. (2019). <em>Team Topologies.</em> IT Revolution Press. — Stream-aligned Teams, Platform Teams, Enabling Teams; Inner-Source als Koordinationsmuster für 10+ Teams.</li>
+  <li>Kholmatova, A. (2017). <em>Design Systems.</em> Smashing Magazine. — Komponentenkatalouge entstehen aus echten Produktanforderungen; von oben auferlegte Systeme werden nicht benutzt.</li>
+  <li>Nygard, M. T. (2007). <em>Release It!</em> Pragmatic Bookshelf. — Integrationstest-Blindspot in verteilten Systemen; vollständige Laufzeitintegration als einziger Schutz.</li>
+  <li>Humble, J. &amp; Farley, D. (2010). <em>Continuous Delivery.</em> Addison-Wesley. — Trunk-based Development und Monorepo als Fundament schneller Feedback-Loops.</li>
+  <li>Raskin, J. (2000). <em>The Humane Interface.</em> Addison-Wesley. — Inkonsistenz erzwingt kognitiven Overhead; Konsistenz ist nicht ästhetisch sondern funktional.</li>
+</ul>
+
+<p style="margin-top: 44px; font-size: 12px; color: var(--text-faint); font-family: var(--mono); line-height: 1.8;">
+  Quellen: ux/DOMAIN.md ·
+  ux/foundations/clerk-mental-model.md ·
+  ux/foundations/single-screen-rationale.md ·
+  ux/patterns/ ·
+  ux/screens/sachbearbeiter-dashboard/figma-make-prompt.md ·
+  ux/prototype/app/ ·
+  platform/shell/src/environments/federation.manifest.json ·
+  platform/shared/public-api.ts ·
+  docker-compose.yaml ·
+  .claude/agents/developing-in-domain.md ·
+  CLAUDE.md (CLAUDE-13, CLAUDE-16)
+</p>
+
+</div>
+</body>
+</html>

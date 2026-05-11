@@ -1,0 +1,36 @@
+# Pattern: Search Results
+
+**Intent:** Display and navigate a large, filterable set of records returned by a search backend.
+
+---
+
+## When to use
+
+| Use-case characteristic | Indicator |
+|---|---|
+| Result count is unbounded or exceeds ~20 rows | yes |
+| User needs to locate a specific record by partial attribute | yes |
+| Result set changes in real time or on each keystroke | optional |
+| User needs to compare multiple records side-by-side | → prefer **Comparison View** instead |
+
+Apply this pattern when the primary task is **finding**, not **reading or editing**.
+
+---
+
+## Structure
+
+```
+[Search bar + filters]
+[Result count / sort controls]
+[Result list / table]
+  └── [Row] → navigates to Detail Form
+[Pagination / infinite scroll]
+```
+
+---
+
+## When not to use
+
+- Single known record → use **Detail Form** directly, skip the search step
+- Static reference data ≤ 20 rows → render a plain table, no search infrastructure needed
+- Navigating a hierarchy → use a **Tree / Breadcrumb** pattern

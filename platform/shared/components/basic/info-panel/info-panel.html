@@ -1,0 +1,11 @@
+<div class="info-panel info-panel--{{ type() }}">
+  <mat-icon>{{ getIcon() }}</mat-icon>
+  <div>
+    @if (title()) {
+      <h4>{{ title() }}</h4>
+    }
+    @for (text of textItems(); track $index) {
+      <p>{{ text }}</p>
+    }
+  </div>
+</div>

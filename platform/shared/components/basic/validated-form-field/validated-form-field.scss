@@ -1,0 +1,41 @@
+// Default form field styling - takes full width of parent container
+:host {
+  width: 100%;
+  display: block;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+// Width classes for ValidatedFormField (when specific widths needed)
+.width-small {
+  max-width: 7.5rem;
+  min-width: 5rem;
+}
+
+.width-medium {
+  max-width: 12.5rem;
+  min-width: 9.375rem;
+}
+
+.width-large {
+  max-width: 37.5rem;
+  min-width: 25rem;
+}
+
+.width-full {
+  width: 100%;
+  max-width: none;
+}
+
+// Default search form field styling
+.search-form-field {
+  margin-bottom: 1rem;
+  flex: 1;
+}
+
+// Address form field styling (smaller for compact layouts)
+.address-form {
+  margin-bottom: 0.5rem;
+}

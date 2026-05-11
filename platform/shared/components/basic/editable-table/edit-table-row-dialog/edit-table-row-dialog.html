@@ -1,0 +1,63 @@
+<h2 mat-dialog-title>{{ getDialogTitle() | transloco }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="editForm">
+    @for (column of columns; track column.key) {
+      @switch (column.type) {
+        @case ('text') {
+          <shared-validated-form-field
+            [labelKey]="column.header"
+            [inputType]="'text'"
+            [validators]="column.validators || []"
+            [asyncValidators]="column.asyncValidators || []"
+            [showClearButton]="false"
+            [readonly]="column.readonly || false"
+            [formControlName]="column.key">
+          </shared-validated-form-field>
+        }
+        @case ('number') {
+          <shared-validated-form-field
+            [labelKey]="column.header"
+            [inputType]="'number'"
+            [validators]="column.validators || []"
+            [asyncValidators]="column.asyncValidators || []"
+            [showClearButton]="false"
+            [readonly]="column.readonly || false"
+            [formControlName]="column.key">
+          </shared-validated-form-field>
+        }
+        @case ('date') {
+          <shared-validated-form-field
+            [labelKey]="column.header"
+            [inputType]="'date'"
+            [validators]="column.validators || []"
+            [asyncValidators]="column.asyncValidators || []"
+            [showClearButton]="false"
+            [readonly]="column.readonly || false"
+            [formControlName]="column.key">
+          </shared-validated-form-field>
+        }
+        @case ('select') {
+          <mat-form-field appearance="outline">
+            <mat-label>{{ column.header | transloco }}</mat-label>
+            <mat-select [formControlName]="column.key" [disabled]="column.readonly || false">
+              @for (option of column.selectOptions; track option) {
+                <mat-option [value]="option">{{ option }}</mat-option>
+              }
+            </mat-select>
+            @if (editForm.get(column.key)?.invalid && editForm.get(column.key)?.touched) {
+              <mat-error>Please select a value</mat-error>
+            }
+          </mat-form-field>
+        }
+      }
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button (click)="onCancel()" mat-button>{{ 'common.cancel' | transloco }}</button>
+  <button (click)="onSave()" color="primary"
+          mat-raised-button>{{ 'common.confirm' | transloco }}
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,83 @@
+networks:
+  default:
+    name: docker-default-network
+    external: true
+  backends:
+  edge:
+  dockerd:
+
+services:
+  dockerd-proxy:
+    image: tecnativa/docker-socket-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      LOG_LEVEL: ${LOG_LEVEL_DOCKER_PROXY:-err}
+      CONTAINERS: 1
+    healthcheck:
+      test: ["CMD", "nc", "-zv", "localhost", "2375"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 1s
+    networks:
+      - dockerd
+
+  gateway:
+    image: traefik-custom:v2.11
+    build:
+      context: .
+    depends_on:
+      dockerd-proxy:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "sh", "-c", "nc -zv localhost 80 && nc -zv localhost 443 && nc -zv localhost 8080"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 1s
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8888:8080"
+    environment:
+      - TZ=Europe/Berlin
+      - TRAEFIK_LOG_LEVEL=${LOG_LEVEL_TRAEFIK:-ERROR}
+      - TRAEFIK_ACCESSLOG=${TRAEFIK_ACCESS_LOG:-false}
+    networks:
+      - backends
+      - edge
+      - default
+      - dockerd
+
+  standby:
+    image: traefik-custom:v2.11
+    command:
+      - --providers.docker.endpoint=tcp://dockerd-proxy:2375
+      - --providers.docker=true
+      - --providers.docker.watch=true
+      - --providers.docker.exposedbydefault=false
+      - --api
+      - --api.insecure=true
+      - --api.dashboard=true
+      - --log.level=${LOG_LEVEL_TRAEFIK:-ERROR}
+      - --accesslog=${TRAEFIK_ACCESS_LOG:-false}
+    depends_on:
+      dockerd-proxy:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "bash", "-c", "nc -zv localhost 80 && nc -zv localhost 443 && curl -s http://localhost:8080/ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 1s
+    ports:
+      - "81:80"
+      - "444:443"
+      - "8889:8080"
+    networks:
+      - backends
+      - edge
+      - default
+      - dockerd
+

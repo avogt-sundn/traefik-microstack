@@ -1,0 +1,5 @@
+# Paths excluded from `git archive` (public snapshots).
+# These directories are never included when running `make publish`.
+.claude/        export-ignore
+methodology/    export-ignore
+private/        export-ignore

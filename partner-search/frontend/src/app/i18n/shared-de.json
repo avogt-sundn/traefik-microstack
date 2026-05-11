@@ -1,0 +1,424 @@
+{
+  "common": {
+    "loading": "Laden...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "create": "Erstellen",
+    "search": "Suchen",
+    "filter": "Filter",
+    "reset": "Zurücksetzen",
+    "confirm": "Bestätigen",
+    "yes": "Ja",
+    "no": "Nein",
+    "ok": "OK",
+    "close": "Schließen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "previous": "Vorherige",
+    "refresh": "Aktualisieren",
+    "export": "Exportieren",
+    "import": "Importieren",
+    "print": "Drucken",
+    "download": "Herunterladen",
+    "upload": "Hochladen"
+  },
+  "navigation": {
+    "home": "Startseite",
+    "dashboard": "Dashboard",
+    "partners": "Partner",
+    "settings": "Einstellungen",
+    "profile": "Profil",
+    "logout": "Abmelden",
+    "menu": "Menü"
+  },
+  "forms": {
+    "fields": {
+      "name": "Name",
+      "street": "Straße",
+      "city": "Ort",
+      "postalCode": "PLZ",
+      "country": "Land",
+      "company": "Firma",
+      "houseNumber": "Haus-Nr.",
+      "phoneNumber": "Telefon",
+      "phonePrefix": "Telefon - Vorwahl",
+      "phoneMainNumber": "Telefon - Rufnummer",
+      "mobileNumber": "Mobil",
+      "mobilePrefix": "Mobil - Vorwahl",
+      "mobileMainNumber": "Mobil - Rufnummer"
+    },
+    "countries": {
+      "germany": "Deutschland"
+    },
+    "validation": {
+      "required": "{{fieldName}} ist erforderlich",
+      "email": "{{fieldName}} muss eine gültige E-Mail-Adresse sein",
+      "minLength": "{{fieldName}} muss mindestens {{min}} Zeichen haben",
+      "maxLength": "{{fieldName}} darf maximal {{max}} Zeichen haben",
+      "pattern": "{{fieldName}} hat ein ungültiges Format",
+      "ibanInvalid": "Ungültige IBAN",
+      "hints": {
+        "numbersOnly": "nur Zahlen",
+        "alphanumericWithWildcard": "Buchstaben, Zahlen und *",
+        "numbersWithWildcard": "Zahlen und *",
+        "lettersWithWildcard": "Buchstaben und *"
+      },
+      "number": "{{fieldName}} muss eine gültige Zahl sein",
+      "date": "{{fieldName}} muss ein gültiges Datum sein",
+      "phone": "{{fieldName}} muss eine gültige Telefonnummer sein",
+      "min": "{{fieldName}} muss mindestens {{min}} sein",
+      "max": "{{fieldName}} darf maximal {{max}} sein",
+      "decimal": "{{fieldName}} hat ein ungültiges Dezimalformat",
+      "maxSum": "Die Summe überschreitet den maximal erlaubten Wert",
+      "insufficientCriteria": {
+        "title": "Die Suche ist unschön.",
+        "atLeastOneField": "Es muss mind. in einem Suchfeld eine Eingabe von mind. 3 Zeichen erfolgen. Im Feld Name müssen alle Worte mind. 3-stellig sein, vermeiden Sie 2-stellige Worte (z.B. “AG”) bei der Suche nach Namen!"
+      },
+      "generic": "{{fieldName}} enthält ungültige Daten",
+      "dto": {
+        "_info": "ACHTUNG: Diese Keys werden automatisch vom generate-validators.js Script verwendet. Die Werte können angepasst werden, aber die Schlüssel dürfen NICHT verändert, umbenannt oder verschoben werden!",
+        "fieldRequired": "Das Feld ist erforderlich",
+        "objectRequired": "Der Wert muss ein Objekt sein",
+        "stringMinLength": "Der Text muss mindestens {{minLength}} Zeichen haben",
+        "stringMaxLength": "Der Text darf maximal {{maxLength}} Zeichen haben",
+        "stringPattern": "Das Format ist ungültig",
+        "numberMin": "Der Wert muss mindestens {{minimum}} sein",
+        "numberMax": "Der Wert darf maximal {{maximum}} sein",
+        "arrayMinItems": "Die Liste muss mindestens {{minItems}} Elemente enthalten",
+        "arrayMaxItems": "Die Liste darf maximal {{maxItems}} Elemente enthalten"
+      }
+    }
+  },
+  "messages": {
+    "welcome": "Willkommen bei traefik-microstack",
+    "noData": "Keine Daten verfügbar",
+    "dataLoadError": "Fehler beim Laden der Daten",
+    "saveSuccess": "Daten erfolgreich gespeichert",
+    "saveError": "Fehler beim Speichern der Daten",
+    "deleteSuccess": "Element erfolgreich gelöscht",
+    "deleteError": "Fehler beim Löschen des Elements",
+    "deleteConfirmation": "Sind Sie sicher, dass Sie dieses Element löschen möchten?",
+    "unsavedChanges": "Sie haben ungespeicherte Änderungen. Sind Sie sicher, dass Sie die Seite verlassen möchten?",
+    "sessionExpired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.",
+    "networkError": "Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung.",
+    "serverError": "Serverfehler. Bitte versuchen Sie es später erneut.",
+    "permissionDenied": "Sie haben keine Berechtigung für diese Aktion.",
+    "validationError": "Speichern fehlgeschlagen. Bitte korrigieren Sie die markierten Felder.",
+    "partner": {
+      "createSuccess": "Partner erfolgreich erstellt",
+      "updateSuccess": "Partner erfolgreich aktualisiert",
+      "createError": "Fehler beim Erstellen des Partners",
+      "updateError": "Fehler beim Aktualisieren des Partners"
+    },
+    "search": {
+      "noResults": {
+        "title": "Keine Ergebnisse gefunden",
+        "description": "Für die eingegebenen Suchkriterien wurden keine Einträge gefunden.",
+        "suggestion": "Bitte überprüfen Sie Ihre Eingaben oder verwenden Sie andere Suchbegriffe."
+      }
+    }
+  },
+  "dates": {
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "tomorrow": "Morgen",
+    "thisWeek": "Diese Woche",
+    "lastWeek": "Letzte Woche",
+    "nextWeek": "Nächste Woche",
+    "thisMonth": "Dieser Monat",
+    "lastMonth": "Letzter Monat",
+    "nextMonth": "Nächster Monat",
+    "thisYear": "Dieses Jahr",
+    "lastYear": "Letztes Jahr",
+    "nextYear": "Nächstes Jahr"
+  },
+  "pagination": {
+    "itemsPerPage": "Elemente pro Seite",
+    "page": "Seite",
+    "of": "von",
+    "showing": "Zeige",
+    "to": "bis",
+    "items": "Elemente",
+    "firstPage": "Erste Seite",
+    "lastPage": "Letzte Seite",
+    "nextPage": "Nächste Seite",
+    "previousPage": "Vorherige Seite"
+  },
+  "language": {
+    "select": "Sprache auswählen",
+    "english": "English",
+    "german": "Deutsch",
+    "current": "Aktuelle Sprache"
+  },
+  "auth": {
+    "login": {
+      "button": {
+        "login": "Anmelden",
+        "loading": "Anmeldung läuft...",
+        "retry": "Erneut versuchen",
+        "ariaLabel": "Bei Ihrem Konto anmelden"
+      }
+    },
+    "logout": {
+      "button": {
+        "logout": "Abmelden",
+        "loading": "Abmeldung läuft...",
+        "retry": "Erneut versuchen",
+        "ariaLabel": "Von Ihrem Konto abmelden"
+      },
+      "dialog": {
+        "title": "Abmeldung bestätigen",
+        "message": "Sind Sie sicher, dass Sie sich abmelden möchten?",
+        "messageWithUser": "Sind Sie sicher, dass Sie sich abmelden möchten, {{userName}}?",
+        "cancel": "Abbrechen",
+        "confirm": "Abmelden",
+        "info": {
+          "session": "Ihre aktuelle Sitzung wird beendet",
+          "tokens": "Alle Authentifizierungs-Token werden widerrufen",
+          "redirect": "Sie werden zur Anmeldeseite weitergeleitet"
+        }
+      }
+    },
+    "profile": {
+      "roles": "Rollen",
+      "permissions": "Berechtigungen",
+      "groups": "Gruppen",
+      "more": "weitere",
+      "menu": {
+        "edit": "Profil bearbeiten",
+        "info": "Profilinformationen",
+        "ariaLabel": "Benutzerprofil-Menü"
+      },
+      "token": {
+        "valid": "Token gültig",
+        "invalid": "Token ungültig",
+        "expiring": "Token läuft ab",
+        "expiringDetail": "Ihre Sitzung läuft bald ab"
+      }
+    },
+    "status": {
+      "initializing": "Initialisierung",
+      "loading": "Laden",
+      "authenticated": "Authentifiziert",
+      "unauthenticated": "Nicht authentifiziert",
+      "error": "Authentifizierungsfehler",
+      "unknown": "Unbekannter Status",
+      "tokenExpiring": "Token läuft ab",
+      "tokenInvalid": "Token ungültig",
+      "tokenExpiringDetail": "Ihre Sitzung läuft bald ab",
+      "tokenInvalidDetail": "Bitte melden Sie sich erneut an",
+      "authenticatedAs": "Angemeldet als {{name}}",
+      "sessionActive": "Sitzung aktiv",
+      "notAuthenticated": "Bitte melden Sie sich an",
+      "tokenStatus": "Token-Status",
+      "tokenValid": "Gültig",
+      "errorOccurred": "Authentifizierungsfehler",
+      "actions": {
+        "login": "Anmelden",
+        "logout": "Abmelden",
+        "refresh": "Sitzung aktualisieren"
+      }
+    }
+  },
+  "editableTable": {
+    "selectedColumns": "Ausgewählte Spalten",
+    "selectColumns": "Wähle Spalten zum Hinzufügen...",
+    "addRow": "Eintrag hinzufügen",
+    "editRow": "Eintrag bearbeiten"
+  },
+  "selectOptions": {
+    "yes": "Ja",
+    "no": "Nein"
+  },
+  "partner": {
+    "search": {
+      "pageTitle": "Partnersuche",
+      "placeholder": "Suche nach Partner, PLZ, Ort, Straße …",
+      "fields": {
+        "partnerNumber": "Partner-Nr.",
+        "alphacode": "Alphacode"
+      },
+      "token": {
+        "field": {
+          "partnerNr": "Nr.",
+          "postalCode": "PLZ",
+          "city": "Ort",
+          "street": "Straße",
+          "alphacode": "Code",
+          "name": "Name"
+        }
+      },
+      "help": {
+        "navigate": "navigieren",
+        "tab": "übernehmen & weiter",
+        "enter": "suchen",
+        "esc": "schließen"
+      },
+      "examples": {
+        "title": "Beispiele",
+        "partnerNr": "Suche nach Partnernummer",
+        "plzCity": "PLZ und Ort",
+        "street": "Straße",
+        "name": "Name (mit Sonderzeichen)",
+        "wildcards": "Alphacode- und PLZ-Bereich mit Platzhalter",
+        "explicit": "Explizite Feldangabe (Experten-Modus)"
+      },
+      "engineToggle": {
+        "ariaLabel": "Zwischen Postgres- und Elasticsearch-Ergebnissen wechseln"
+      },
+      "frameworkToggle": {
+        "ariaLabel": "Zwischen Spring- und Quarkus-Backend wechseln",
+        "quarkusUnavailable": "Quarkus-Backend nicht verfügbar"
+      },
+      "actions": {
+        "createNew": "Neuen Partner erstellen"
+      },
+      "results": {
+        "title": "Ergebnisse",
+        "noResults": {
+          "description": "Für die eingegebenen Suchkriterien wurden keine Partner oder Gruppen gefunden."
+        },
+        "count": {
+          "matched": "{{ total }} gefunden",
+          "showing": "{{ returned }} angezeigt",
+          "of": "von {{ storeTotal }}"
+        }
+      },
+      "table": {
+        "columns": {
+          "type": "Typ",
+          "groupNumber": "Verbund-Nr.",
+          "partnerNumber": "Partner-Nr.",
+          "alphacode": "Alphacode",
+          "address": "Anschrift"
+        }
+      }
+    },
+    "view": {
+      "emailSepa": "E-Mail SEPA Vorankündigung",
+      "alphacode": "Alphacode",
+      "group": "Verbund",
+      "participation": "Beteiligung",
+      "bankingAct": "KWG",
+      "groupID": "Verbund ID",
+      "engagementAttribution": "Engagement Zurechnung",
+      "site": "Standort",
+      "postcode": "PLZ",
+      "location": "Ort",
+      "bank": {
+        "nr": "Nr.",
+        "iban": "IBAN",
+        "bankName": "Bankname",
+        "accountHolder": "Kontoinhaber",
+        "paymentMethod": "Zahlungsart",
+        "accountNumber": "Konto-Nr.",
+        "bankCode": "BLZ",
+        "mandateReference": "Mandatsreferenz",
+        "mandateSignatureDate": "Mandatsunterschrift",
+        "status": "Status",
+        "mandate": "Mandat",
+        "mandateTable": {
+          "companyGroup": "Gesellsch.",
+          "schema": "Schema",
+          "mandateId": "Mandat-ID",
+          "validUntil": "gültig bis"
+        }
+      },
+      "tabs": {
+        "address": "Anschrift",
+        "contactPerson": "Ansprechpartner",
+        "information": "Info",
+        "engagement": "Engagement",
+        "groupOfPartners": "Verbund",
+        "bank": "Bank",
+        "advisor": "Zuständiger Berater",
+        "administration": "Administration"
+      },
+      "noPartnerSelected": "Kein Partner ausgewählt",
+      "subTabs": {
+        "group": "Verbund",
+        "locations": "Standorte"
+      },
+      "shortOverview": {
+        "title": "Kurzübersicht",
+        "sections": {
+          "responsibility": "Zuständigkeit"
+        },
+        "advisor": "Berater",
+        "branchNumber": "Kreditabteilung",
+        "modificationDate": "geändert am",
+        "modifierId": "geändert von",
+        "certificationDate": "zertifiziert am",
+        "certificationBy": "zertifiziert von",
+        "customerSince": "Erstanlage"
+      },
+      "advisor": {
+        "advisor": "Zuständiger Berater",
+        "fields": {
+          "advisor": "Berater",
+          "creditDepartment": "Kreditabteilung"
+        },
+        "placeholders": {
+          "noAdvisorSelected": "Kein Berater ausgewählt",
+          "noCreditDepartmentSelected": "Keine Kreditabteilung ausgewählt"
+        },
+        "actions": {
+          "assign": "Zuordnen"
+        },
+        "tree": {
+          "columnName": "Beraterauswahl"
+        },
+        "messages": {
+          "assignmentRequired": "Die Postleitzahl muss zwingend eingegeben werden! Die Zuordnung des Beraters erfolgt anhand der Postleitzahl.",
+          "loadingError": "Fehler beim Laden der Beraterdaten. Bitte versuchen Sie es erneut.",
+          "assignmentNotAllowedInViewMode": "Beraterzuordnung ist nur im Bearbeitungsmodus möglich.",
+          "noAdvisorForArea": "Für das ermittelte Gebiet wurde kein aktiver Berater gefunden.",
+          "noAreaForPostalCode": "Für die angegebene Postleitzahl wurde kein Gebiet gefunden.",
+          "assignmentError": "Fehler bei der Beraterzuordnung. Bitte versuchen Sie es erneut."
+        }
+      },
+      "contact": {
+        "name": "Name",
+        "address": "Anschrift",
+        "birthDate": "Geburtsdatum",
+        "phone": "Telefon",
+        "mobile": "Mobil",
+        "function": "Funktion",
+        "fields": {
+          "salutation": "Anrede",
+          "title": "Titel",
+          "firstName": "Vorname",
+          "lastName": "Name",
+          "alphaCode": "Alphacode",
+          "department": "Abteilung",
+          "street": "Straße",
+          "houseNumber": "Hausnummer",
+          "country": "Land",
+          "postalCode": "PLZ",
+          "city": "Ort",
+          "phonePrefix": "Telefon Vorwahl",
+          "phoneNumber": "Telefon Nummer",
+          "mobilePrefix": "Mobil Vorwahl",
+          "mobileNumber": "Mobil Nummer",
+          "birthDate": "Geburtstag",
+          "function": "Funktion",
+          "email": "E-Mail"
+        },
+        "functions": {
+          "owner": "Inhaber /-in",
+          "ceo": "Geschäftsführer /-in",
+          "board": "Vorstand"
+        },
+        "dialog": {
+          "titleEdit": "Ansprechpartner bearbeiten",
+          "titleNew": "Neuer Ansprechpartner"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+mat-chip-option {
+  border-radius: 0.3125rem;
+
+  &.mat-mdc-chip-selected {
+    --mat-chip-selected-container-color: var(--core-finance-primary-container);
+    --mat-chip-selected-label-text-color: var(--core-finance-on-primary-container);
+    background-color: var(--core-finance-primary-container) !important;
+  }
+}

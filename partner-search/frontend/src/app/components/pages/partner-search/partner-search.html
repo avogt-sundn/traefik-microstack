@@ -1,0 +1,159 @@
+<!-- ── Page header ──────────────────────────────────────────────────── -->
+<div class="page-header">
+  <h1 class="page-title">{{ 'partner.search.pageTitle' | transloco }}</h1>
+  <button
+    (click)="createNewPartner()"
+    color="accent"
+    id="partner-create-new"
+    cypressid="cypress-partner-create-new"
+    matButton="filled">
+    {{ 'partner.search.actions.createNew' | transloco }}
+  </button>
+</div>
+
+<!-- ── Search card ──────────────────────────────────────────────────── -->
+<div class="search-card">
+  <div class="search-row">
+    <mat-form-field class="search-field" appearance="outline">
+      <mat-label>{{ 'partner.search.placeholder' | transloco }}</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        [formControl]="searchControl"
+        (keydown.enter)="search()"
+        autocomplete="off"
+        cypressid="cypress-partner-search-input">
+      @if (searchControl.value) {
+        <button matSuffix mat-icon-button (click)="resetForm()" [attr.aria-label]="'common.reset' | transloco">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+
+    <button
+      (click)="search()"
+      color="primary"
+      matButton="filled">
+      {{ 'common.search' | transloco }}
+    </button>
+
+    <button
+      (click)="resetForm()"
+      color="primary"
+      id="partner-search-reset"
+      cypressid="cypress-partner-search-reset"
+      matButton="filled">
+      {{ 'common.reset' | transloco }}
+    </button>
+  </div>
+
+  <!-- ── Example searches ──────────────────────────────────────────── -->
+  <div class="examples-panel">
+    <button class="examples-toggle" mat-button (click)="toggleExamples()">
+      {{ 'partner.search.examples.title' | transloco }}
+      <mat-icon>{{ examplesVisible() ? 'expand_less' : 'expand_more' }}</mat-icon>
+    </button>
+    @if (examplesVisible()) {
+      <div class="examples-list">
+        @for (ex of searchExamples; track ex.query) {
+          <button class="example-row" (click)="applyExample(ex)">
+            <code class="example-query">{{ ex.query }}</code>
+            <span class="example-sep">→</span>
+            <span class="example-desc">{{ ex.descriptionKey | transloco }}</span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<!-- ── No results info ──────────────────────────────────────────────── -->
+@if (searchPerformed() && !hasResults()) {
+  <shared-info-panel
+    type="info"
+    [title]="'messages.search.noResults.title' | transloco"
+    [textItems]="[
+      'messages.search.noResults.description' | transloco,
+      'messages.search.noResults.suggestion' | transloco
+    ]">
+  </shared-info-panel>
+}
+
+<!-- ── Results card ─────────────────────────────────────────────────── -->
+@if (partnerTreetableService?.lastQuadResponse | async; as quad) {
+  <div class="results-card">
+
+    <div class="results-header">
+      <span class="results-title">{{ 'partner.search.results.title' | transloco }}</span>
+
+      @let activeResult = activeFramework() === 'spring'
+        ? (activeEngine() === 'postgres' ? quad.spring.postgres : quad.spring.elasticsearch)
+        : (activeEngine() === 'postgres' ? quad.quarkus.postgres : quad.quarkus.elasticsearch);
+      @if (activeResult) {
+        <div class="search-result-count" cypressid="cypress-result-count">
+          <span class="result-count-matched">
+            {{ 'partner.search.results.count.matched' | transloco: { total: activeResult.totalCount } }}
+          </span>
+          @if (activeResult.storeTotalCount > 0) {
+            <span class="result-count-of">
+              &nbsp;&middot;&nbsp;{{ 'partner.search.results.count.of' | transloco: { storeTotal: activeResult.storeTotalCount } }}
+            </span>
+          }
+          @if (activeResult.returnedCount < activeResult.totalCount) {
+            <span class="result-count-showing">
+              &nbsp;&middot;&nbsp;{{ 'partner.search.results.count.showing' | transloco: { returned: activeResult.returnedCount } }}
+            </span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="results-tabs">
+      <span class="engine-badge" [class.engine-badge--active]="activeFramework() === 'spring'">Spring</span>
+      <mat-slide-toggle
+        cypressid="cypress-framework-toggle"
+        [checked]="activeFramework() === 'quarkus'"
+        [disabled]="!quad.quarkusAvailable"
+        (change)="onFrameworkToggle($event.checked)"
+        [matTooltip]="!quad.quarkusAvailable ? ('partner.search.frameworkToggle.quarkusUnavailable' | transloco) : ''"
+        [attr.aria-label]="'partner.search.frameworkToggle.ariaLabel' | transloco">
+      </mat-slide-toggle>
+      <span class="engine-badge" [class.engine-badge--active]="activeFramework() === 'quarkus'">Quarkus</span>
+
+      <span class="engine-badge" [class.engine-badge--active]="activeFramework() === 'spring' && activeEngine() === 'postgres'">
+        Spring PG {{ (activeFramework() === 'spring' ? quad.spring : quad.quarkus).postgres?.durationMs ?? '?' }}&thinsp;ms
+      </span>
+      <span class="engine-badge" [class.engine-badge--active]="activeFramework() === 'spring' && activeEngine() === 'elasticsearch'">
+        Spring ES {{ (activeFramework() === 'spring' ? quad.spring : quad.quarkus).elasticsearch?.durationMs ?? '?' }}&thinsp;ms
+      </span>
+      <mat-slide-toggle
+        cypressid="cypress-engine-toggle"
+        [checked]="activeEngine() === 'elasticsearch'"
+        (change)="onEngineToggle($event.checked)"
+        [attr.aria-label]="'partner.search.engineToggle.ariaLabel' | transloco">
+      </mat-slide-toggle>
+      <span class="engine-badge" [class.engine-badge--active]="activeFramework() === 'quarkus' && activeEngine() === 'postgres'">
+        Quarkus PG {{ (activeFramework() === 'quarkus' ? quad.quarkus : quad.spring).postgres?.durationMs ?? '?' }}&thinsp;ms
+      </span>
+      <span class="engine-badge" [class.engine-badge--active]="activeFramework() === 'quarkus' && activeEngine() === 'elasticsearch'">
+        Quarkus ES {{ (activeFramework() === 'quarkus' ? quad.quarkus : quad.spring).elasticsearch?.durationMs ?? '?' }}&thinsp;ms
+      </span>
+    </div>
+
+    <div class="results-divider"></div>
+
+    @if (partnerTreetableService && hasResults()) {
+      <div class="results-table-wrapper">
+        <partner-treetable
+          [treetableService]="partnerTreetableService"
+          [displayedColumns]="partnerDisplayedColumns"
+          [treeColumn]="'type'"
+          [iconConfigs]="partnerIconConfigs"
+          [highlightTerms]="highlightTerms()"
+          (rowClick)="onRowClick($event)">
+        </partner-treetable>
+      </div>
+    }
+
+  </div>
+}

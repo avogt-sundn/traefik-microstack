@@ -1,0 +1,361 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "create": "Créer",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "reset": "Réinitialiser",
+    "confirm": "Confirmer",
+    "yes": "Oui",
+    "no": "Non",
+    "ok": "OK",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "refresh": "Actualiser",
+    "export": "Exporter",
+    "import": "Importer",
+    "print": "Imprimer",
+    "download": "Télécharger",
+    "upload": "Charger"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "partners": "Partenaire",
+    "settings": "Paramètres",
+    "profile": "Profil",
+    "logout": "Déconnexion",
+    "menu": "Menu"
+  },
+  "forms": {
+    "fields": {
+      "name": "Nom",
+      "street": "Rue",
+      "city": "Ville",
+      "postalCode": "Code postal",
+      "country": "Pays",
+      "company": "Entreprise",
+      "houseNumber": "N° maison",
+      "phoneNumber": "Téléphone",
+      "phonePrefix": "Téléphone - Indicatif",
+      "phoneMainNumber": "Téléphone - Numéro",
+      "mobileNumber": "Mobile",
+      "mobilePrefix": "Mobile - Indicatif",
+      "mobileMainNumber": "Mobile - Numéro"
+    },
+    "countries": {
+      "germany": "Allemagne"
+    },
+    "validation": {
+      "required": "{{fieldName}} est requis",
+      "email": "{{fieldName}} doit être une adresse e-mail valide",
+      "minLength": "{{fieldName}} doit avoir au moins {{min}} caractères",
+      "maxLength": "{{fieldName}} ne peut pas dépasser {{max}} caractères",
+      "pattern": "{{fieldName}} a un format invalide",
+      "ibanInvalid": "IBAN invalide",
+      "hints": {
+        "numbersOnly": "chiffres uniquement",
+        "alphanumericWithWildcard": "lettres, chiffres et *",
+        "numbersWithWildcard": "chiffres et *",
+        "lettersWithWildcard": "lettres et *"
+      },
+      "number": "{{fieldName}} doit être un nombre valide",
+      "date": "{{fieldName}} doit être une date valide",
+      "phone": "{{fieldName}} doit être un numéro de téléphone valide",
+      "min": "{{fieldName}} doit être au moins {{min}}",
+      "max": "{{fieldName}} ne peut pas être supérieur à {{max}}",
+      "decimal": "{{fieldName}} a un format décimal invalide",
+      "maxSum": "La somme dépasse la valeur maximale autorisée",
+      "insufficientCriteria": {
+        "title": "La recherche n'est pas autorisée.",
+        "atLeastOneField": "Au moins un champ de recherche doit contenir une saisie d'au moins 3 caractères. Dans le champ Nom, tous les mots doivent avoir au moins 3 caractères, évitez les mots de 2 caractères (ex: \"SA\") lors de la recherche de noms !"
+      },
+      "generic": "{{fieldName}} contient des données invalides",
+      "dto": {
+        "_info": "ATTENTION : Ces clés sont automatiquement utilisées par le script generate-validators.js. Les valeurs peuvent être personnalisées, mais les clés ne doivent PAS être modifiées, renommées ou déplacées !",
+        "fieldRequired": "Le champ est requis",
+        "objectRequired": "La valeur doit être un objet",
+        "stringMinLength": "Le texte doit avoir au moins {{minLength}} caractères",
+        "stringMaxLength": "Le texte ne peut pas dépasser {{maxLength}} caractères",
+        "stringPattern": "Le format est invalide",
+        "numberMin": "La valeur doit être au moins {{minimum}}",
+        "numberMax": "La valeur ne peut pas dépasser {{maximum}}",
+        "arrayMinItems": "La liste doit contenir au moins {{minItems}} éléments",
+        "arrayMaxItems": "La liste ne peut pas contenir plus de {{maxItems}} éléments"
+      }
+    }
+  },
+  "messages": {
+    "welcome": "Bienvenue chez traefik-microstack",
+    "noData": "Aucune donnée disponible",
+    "dataLoadError": "Erreur lors du chargement des données",
+    "saveSuccess": "Données enregistrées avec succès",
+    "saveError": "Erreur lors de l'enregistrement des données",
+    "deleteSuccess": "Élément supprimé avec succès",
+    "deleteError": "Erreur lors de la suppression de l'élément",
+    "deleteConfirmation": "Êtes-vous sûr de vouloir supprimer cet élément ?",
+    "unsavedChanges": "Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir quitter cette page ?",
+    "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",
+    "networkError": "Erreur réseau. Veuillez vérifier votre connexion.",
+    "serverError": "Erreur serveur. Veuillez réessayer plus tard.",
+    "permissionDenied": "Vous n'avez pas l'autorisation pour cette action.",
+    "validationError": "Échec de l'enregistrement. Veuillez corriger les champs soulignés.",
+    "partner": {
+      "createSuccess": "Partenaire créé avec succès",
+      "updateSuccess": "Partenaire mis à jour avec succès",
+      "createError": "Erreur lors de la création du partenaire",
+      "updateError": "Erreur lors de la mise à jour du partenaire"
+    },
+    "search": {
+      "noResults": {
+        "title": "Aucun résultat trouvé",
+        "description": "Aucune entrée n'a été trouvée pour les critères de recherche saisis.",
+        "suggestion": "Veuillez vérifier vos saisies ou utiliser d'autres termes de recherche."
+      }
+    }
+  },
+  "dates": {
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "tomorrow": "Demain",
+    "thisWeek": "Cette semaine",
+    "lastWeek": "Semaine dernière",
+    "nextWeek": "Semaine prochaine",
+    "thisMonth": "Ce mois",
+    "lastMonth": "Mois dernier",
+    "nextMonth": "Mois prochain",
+    "thisYear": "Cette année",
+    "lastYear": "Année dernière",
+    "nextYear": "Année prochaine"
+  },
+  "pagination": {
+    "itemsPerPage": "Éléments par page",
+    "page": "Page",
+    "of": "de",
+    "showing": "Affichage",
+    "to": "à",
+    "items": "éléments",
+    "firstPage": "Première page",
+    "lastPage": "Dernière page",
+    "nextPage": "Page suivante",
+    "previousPage": "Page précédente"
+  },
+  "language": {
+    "select": "Sélectionner la langue",
+    "english": "Anglais",
+    "german": "Allemand",
+    "current": "Langue actuelle"
+  },
+  "auth": {
+    "login": {
+      "button": {
+        "login": "Se connecter",
+        "loading": "Connexion en cours...",
+        "retry": "Réessayer",
+        "ariaLabel": "Se connecter à votre compte"
+      }
+    },
+    "logout": {
+      "button": {
+        "logout": "Déconnexion",
+        "loading": "Déconnexion en cours...",
+        "retry": "Réessayer",
+        "ariaLabel": "Se déconnecter de votre compte"
+      },
+      "dialog": {
+        "title": "Confirmer la déconnexion",
+        "message": "Êtes-vous sûr de vouloir vous déconnecter ?",
+        "messageWithUser": "Êtes-vous sûr de vouloir vous déconnecter, {{userName}} ?",
+        "cancel": "Annuler",
+        "confirm": "Déconnexion",
+        "info": {
+          "session": "Votre session actuelle sera terminée",
+          "tokens": "Tous les jetons d'authentification seront révoqués",
+          "redirect": "Vous serez redirigé vers la page de connexion"
+        }
+      }
+    },
+    "profile": {
+      "roles": "Rôles",
+      "permissions": "Autorisations",
+      "groups": "Groupes",
+      "more": "plus",
+      "menu": {
+        "edit": "Modifier le profil",
+        "info": "Informations du profil",
+        "ariaLabel": "Menu du profil utilisateur"
+      },
+      "token": {
+        "valid": "Jeton valide",
+        "invalid": "Jeton invalide",
+        "expiring": "Jeton expire",
+        "expiringDetail": "Votre session va bientôt expirer"
+      }
+    },
+    "status": {
+      "initializing": "Initialisation",
+      "loading": "Chargement",
+      "authenticated": "Authentifié",
+      "unauthenticated": "Non authentifié",
+      "error": "Erreur d'authentification",
+      "unknown": "Statut inconnu",
+      "tokenExpiring": "Jeton expire",
+      "tokenInvalid": "Jeton invalide",
+      "tokenExpiringDetail": "Votre session va bientôt expirer",
+      "tokenInvalidDetail": "Veuillez vous reconnecter",
+      "authenticatedAs": "Connecté en tant que {{name}}",
+      "sessionActive": "Session active",
+      "notAuthenticated": "Veuillez vous connecter",
+      "tokenStatus": "Statut du jeton",
+      "tokenValid": "Valide",
+      "errorOccurred": "Erreur d'authentification",
+      "actions": {
+        "login": "Se connecter",
+        "logout": "Déconnexion",
+        "refresh": "Actualiser la session"
+      }
+    }
+  },
+  "editableTable": {
+    "selectedColumns": "Colonnes sélectionnées",
+    "selectColumns": "Choisir des colonnes à ajouter...",
+    "addRow": "Ajouter une entrée",
+    "editRow": "Modifier l'entrée"
+  },
+  "selectOptions": {
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "partner": {
+    "search": {
+      "fields": {
+        "partnerNumber": "N° partenaire",
+        "alphacode": "Code alpha"
+      },
+      "actions": {
+        "createNew": "Créer un nouveau partenaire"
+      },
+      "results": {
+        "noResults": {
+          "description": "Aucun partenaire ou groupe n'a été trouvé pour les critères de recherche saisis."
+        }
+      },
+      "table": {
+        "columns": {
+          "type": "Type",
+          "groupNumber": "N° groupe",
+          "partnerNumber": "N° partenaire",
+          "alphacode": "Code alpha"
+        }
+      }
+    },
+    "view": {
+      "emailSepa": "E-mail préavis SEPA",
+      "alphacode": "Code alpha",
+      "group": "Groupe",
+      "participation": "Participation",
+      "bankingAct": "KWG",
+      "groupID": "ID groupe",
+      "engagementAttribution": "Attribution d'engagement",
+      "site": "Site",
+      "postcode": "Code postal",
+      "location": "Lieu",
+      "bank": {
+        "nr": "N°",
+        "iban": "IBAN",
+        "bankName": "Nom de la banque",
+        "accountHolder": "Titulaire du compte",
+        "paymentMethod": "Mode de paiement",
+        "accountNumber": "N° de compte",
+        "bankCode": "Code banque",
+        "mandateReference": "Référence de mandat",
+        "mandateSignatureDate": "Signature de mandat",
+        "status": "Statut",
+        "mandate": "Mandat",
+        "mandateTable": {
+          "companyGroup": "Société",
+          "schema": "Schéma",
+          "mandateId": "ID mandat",
+          "validUntil": "valide jusqu'au"
+        }
+      },
+      "tabs": {
+        "address": "Adresse",
+        "contactPerson": "Personne de contact",
+        "information": "Information",
+        "engagement": "Engagement",
+        "groupOfPartners": "Groupe",
+        "bank": "Banque",
+        "advisor": "Conseiller responsable",
+        "administration": "Administration"
+      },
+      "noPartnerSelected": "Aucun partenaire sélectionné",
+      "subTabs": {
+        "group": "Groupe",
+        "locations": "Emplacements"
+      },
+      "shortOverview": {
+        "title": "Aperçu rapide",
+        "sections": {
+          "responsibility": "Responsabilité"
+        },
+        "advisor": "Conseiller",
+        "branchNumber": "Département de crédit",
+        "modificationDate": "modifié le",
+        "modifierId": "modifié par",
+        "certificationDate": "certifié le",
+        "certificationBy": "certifié par",
+        "customerSince": "Création initiale"
+      },
+      "advisor": {
+        "advisor": "Conseiller responsable"
+      },
+      "contact": {
+        "name": "Nom",
+        "address": "Adresse",
+        "birthDate": "Date de naissance",
+        "phone": "Téléphone",
+        "mobile": "Mobile",
+        "function": "Fonction",
+        "fields": {
+          "salutation": "Civilité",
+          "title": "Titre",
+          "firstName": "Prénom",
+          "lastName": "Nom",
+          "alphaCode": "Code alpha",
+          "department": "Département",
+          "street": "Rue",
+          "houseNumber": "Numéro de maison",
+          "country": "Pays",
+          "postalCode": "Code postal",
+          "city": "Ville",
+          "phonePrefix": "Indicatif téléphonique",
+          "phoneNumber": "Numéro de téléphone",
+          "mobilePrefix": "Indicatif mobile",
+          "mobileNumber": "Numéro de mobile",
+          "birthDate": "Date de naissance",
+          "function": "Fonction",
+          "email": "E-mail"
+        },
+        "functions": {
+          "owner": "Propriétaire",
+          "ceo": "Directeur général",
+          "board": "Membre du conseil d'administration"
+        },
+        "dialog": {
+          "titleEdit": "Modifier la personne de contact",
+          "titleNew": "Nouvelle personne de contact"
+        }
+      }
+    }
+  }
+}

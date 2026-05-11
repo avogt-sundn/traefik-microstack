@@ -1,0 +1,38 @@
+# Pattern: Detail Form
+
+**Intent:** Read and optionally edit a single, fully-identified record.
+
+---
+
+## When to use
+
+| Use-case characteristic | Indicator |
+|---|---|
+| Record is identified by a known key (arrived via Search Results or deep-link) | yes |
+| User edits a bounded, stable set of fields | yes |
+| Validation is field-level (inline errors) | yes |
+| Save triggers a side-effect in another domain (e.g. search re-index) | acceptable |
+
+Apply this pattern when the primary task is **reading or updating one record you already have**.
+
+---
+
+## Structure
+
+```
+[Breadcrumb: Search → Detail]
+[Record header: key + immutable identifiers]
+[Editable field group(s)]
+  └── [Field: label + input + inline error]
+[Save / Cancel actions]
+[Status banner: success / conflict / error]
+```
+
+---
+
+## When not to use
+
+- Record not yet identified → precede with **Search Results**
+- Creating a new record → use a **Create Form** variant (same structure, no pre-populated values, different action labeling)
+- Bulk editing multiple records → use a **Bulk Edit** pattern
+- Fields depend on each other across records → model as a wizard or multi-step form

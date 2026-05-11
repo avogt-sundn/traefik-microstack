@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 520" font-family="monospace" font-size="13">
+
+  <!-- Background -->
+  <rect width="860" height="520" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="430" y="36" text-anchor="middle" fill="#1a1a1a" font-size="15" font-weight="bold">Command-as-Object: Metaphor → Architecture</text>
+
+  <!-- ── ROW 1: User input ── -->
+  <rect x="30" y="60" width="800" height="48" rx="6" fill="#fafafa" stroke="#cccccc" stroke-width="1"/>
+  <text x="50" y="79" fill="#777777" font-size="11">USER INPUT</text>
+  <text x="50" y="98" fill="#1a1a1a" font-size="14">  günther  </text>
+  <text x="142" y="98" fill="#38bdf8" font-size="14">aachen  </text>
+  <text x="224" y="98" fill="#a78bfa" font-size="14">verschieben  </text>
+  <text x="348" y="98" fill="#34d399" font-size="14">müller</text>
+  <text x="600" y="91" fill="#666666" font-size="11" font-style="italic">tokens accumulate → result set and actions update on every keystroke</text>
+
+  <!-- Arrow down -->
+  <line x1="430" y1="108" x2="430" y2="130" stroke="#666666" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="424,128 436,128 430,138" fill="#666666"/>
+
+  <!-- ── ROW 2: Resolve layer ── -->
+  <!-- Box: resolve(token) -->
+  <rect x="30" y="140" width="240" height="80" rx="6" fill="#f0f4f8" stroke="#1565c0" stroke-width="1.5"/>
+  <text x="150" y="162" text-anchor="middle" fill="#1565c0" font-size="11" font-weight="bold">RESOLVE</text>
+  <text x="150" y="182" text-anchor="middle" fill="#0d47a1" font-size="12">resolve(token)</text>
+  <text x="150" y="200" text-anchor="middle" fill="#777777" font-size="11">"günther" → Firma</text>
+  <text x="150" y="214" text-anchor="middle" fill="#777777" font-size="11">"456"     → Carnet</text>
+
+  <!-- Box: synonym map -->
+  <rect x="310" y="140" width="240" height="80" rx="6" fill="#f0f4f8" stroke="#6a1b9a" stroke-width="1.5"/>
+  <text x="430" y="162" text-anchor="middle" fill="#6a1b9a" font-size="11" font-weight="bold">SEMANTIC LAYER</text>
+  <text x="430" y="182" text-anchor="middle" fill="#4527a0" font-size="12">synonyms(term)</text>
+  <text x="430" y="200" text-anchor="middle" fill="#777777" font-size="11">anrufen = telefon = call</text>
+  <text x="430" y="214" text-anchor="middle" fill="#777777" font-size="11">verschieben = transfer = move</text>
+
+  <!-- Box: permission filter -->
+  <rect x="590" y="140" width="240" height="80" rx="6" fill="#f0f4f8" stroke="#ff6f00" stroke-width="1.5"/>
+  <text x="710" y="162" text-anchor="middle" fill="#f57f17" font-size="11" font-weight="bold">PERMISSION FILTER</text>
+  <text x="710" y="182" text-anchor="middle" fill="#f57f17" font-size="12">actions(user, perms)</text>
+  <text x="710" y="200" text-anchor="middle" fill="#777777" font-size="11">Kammerbezirk scope</text>
+  <text x="710" y="214" text-anchor="middle" fill="#777777" font-size="11">role-based action set</text>
+
+  <!-- Arrow down from resolve boxes -->
+  <line x1="430" y1="220" x2="430" y2="248" stroke="#666666" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="424,246 436,246 430,256" fill="#666666"/>
+
+  <!-- ── ROW 3: Domain object ── -->
+  <rect x="180" y="258" width="500" height="96" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+  <text x="430" y="278" text-anchor="middle" fill="#1b5e20" font-size="11" font-weight="bold">DOMAIN ENTITY  (uniform interface)</text>
+
+  <!-- Three method boxes inside -->
+  <rect x="198" y="288" width="140" height="52" rx="4" fill="#c8e6c9" stroke="#4caf50" stroke-width="1"/>
+  <text x="268" y="306" text-anchor="middle" fill="#2e7d32" font-size="11">resolve(token)</text>
+  <text x="268" y="322" text-anchor="middle" fill="#777777" font-size="10">find by partial input</text>
+  <text x="268" y="334" text-anchor="middle" fill="#777777" font-size="10">Firma · Carnet · Prüfung</text>
+
+  <rect x="360" y="288" width="140" height="52" rx="4" fill="#c8e6c9" stroke="#4caf50" stroke-width="1"/>
+  <text x="430" y="306" text-anchor="middle" fill="#2e7d32" font-size="11">actions(user, perms)</text>
+  <text x="430" y="322" text-anchor="middle" fill="#777777" font-size="10">type-specific action set</text>
+  <text x="430" y="334" text-anchor="middle" fill="#777777" font-size="10">filtered at query time</text>
+
+  <rect x="522" y="288" width="140" height="52" rx="4" fill="#c8e6c9" stroke="#4caf50" stroke-width="1"/>
+  <text x="592" y="306" text-anchor="middle" fill="#2e7d32" font-size="11">history()</text>
+  <text x="592" y="322" text-anchor="middle" fill="#777777" font-size="10">immutable event log</text>
+  <text x="592" y="334" text-anchor="middle" fill="#777777" font-size="10">feeds the timeline</text>
+
+  <!-- Arrow down -->
+  <line x1="430" y1="354" x2="430" y2="378" stroke="#666666" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="424,376 436,376 430,386" fill="#666666"/>
+
+  <!-- ── ROW 4: API shape ── -->
+  <rect x="100" y="388" width="660" height="56" rx="6" fill="#f0f0f5" stroke="#303f9f" stroke-width="1.5"/>
+  <text x="430" y="408" text-anchor="middle" fill="#3f51b5" font-size="11" font-weight="bold">SINGLE API ENDPOINT  (metaphor demands one round-trip)</text>
+  <text x="430" y="430" text-anchor="middle" fill="#303f9f" font-size="12">POST /search  { tokens, user, permissions }  →  { entities, actions_per_entity }</text>
+
+  <!-- Arrow down -->
+  <line x1="430" y1="444" x2="430" y2="466" stroke="#666666" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="424,464 436,464 430,474" fill="#666666"/>
+
+  <!-- ── ROW 5: UI ── -->
+  <rect x="180" y="476" width="500" height="34" rx="6" fill="#1e1e1e" stroke="#cccccc" stroke-width="1"/>
+  <text x="430" y="499" text-anchor="middle" fill="#777777" font-size="12">UI  —  thin rendering of the metaphor, not its implementation</text>
+
+  <!-- Connector lines between resolve boxes (row 2) -->
+  <line x1="270" y1="180" x2="310" y2="180" stroke="#cccccc" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="550" y1="180" x2="590" y2="180" stroke="#cccccc" stroke-width="1" stroke-dasharray="3,3"/>
+
+</svg>

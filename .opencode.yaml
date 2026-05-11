@@ -1,0 +1,55 @@
+version: "1"
+project:
+  name: traefik-microstack
+  type: webapp
+
+llm:
+  provider: openai-compatible
+  base_url: http://10.10.2.138:1234
+  model: qwen3.6-35b-a3b
+  api_key: not-needed
+
+cli:
+  default_mode: standard
+  prompt_on_start: false
+
+default_skills:
+  - name: backward-plan
+    enabled: true
+  - name: capture
+    enabled: true
+  - name: implement-ticket
+    enabled: true
+  - name: prioritize
+    enabled: true
+  - name: triage
+    enabled: true
+  - name: release-notes
+    enabled: true
+  - name: write-ticket
+    enabled: true
+  - name: write-milestone
+    enabled: true
+  - name: e2e
+    enabled: true
+
+tools:
+  search:
+    include:
+      [
+        "*.ts",
+        "*.js",
+        "*.tsx",
+        "*.jsx",
+        "*.java",
+        "*.go",
+        "*.py",
+        "*.yaml",
+        "*.yml",
+        "*.md",
+      ]
+    exclude: [ "node_modules/**", "target/**", "dist/**", "build/**", ".git/**" ]
+
+git:
+  auto_commit: false
+  require_branch: false

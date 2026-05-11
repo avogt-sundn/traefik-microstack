@@ -1,0 +1,156 @@
+{
+    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+    "version": 1,
+    "cli": {
+        "packageManager": "npm",
+        "schematicCollections": [
+            "angular-eslint"
+        ],
+        "analytics": false
+    },
+    "newProjectRoot": "projects",
+    "projects": {
+        "shell": {
+            "projectType": "application",
+            "schematics": {
+                "@schematics/angular:component": {
+                    "style": "scss"
+                }
+            },
+            "root": "shell",
+            "sourceRoot": "shell/src",
+            "prefix": "app",
+            "architect": {
+                "build": {
+                    "builder": "@angular-architects/native-federation:build",
+                    "options": {},
+                    "configurations": {
+                        "production": {
+                            "target": "shell:esbuild:production"
+                        }
+                    },
+                    "defaultConfiguration": "production"
+                },
+                "serve": {
+                    "builder": "@angular-architects/native-federation:build",
+                    "options": {
+                        "target": "shell:serve-original:production",
+                        "rebuildDelay": 0,
+                        "dev": true,
+                        "port": 0,
+                        "host": "0.0.0.0"
+                    },
+                    "configurations": {
+                        "production": {
+                            "target": "shell:serve-original:production"
+                        }
+                    }
+                },
+                "esbuild": {
+                    "builder": "@angular/build:application",
+                    "options": {
+                        "browser": "shell/src/main.ts",
+                        "polyfills": [
+                            "es-module-shims"
+                        ],
+                        "tsConfig": "shell/tsconfig.app.json",
+                        "inlineStyleLanguage": "scss",
+                        "assets": [
+                            {
+                                "glob": "**/*",
+                                "input": "shared/i18n",
+                                "output": "/shared/i18n"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "shell/src/app/i18n",
+                                "output": "/assets/shell/i18n"
+                            },
+                            "shell/src/favicon.ico",
+                            "shell/src/assets",
+                            "shell/src/environments/federation.manifest.json"
+                        ],
+                        "styles": [
+                            "shell/src/styles.scss"
+                        ]
+                    },
+                    "configurations": {
+                        "production": {
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "500kB",
+                                    "maximumError": "1MB"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "8kB",
+                                    "maximumError": "10kB"
+                                }
+                            ],
+                            "optimization": false,
+                            "sourceMap": true,
+                            "outputHashing": "all"
+                        }
+                    },
+                    "defaultConfiguration": "production"
+                },
+                "serve-original": {
+                    "builder": "@angular/build:dev-server",
+                    "configurations": {
+                        "production": {
+                            "buildTarget": "shell:esbuild:production"
+                        }
+                    },
+                    "defaultConfiguration": "production",
+                    "options": {
+                        "port": 4200,
+                        "host": "0.0.0.0",
+                        "proxyConfig": "shell/proxy.conf.json"
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-eslint/builder:lint",
+                    "options": {
+                        "lintFilePatterns": [
+                            "shell/src/**/*.ts",
+                            "shell/src/**/*.html"
+                        ]
+                    }
+                },
+                "test": {
+                    "builder": "@angular/build:unit-test"
+                }
+            }
+        },
+        "shared": {
+            "projectType": "library",
+            "root": "shared",
+            "sourceRoot": "shared",
+            "prefix": "lib",
+            "architect": {
+                "build": {
+                    "builder": "@angular/build:ng-packagr",
+                    "configurations": {
+                        "production": {
+                            "tsConfig": "shared/tsconfig.lib.json"
+                        }
+                    },
+                    "defaultConfiguration": "production"
+                },
+                "lint": {
+                    "builder": "@angular-eslint/builder:lint",
+                    "options": {
+                        "lintFilePatterns": [
+                            "shared/**/*.ts",
+                            "shared/**/*.html"
+                        ]
+                    }
+                },
+                "test": {
+                    "builder": "@angular/build:unit-test"
+                }
+            }
+        }
+    }
+}

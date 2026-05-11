@@ -1,0 +1,114 @@
+networks:
+  default:
+    name: docker-default-network
+    external: true
+
+services:
+  postgres-partner-edit:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app-partner-edit-db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - pg-partner-edit-data:/var/lib/postgresql/data
+
+  app-spring-partner-edit:
+    image: app-spring-partner-edit
+    build:
+      context: ./spring
+      dockerfile: Dockerfile
+      network: host
+    depends_on:
+      postgres-partner-edit:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost/actuator/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app-spring-partner-edit.rule=PathPrefix(`/api/partner-edit/spring`)"
+      - "traefik.http.routers.app-spring-partner-edit.entrypoints=web,websecure"
+      - "traefik.http.services.app-spring-partner-edit.loadbalancer.server.port=443"
+      - "traefik.http.services.app-spring-partner-edit.loadbalancer.server.scheme=https"
+      - "traefik.http.services.app-spring-partner-edit.loadbalancer.healthcheck.path=/actuator/health"
+      - "traefik.http.services.app-spring-partner-edit.loadbalancer.healthcheck.port=443"
+      - "traefik.http.routers.app-spring-partner-edit.priority=1000"
+
+  forward-api-spring-partner-edit:
+    image: forward:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.forward-api-spring-partner-edit.rule=PathPrefix(`/api/partner-edit/spring`)"
+      - "traefik.http.routers.forward-api-spring-partner-edit.entrypoints=web,websecure"
+      - "traefik.http.services.forward-api-spring-partner-edit.loadbalancer.server.port=8446"
+      - "traefik.http.services.forward-api-spring-partner-edit.loadbalancer.server.scheme=https"
+      - "traefik.http.services.forward-api-spring-partner-edit.loadbalancer.healthcheck.path=/actuator/health"
+      - "traefik.http.services.forward-api-spring-partner-edit.loadbalancer.healthcheck.port=8446"
+      - "traefik.http.routers.forward-api-spring-partner-edit.priority=1100"
+    environment:
+      - LISTEN_PORT=8446
+      - TARGET_HOST=traefik-microstack
+      - TARGET_PORT=8446
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost:8446/actuator/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  partner-edit:
+    image: partner-edit
+    build:
+      context: ..
+      dockerfile: partner-edit/frontend/Dockerfile
+      network: host
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.partner-edit.rule=PathPrefix(`/partner-edit`)"
+      - "traefik.http.middlewares.partner-edit-strip.stripprefix.prefixes=/partner-edit"
+      - "traefik.http.routers.partner-edit.middlewares=partner-edit-strip@docker"
+      - "traefik.http.routers.partner-edit.entrypoints=web,websecure"
+      - "traefik.http.services.partner-edit.loadbalancer.server.port=80"
+      - "traefik.http.services.partner-edit.loadbalancer.healthcheck.path=/"
+      - "traefik.http.services.partner-edit.loadbalancer.healthcheck.port=80"
+      - "traefik.http.routers.partner-edit.priority=130"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  forward-ng-partner-edit:
+    image: forward:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.forward-ng-partner-edit.rule=PathPrefix(`/partner-edit`)"
+      - "traefik.http.middlewares.forward-ng-partner-edit-strip.stripprefix.prefixes=/partner-edit"
+      - "traefik.http.routers.forward-ng-partner-edit.middlewares=forward-ng-partner-edit-strip@docker"
+      - "traefik.http.routers.forward-ng-partner-edit.entrypoints=web,websecure"
+      - "traefik.http.services.forward-ng-partner-edit.loadbalancer.server.port=4204"
+      - "traefik.http.services.forward-ng-partner-edit.loadbalancer.healthcheck.path=/"
+      - "traefik.http.services.forward-ng-partner-edit.loadbalancer.healthcheck.port=4204"
+      - "traefik.http.routers.forward-ng-partner-edit.priority=1020"
+    environment:
+      - LISTEN_PORT=4204
+      - TARGET_HOST=traefik-microstack
+      - TARGET_PORT=4204
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4204/"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+volumes:
+  pg-partner-edit-data:

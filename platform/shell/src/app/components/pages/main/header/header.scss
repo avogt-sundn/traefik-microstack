@@ -1,0 +1,20 @@
+:host {
+  display: contents;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  mat-icon {
+    color: var(--core-finance-primary, #1e50be);
+  }
+}
+
+.client-logo {
+  width: auto;
+  height: 2rem;
+  object-fit: contain;
+  margin-left: 0.5rem;
+}

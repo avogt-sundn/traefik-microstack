@@ -1,0 +1,73 @@
+networks:
+  default:
+    name: docker-default-network
+    external: true
+
+services:
+  ux:
+    image: ux
+    build:
+      context: ..
+      dockerfile: ux/frontend/Dockerfile
+      network: host
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ux.rule=PathPrefix(`/ux`)"
+      - "traefik.http.middlewares.ux-strip.stripprefix.prefixes=/ux"
+      - "traefik.http.routers.ux.middlewares=ux-strip@docker"
+      - "traefik.http.routers.ux.entrypoints=web,websecure"
+      - "traefik.http.services.ux.loadbalancer.server.port=80"
+      - "traefik.http.services.ux.loadbalancer.healthcheck.path=/"
+      - "traefik.http.services.ux.loadbalancer.healthcheck.port=80"
+      - "traefik.http.routers.ux.priority=120"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  forward-ng-ux:
+    image: forward:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.forward-ng-ux.rule=PathPrefix(`/ux`)"
+      - "traefik.http.middlewares.forward-ng-ux-strip.stripprefix.prefixes=/ux"
+      - "traefik.http.routers.forward-ng-ux.middlewares=forward-ng-ux-strip@docker"
+      - "traefik.http.routers.forward-ng-ux.entrypoints=web,websecure"
+      - "traefik.http.services.forward-ng-ux.loadbalancer.server.port=6006"
+      - "traefik.http.services.forward-ng-ux.loadbalancer.healthcheck.path=/"
+      - "traefik.http.services.forward-ng-ux.loadbalancer.healthcheck.port=6006"
+      - "traefik.http.routers.forward-ng-ux.priority=1100"
+    environment:
+      - LISTEN_PORT=6006
+      - TARGET_HOST=traefik-microstack
+      - TARGET_PORT=6006
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6006/"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  forward-prototype:
+    image: forward:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.forward-prototype.rule=PathPrefix(`/prototype`)"
+      - "traefik.http.middlewares.forward-prototype-strip.stripprefix.prefixes=/prototype"
+      - "traefik.http.routers.forward-prototype.middlewares=forward-prototype-strip@docker"
+      - "traefik.http.routers.forward-prototype.entrypoints=web,websecure"
+      - "traefik.http.services.forward-prototype.loadbalancer.server.port=5174"
+      - "traefik.http.services.forward-prototype.loadbalancer.healthcheck.path=/"
+      - "traefik.http.services.forward-prototype.loadbalancer.healthcheck.port=5174"
+      - "traefik.http.routers.forward-prototype.priority=1100"
+    environment:
+      - LISTEN_PORT=5174
+      - TARGET_HOST=traefik-microstack
+      - TARGET_PORT=5174
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5174/"]
+      interval: 10s
+      timeout: 10s
+      retries: 10

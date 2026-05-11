@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PizzAI — Transformers.js</title>
+  <!-- Sprache: Deutsch -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: #1a1a1a;
+      color: #f0ece4;
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+    }
+
+    header {
+      background: #c0392b;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    header h1 { font-size: 1.25rem; letter-spacing: 0.03em; }
+    header span { font-size: 1.6rem; }
+    #back-btn {
+      background: rgba(255,255,255,0.1); border: none;
+      border-radius: 6px; color: #fff; font-size: 0.75rem; padding: 4px 10px;
+      cursor: pointer; opacity: 0.7; text-decoration: none;
+    }
+    #back-btn:hover { opacity: 1; }
+    #toggle-log {
+      margin-left: auto; background: rgba(255,255,255,0.1); border: none;
+      border-radius: 6px; color: #fff; font-size: 0.75rem; padding: 4px 10px;
+      cursor: pointer; opacity: 0.7;
+    }
+    #toggle-log:hover { opacity: 1; }
+
+    #status-bar {
+      background: #111;
+      font-size: 0.75rem;
+      color: #aaa;
+      padding: 6px 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      min-height: 32px;
+    }
+    #status-bar .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #555; flex-shrink: 0;
+    }
+    #status-bar .dot.loading { background: #f39c12; animation: pulse 1s infinite; }
+    #status-bar .dot.ready   { background: #27ae60; }
+    #status-bar .dot.error   { background: #c0392b; }
+    #progress-text { flex: 1; }
+    #runtime-badge {
+      font-size: 0.68rem; background: #f5a623; color: #1a1a1a;
+      padding: 1px 7px; border-radius: 8px; font-weight: 600; flex-shrink: 0;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+    #dl-bar {
+      height: 3px;
+      background: #2a2a2a;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    #dl-bar-fill {
+      height: 100%;
+      background: #f39c12;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    #dl-bar.done { height: 0; transition: height 0.4s ease 0.5s; }
+
+    #order-bar {
+      background: #1e1e1e;
+      border-bottom: 1px solid #333;
+      font-size: 0.78rem;
+      color: #ccc;
+      padding: 5px 20px;
+      display: none;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    #order-bar.visible { display: flex; }
+    #order-bar .ob-label { color: #888; }
+    #order-bar .ob-items { color: #f0ece4; font-weight: 500; }
+    #order-bar .ob-total { color: #27ae60; font-weight: 700; margin-left: auto; }
+    #order-bar .ob-clear {
+      background: none; border: none; color: #666; cursor: pointer;
+      font-size: 0.75rem; padding: 2px 6px; border-radius: 4px;
+    }
+    #order-bar .ob-clear:hover { color: #c0392b; }
+
+    #step-hint {
+      padding: 6px 20px 0;
+      font-size: 0.75rem;
+      color: #888;
+      flex-shrink: 0;
+      display: none;
+    }
+    #step-hint.visible { display: block; }
+    #step-hint strong { color: #f39c12; }
+
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .msg {
+      max-width: 72%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      line-height: 1.5;
+      font-size: 0.92rem;
+    }
+    .msg.user {
+      align-self: flex-end;
+      background: #c0392b;
+      border-bottom-right-radius: 4px;
+      white-space: pre-wrap;
+    }
+    .msg.assistant {
+      align-self: flex-start;
+      background: #2c2c2c;
+      border-bottom-left-radius: 4px;
+    }
+    .msg.assistant strong { color: #fff; font-weight: 700; }
+    .msg.assistant em { color: #ddd; }
+    .msg.assistant ul, .msg.assistant ol { padding-left: 1.3em; margin: 4px 0; }
+    .msg.assistant li { margin: 2px 0; }
+    .msg.assistant p { margin-bottom: 0.4em; }
+    .msg.assistant p:last-child { margin-bottom: 0; }
+    .msg.assistant code {
+      background: #1a1a1a; border-radius: 3px; padding: 1px 4px; font-size: 0.85em;
+    }
+    .msg.assistant.streaming::after {
+      content: '▌';
+      display: inline-block;
+      animation: blink 0.7s steps(1) infinite;
+      color: #f39c12;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .msg.system {
+      align-self: center;
+      background: transparent;
+      color: #888;
+      font-size: 0.8rem;
+      font-style: italic;
+      max-width: 100%;
+      text-align: center;
+    }
+
+    #suggestions {
+      padding: 0 20px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .chip {
+      background: #2c2c2c;
+      border: 1px solid #444;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: #f0ece4;
+      transition: background 0.15s;
+    }
+    .chip:hover { background: #3a3a3a; }
+    .chip:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    #prompt-log {
+      border-top: 1px solid #333;
+      background: #0d0d0d;
+      font-size: 0.72rem;
+      font-family: monospace;
+      flex-shrink: 0;
+      max-height: 220px;
+      overflow-y: auto;
+      display: none;
+    }
+    #prompt-log.visible { display: block; }
+    #prompt-log-header {
+      position: sticky;
+      top: 0;
+      background: #0d0d0d;
+      padding: 5px 16px;
+      color: #666;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #222;
+    }
+    #prompt-log-header span { flex: 1; }
+    #prompt-log-header button {
+      background: none; border: none; color: #555; cursor: pointer; font-size: 0.7rem;
+    }
+    #prompt-log-header button:hover { color: #aaa; }
+    .pl-entry { border-bottom: 1px solid #1a1a1a; padding: 6px 16px; }
+    .pl-entry summary {
+      cursor: pointer; color: #666; user-select: none; padding: 2px 0;
+      list-style: none; display: flex; gap: 8px; align-items: baseline;
+    }
+    .pl-entry summary::-webkit-details-marker { display: none; }
+    .pl-entry summary::before { content: '▶'; font-size: 0.6rem; color: #555; }
+    .pl-entry[open] summary::before { content: '▼'; }
+    .pl-entry summary .pl-seq { color: #f39c12; font-weight: 700; }
+    .pl-entry summary .pl-meta { color: #555; }
+    .pl-messages { margin-top: 4px; }
+    .pl-msg { margin: 4px 0; }
+    .pl-msg .pl-role { font-weight: 700; margin-right: 6px; }
+    .pl-msg.pl-system .pl-role { color: #7ecbff; }
+    .pl-msg.pl-user   .pl-role { color: #c0392b; }
+    .pl-msg.pl-assistant .pl-role { color: #27ae60; }
+    .pl-msg .pl-body { color: #aaa; white-space: pre-wrap; word-break: break-word; }
+
+    #input-row {
+      display: flex;
+      gap: 10px;
+      padding: 12px 20px 16px;
+      flex-shrink: 0;
+      background: #111;
+    }
+    #user-input {
+      flex: 1;
+      background: #2c2c2c;
+      border: 1px solid #444;
+      border-radius: 24px;
+      padding: 10px 16px;
+      color: #f0ece4;
+      font-size: 0.92rem;
+      outline: none;
+    }
+    #user-input:focus { border-color: #c0392b; }
+    #send-btn, #stop-btn {
+      border: none;
+      border-radius: 24px;
+      padding: 10px 20px;
+      color: #fff;
+      font-size: 0.92rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    #send-btn { background: #c0392b; }
+    #send-btn:hover:not(:disabled) { background: #a93226; }
+    #send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    #stop-btn { background: #555; display: none; }
+    #stop-btn:hover { background: #666; }
+  </style>
+</head>
+<body>
+
+<header>
+  <span>🍕</span>
+  <h1>PizzAI — Napoli Express</h1>
+  <a id="back-btn" href="index.html">← Runtimes</a>
+  <button id="toggle-log" onclick="toggleLog()">🔬 Prompt-Log</button>
+</header>
+
+<div id="status-bar">
+  <div class="dot loading" id="status-dot"></div>
+  <span id="progress-text">Lade Modell…</span>
+  <span id="runtime-badge">🤗 Transformers.js</span>
+</div>
+<div id="dl-bar"><div id="dl-bar-fill"></div></div>
+
+<div id="order-bar">
+  <span class="ob-label">Bestellung:</span>
+  <span class="ob-items" id="ob-items"></span>
+  <span class="ob-total" id="ob-total"></span>
+  <button class="ob-clear" onclick="clearOrder()">✕ löschen</button>
+</div>
+
+<div id="chat">
+  <div class="msg system">Alle Berechnungen laufen lokal in deinem Browser. Es werden keine Daten übertragen.</div>
+</div>
+
+<div id="step-hint"></div>
+
+<div id="suggestions"></div>
+
+<div id="prompt-log" class="visible">
+  <div id="prompt-log-header">
+    <span>🔬 Prompt-Log</span>
+    <button onclick="document.getElementById('prompt-log').classList.remove('visible')">✕</button>
+  </div>
+  <div id="prompt-log-entries"></div>
+</div>
+
+<div id="input-row">
+  <input id="user-input" type="text" placeholder="Frag nach unserem Menü, bestell eine Pizza oder frag nach Lieferzeiten…" disabled />
+  <button id="send-btn" disabled onclick="sendMessage()">Senden</button>
+  <button id="stop-btn" onclick="requestStop()">Stopp</button>
+</div>
+
+<script type="module">
+  import { pipeline, env, TextStreamer } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3/dist/transformers.min.js';
+
+  env.useBrowserCache = true;
+  env.allowLocalModels = false;
+
+  // ── Device-adaptive model selection ───────────────────────────────────────
+
+  const MODELS = {
+    mobile:  { id: 'onnx-community/Qwen2.5-0.5B-Instruct', size: '~300 MB',  label: 'Qwen2.5-0.5B' },
+    desktop: { id: 'onnx-community/Qwen2.5-3B-Instruct',   size: '~1,8 GB', label: 'Qwen2.5-3B'   },
+  };
+
+  function detectDevice() {
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) return 'mobile';
+    if (/Android/i.test(navigator.userAgent) && window.screen.width < 768) return 'mobile';
+    return 'desktop';
+  }
+
+  const selectedModel = MODELS[detectDevice()];
+
+  // ── Business data ──────────────────────────────────────────────────────────
+
+  const MENU = [
+    { id: 'marg',    name: 'Margherita',       desc: 'tomato, mozzarella, basil',                tags: ['V'],        prices: { S: 8,  M: 11, L: 14 }, prep: 10 },
+    { id: 'diav',    name: 'Diavola',           desc: 'spicy salami, tomato, mozzarella',         tags: [],           prices: { S: 10, M: 13, L: 16 }, prep: 12 },
+    { id: 'quat',    name: 'Quattro Stagioni',  desc: 'ham, artichoke, mushroom, olive',          tags: [],           prices: { S: 11, M: 14, L: 17 }, prep: 14 },
+    { id: 'orto',    name: 'Ortolana',          desc: 'grilled zucchini, peppers, aubergine',     tags: ['V', 'VG'],  prices: { S: 10, M: 13, L: 16 }, prep: 12 },
+    { id: 'napo',    name: 'Napoletana',        desc: 'anchovy, caper, olive, tomato',            tags: [],           prices: { S: 9,  M: 12, L: 15 }, prep: 10 },
+    { id: 'fung',    name: 'Funghi',            desc: 'mixed mushrooms, truffle oil, mozzarella', tags: ['V'],        prices: { S: 9,  M: 12, L: 15 }, prep: 11 },
+    { id: 'bufa',    name: 'Bufalina',          desc: 'buffalo mozzarella, cherry tomato, basil', tags: ['V'],        prices: { S: 11, M: 14, L: 17 }, prep: 10 },
+    { id: 'cala',    name: 'Calabrese',         desc: 'nduja, red onion, provola',                tags: [],           prices: { S: 10, M: 13, L: 16 }, prep: 12 },
+    { id: 'gfmarg',  name: 'Margherita GF',     desc: 'GF base, tomato, mozzarella, basil',       tags: ['V', 'GF'],  prices: { S: 10, M: 13, L: 16 }, prep: 13 },
+    { id: 'green',   name: 'Green Garden',      desc: 'GF base, cashew cream, spinach, artichoke',tags: ['VG', 'GF'], prices: { S: 12, M: 15, L: 18 }, prep: 15 },
+  ];
+
+  const ZONES = [
+    { id: 'near', label: 'Centro (< 2 km)',  mins: 10, fee: 0 },
+    { id: 'mid',  label: 'Medio (2–5 km)',   mins: 20, fee: 2 },
+    { id: 'far',  label: 'Periferia (5–8 km)', mins: 30, fee: 4 },
+  ];
+
+  const BUSINESS = {
+    openHour: 11, closeHour: 22, lastOrderMinsBefore: 30,
+    peakHours: [12, 13, 19, 20, 21], peakMultiplier: 1.4,
+    minFreeDelivery: 25, totalDrivers: 4,
+  };
+
+  const DAILY_SPECIALS = [
+    'Sonntag: **Margherita** Medium zum Klein-Preis',
+    'Montag: **Funghi** — kostenloses Trüffelöl-Upgrade',
+    'Dienstag: **Diavola** — 2-für-1 bei Groß',
+    'Mittwoch: **Ortolana** — €2 Rabatt auf alle Größen',
+    'Donnerstag: **Bufalina** — kostenloser Größenaufstieg S→M',
+    'Freitag: **Calabrese** — kostenloses Knoblauchbrot',
+    'Samstag: **Quattro Stagioni** Groß — €3 Rabatt',
+  ];
+
+  // ── Simulation helpers ─────────────────────────────────────────────────────
+
+  function getDriverState() {
+    const now = new Date();
+    const seed = now.getHours() * 60 + now.getMinutes();
+    const available = Math.max(1, BUSINESS.totalDrivers - Math.floor((seed % 7) / 2));
+    const nextFreeIn = available < BUSINESS.totalDrivers ? 5 + (seed % 18) : 0;
+    return { available, nextFreeIn };
+  }
+
+  function isOpen() {
+    const now = new Date();
+    const h = now.getHours(), m = now.getMinutes();
+    if (h < BUSINESS.openHour) return false;
+    if (h > BUSINESS.closeHour) return false;
+    if (h === BUSINESS.closeHour) return false;
+    if (h === BUSINESS.closeHour - 1 && m >= (60 - BUSINESS.lastOrderMinsBefore)) return false;
+    return true;
+  }
+
+  function isPeak() {
+    return BUSINESS.peakHours.includes(new Date().getHours());
+  }
+
+  // ── Order state ────────────────────────────────────────────────────────────
+
+  let orderState = { phase: 'browsing', items: [], zone: null, confirmed: false };
+
+  function resetOrder() {
+    orderState = { phase: 'browsing', items: [], zone: null, confirmed: false };
+  }
+
+  function orderSubtotal() {
+    return orderState.items.reduce((s, i) => s + i.price * i.qty, 0);
+  }
+
+  function calculateEstimate() {
+    if (!orderState.items.length || !orderState.zone) return null;
+    const mult = isPeak() ? BUSINESS.peakMultiplier : 1.0;
+    const prepTimes = orderState.items.map(i => {
+      const pizza = MENU.find(m => m.id === i.id);
+      return (pizza?.prep ?? 12) * mult;
+    });
+    const maxPrep = Math.max(...prepTimes);
+    const totalQty = orderState.items.reduce((s, i) => s + i.qty, 0);
+    const extraPizzas = Math.max(0, totalQty - 3);
+    const prepMins = Math.ceil(maxPrep + extraPizzas * 3);
+    const zone = ZONES.find(z => z.id === orderState.zone);
+    const drivers = getDriverState();
+    const driverWait = drivers.available > 0 ? 0 : drivers.nextFreeIn;
+    return {
+      prep: prepMins,
+      delivery: zone.mins,
+      driverWait,
+      total: prepMins + zone.mins + driverWait,
+      fee: zone.fee,
+    };
+  }
+
+  function parseUserIntent(text) {
+    const lower = text.toLowerCase();
+
+    if (/neu starten|bestellung abbrechen|bestellung löschen|neue bestellung|start over|cancel order|clear order|new order/i.test(lower)) {
+      resetOrder();
+      updateChips();
+      updateOrderBar();
+      return;
+    }
+
+    for (const pizza of MENU) {
+      if (lower.includes(pizza.name.toLowerCase()) || lower.includes(pizza.id)) {
+        const size = /\bgro(ß|ss)\b|large|grande/i.test(lower) ? 'L' : /\bklein\b|small|piccol/i.test(lower) ? 'S' : 'M';
+        const qtyMatch = lower.match(/(\d+)\s*x\b/) || lower.match(/\b(\d+)\s+(?:of\s+)?(?:the\s+)?(?:a\s+)?/i);
+        const qty = qtyMatch ? Math.min(parseInt(qtyMatch[1], 10), 10) : 1;
+        const existing = orderState.items.find(i => i.id === pizza.id && i.size === size);
+        if (existing) {
+          existing.qty += qty;
+        } else {
+          orderState.items.push({ id: pizza.id, name: pizza.name, size, qty, price: pizza.prices[size] });
+        }
+        if (orderState.phase === 'browsing') orderState.phase = 'selecting';
+      }
+    }
+
+    if (/\bcentro\b|< ?2\s*km|\bnear\b|city.?cent/i.test(lower)) {
+      orderState.zone = 'near';
+      if (orderState.items.length) orderState.phase = 'address';
+    } else if (/\bmedio\b|2.?5\s*km|\bmid\b/i.test(lower)) {
+      orderState.zone = 'mid';
+      if (orderState.items.length) orderState.phase = 'address';
+    } else if (/\bperif/i.test(lower) || /5.?8\s*km/i.test(lower) || /\bfar\b/i.test(lower)) {
+      orderState.zone = 'far';
+      if (orderState.items.length) orderState.phase = 'address';
+    }
+
+    if (/das (ist|w[äa]re) alles|bestellung (abschlie[ßs]en|fertig|abgeben)|fertig.*bestell/i.test(lower) ||
+        /that.?s (all|it)|done.*order|finish.*order|ready.*order/i.test(lower)) {
+      if (orderState.items.length && !orderState.zone) {
+        orderState.phase = 'address';
+      }
+    }
+
+    if (/\bbestätigen\b|\bbestätigt\b|bestellung aufgeben|ja.*bestätigen|ja.*bestell|place.*order|yes.*confirm|order.*confirm|\bconfirm\b/i.test(lower)) {
+      if (orderState.items.length && orderState.zone) {
+        orderState.phase = 'confirmed';
+        orderState.confirmed = true;
+      }
+    }
+
+    updateChips();
+    updateOrderBar();
+  }
+
+  // ── System prompt ──────────────────────────────────────────────────────────
+
+  function buildSystemPrompt() {
+    const now = new Date();
+    const h = now.getHours(), m = now.getMinutes();
+    const timeStr = `${h}:${String(m).padStart(2, '0')}`;
+    const drivers = getDriverState();
+    const open = isOpen();
+    const peak = isPeak();
+    const special = DAILY_SPECIALS[now.getDay()];
+
+    const activePromos = [];
+    if (h >= 15 && h < 17) activePromos.push('Happy Hour -15%');
+    activePromos.push('2 Mittlere Pizzen + Getränk = -€3', `Kostenlose Lieferung ab €${BUSINESS.minFreeDelivery}`);
+
+    const menuLines = MENU.map(p =>
+      `${p.name}${p.tags.length ? ' [' + p.tags.join(',') + ']' : ''}: K€${p.prices.S}/M€${p.prices.M}/G€${p.prices.L} — ${p.desc}`
+    ).join('\n');
+
+    let orderCtx = '';
+    if (orderState.items.length > 0) {
+      const itemsStr = orderState.items.map(i => `${i.qty}×${i.name}(${i.size})`).join(', ');
+      const sub = orderSubtotal();
+      orderCtx = `\nAKTUELLE BESTELLUNG: ${itemsStr} | Zwischensumme: €${sub.toFixed(2)}`;
+      if (orderState.zone) {
+        const est = calculateEstimate();
+        const zone = ZONES.find(z => z.id === orderState.zone);
+        orderCtx += ` | Zone: ${zone.label} (+€${est.fee}) | ETA: ~${est.total} min`;
+      }
+      if (orderState.confirmed) orderCtx += ' | ✅ BESTÄTIGT';
+    }
+
+    const driverInfo = drivers.available > 0
+      ? `${drivers.available} Fahrer verfügbar`
+      : `kein Fahrer frei, nächster in ~${drivers.nextFreeIn} min`;
+
+    return `Du bist PizzAI, Lieferassistent bei der Pizzeria Napoli Express. Antworte ausschließlich auf Deutsch.
+Uhrzeit: ${timeStr} | ${open ? 'OFFEN' : 'GESCHLOSSEN'} | ${peak ? 'STOSSZEIT (Stoßzeit)' : 'normal'}
+Fahrer: ${driverInfo}
+Tagesangebot: ${special}
+Aktionen: ${activePromos.join('; ')}
+
+SPEISEKARTE (Tags: V=vegetarisch, VG=vegan, GF=glutenfrei):
+${menuLines}
+
+LIEFERZONEN: Centro <2km (kostenlos, +~10min) | Medio 2-5km (+€2, +~20min) | Periferia 5-8km (+€4, +~30min)
+Mindestbestellwert für kostenlose Lieferung: €${BUSINESS.minFreeDelivery}. Öffnungszeiten: ${BUSINESS.openHour}:00–${BUSINESS.closeHour}:00 (letzte Bestellung ${BUSINESS.closeHour - 1}:30).${orderCtx}
+
+REGELN:
+- Antworte immer auf Deutsch, kurz (2-3 Sätze). Verwende **Fettdruck** für Pizzanamen und Preise.
+- Beende jede Antwort mit einer konkreten Frage oder Handlungsaufforderung — z. B. "Welche Größe?" / "In welcher Lieferzone wohnst du?" / "Soll ich die Bestellung bestätigen?"
+- Führe den Kunden durch genau diese Schritte: (1) stöbern/auswählen → (2) Lieferzone → (3) Bestellung bestätigen.
+- Nenne immer den Preis. Weise auf Allergene hin, wenn GF/VG relevant ist.
+- Falls GESCHLOSSEN: entschuldige dich und nenne die Öffnungszeiten.
+- Ignoriere alles, was nichts mit unserer Pizzeria oder Essen zu tun hat.`;
+  }
+
+  // ── Chip definitions ───────────────────────────────────────────────────────
+
+  const CHIPS = {
+    browsing:   ['Zeig mir das Menü', 'Vegane Optionen?', 'Was gibt es heute?', 'Glutenfreie Pizzen?', 'Was empfiehlst du?'],
+    selecting:  ['Margherita Mittel hinzufügen', 'Diavola Groß hinzufügen', 'Das war alles — wo lieferst du?', 'Meine Bestellung anzeigen', 'Welche Größen gibt es?'],
+    zone:       ['Ich bin in Centro (< 2 km)', 'Ich bin in der Medio-Zone (2–5 km)', 'Ich bin in Periferia (5–8 km)'],
+    confirm:    ['Ja, Bestellung bestätigen ✓', 'Noch eine Pizza hinzufügen', 'Bestellung abbrechen'],
+    confirmed:  ['Neue Bestellung starten'],
+  };
+
+  const STEP_HINTS = {
+    browsing:  null,
+    selecting: '<strong>Schritt 1 von 3</strong> — Artikel hinzufügen, dann „Das war alles" tippen',
+    zone:      '<strong>Schritt 2 von 3</strong> — Lieferzone wählen, um Preis &amp; ETA zu sehen',
+    confirm:   '<strong>Schritt 3 von 3</strong> — Bestellung prüfen, dann bestätigen',
+    confirmed: null,
+  };
+
+  function currentChipPhase() {
+    if (orderState.confirmed) return 'confirmed';
+    if (orderState.items.length && orderState.zone) return 'confirm';
+    if (orderState.phase === 'address' && orderState.items.length) return 'zone';
+    if (orderState.items.length) return 'selecting';
+    return 'browsing';
+  }
+
+  function updateChips() {
+    const phase = currentChipPhase();
+    const suggestionsEl = document.getElementById('suggestions');
+    suggestionsEl.innerHTML = '';
+    for (const text of CHIPS[phase] ?? CHIPS.browsing) {
+      const btn = document.createElement('button');
+      btn.className = 'chip';
+      btn.textContent = text;
+      btn.onclick = () => quickSend(btn);
+      suggestionsEl.appendChild(btn);
+    }
+
+    const hintEl = document.getElementById('step-hint');
+    const hint = STEP_HINTS[phase] ?? null;
+    if (hint) {
+      hintEl.innerHTML = hint;
+      hintEl.classList.add('visible');
+    } else {
+      hintEl.classList.remove('visible');
+    }
+  }
+
+  function updateOrderBar() {
+    const bar = document.getElementById('order-bar');
+    if (!orderState.items.length) {
+      bar.classList.remove('visible');
+      return;
+    }
+    bar.classList.add('visible');
+    const itemsEl = document.getElementById('ob-items');
+    const totalEl = document.getElementById('ob-total');
+    const qtyTotal = orderState.items.reduce((s, i) => s + i.qty, 0);
+    itemsEl.textContent = orderState.items.map(i => `${i.qty}× ${i.name} (${i.size})`).join(', ');
+    const sub = orderSubtotal();
+    const zone = orderState.zone ? ZONES.find(z => z.id === orderState.zone) : null;
+    const fee = zone ? zone.fee : null;
+    const total = fee !== null ? sub + fee : sub;
+    totalEl.textContent = fee !== null
+      ? `€${total.toFixed(2)} inkl. €${fee} Lieferung`
+      : `€${sub.toFixed(2)} (+Lieferung)`;
+    bar.querySelector('.ob-label').textContent = `${qtyTotal} Pizza${qtyTotal > 1 ? 's' : ''}:`;
+  }
+
+  // ── Model & conversation ───────────────────────────────────────────────────
+
+  const history = [];
+  let generator = null;
+  let ready = false;
+  let stopRequested = false;
+
+  const statusDot    = document.getElementById('status-dot');
+  const progressText = document.getElementById('progress-text');
+  const dlBar        = document.getElementById('dl-bar');
+  const dlBarFill    = document.getElementById('dl-bar-fill');
+  const input        = document.getElementById('user-input');
+  const sendBtn      = document.getElementById('send-btn');
+  const stopBtn      = document.getElementById('stop-btn');
+  const chatEl       = document.getElementById('chat');
+
+  marked.use({ breaks: true });
+
+  function setStatus(state, text) {
+    statusDot.className = 'dot ' + state;
+    progressText.textContent = text;
+  }
+
+  function setBusy(busy) {
+    if (busy) {
+      sendBtn.style.display = 'none';
+      stopBtn.style.display = '';
+      input.disabled = true;
+      document.querySelectorAll('.chip').forEach(c => c.disabled = true);
+    } else {
+      stopBtn.style.display = 'none';
+      sendBtn.style.display = '';
+      sendBtn.disabled = false;
+      input.disabled = false;
+      input.focus();
+      document.querySelectorAll('.chip').forEach(c => c.disabled = false);
+    }
+  }
+
+  function addMsg(role, content) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + role;
+    if (role === 'assistant') {
+      div.innerHTML = marked.parse(content);
+    } else {
+      div.textContent = content;
+    }
+    chatEl.appendChild(div);
+    chatEl.scrollTop = chatEl.scrollHeight;
+    return div;
+  }
+
+  const downloads = {};
+  function onProgress(p) {
+    if (p.status === 'downloading' && p.total) {
+      downloads[p.file] = { loaded: p.loaded, total: p.total };
+      const loaded = Object.values(downloads).reduce((s, d) => s + d.loaded, 0);
+      const total  = Object.values(downloads).reduce((s, d) => s + d.total,  0);
+      const pct = Math.round((loaded / total) * 100);
+      dlBarFill.style.width = pct + '%';
+      setStatus('loading', `Lade Modell — ${pct}%`);
+    } else if (p.status === 'loading') {
+      setStatus('loading', `Lade ${p.file}…`);
+    }
+  }
+
+  async function loadModel(modelId, device) {
+    return pipeline('text-generation', modelId, {
+      dtype: 'q4', device, progress_callback: onProgress,
+    });
+  }
+
+  async function init() {
+    updateChips();
+    document.getElementById('runtime-badge').textContent = `🤗 ${selectedModel.label}`;
+    setStatus('loading', `Lade Modell ${selectedModel.label}… (erster Besuch ${selectedModel.size} Download, danach gecacht)`);
+    try {
+      generator = await loadModel(selectedModel.id, 'webgpu');
+    } catch {
+      setStatus('loading', 'WebGPU nicht verfügbar, falle auf WASM zurück…');
+      generator = await loadModel(selectedModel.id, 'wasm');
+    }
+
+    ready = true;
+    dlBar.classList.add('done');
+    setStatus('ready', 'Modell bereit — läuft 100% lokal in deinem Browser');
+    setBusy(false);
+
+    addMsg('assistant', "Hallo! 👋 Willkommen bei **Napoli Express**. Ich nehme deine Lieferbestellung in 3 Schritten auf: Pizzen wählen → Zone angeben → bestätigen. Nutze die Schnellauswahl unten oder tippe einfach. **Was möchtest du bestellen?**");
+  }
+
+  window.requestStop = function () { stopRequested = true; };
+
+  window.clearOrder = function () {
+    resetOrder();
+    updateChips();
+    updateOrderBar();
+    addMsg('system', 'Bestellung gelöscht. Jederzeit neu starten!');
+  };
+
+  let promptSeq = 0;
+
+  function logPrompt(messages) {
+    promptSeq++;
+    const entries = document.getElementById('prompt-log-entries');
+    const details = document.createElement('details');
+    details.className = 'pl-entry';
+    const totalChars = messages.reduce((s, m) => s + m.content.length, 0);
+    details.innerHTML = `<summary>
+      <span class="pl-seq">#${promptSeq}</span>
+      <span class="pl-meta">${messages.length} messages · ${totalChars} chars</span>
+    </summary>
+    <div class="pl-messages">${messages.map(m => `
+      <div class="pl-msg pl-${m.role}">
+        <span class="pl-role">[${m.role}]</span><span class="pl-body">${escHtml(m.content)}</span>
+      </div>`).join('')}
+    </div>`;
+    entries.appendChild(details);
+    entries.scrollTop = entries.scrollHeight;
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  window.toggleLog = function () {
+    document.getElementById('prompt-log').classList.toggle('visible');
+  };
+
+  async function generate(userText) {
+    parseUserIntent(userText);
+    history.push({ role: 'user', content: userText });
+
+    const trimmed = history.length > 8 ? history.slice(-8) : history;
+    const messages = [{ role: 'system', content: buildSystemPrompt() }, ...trimmed];
+    logPrompt(messages);
+
+    const assistantDiv = document.createElement('div');
+    assistantDiv.className = 'msg assistant streaming';
+    chatEl.appendChild(assistantDiv);
+    chatEl.scrollTop = chatEl.scrollHeight;
+
+    let streamBuffer = '';
+    stopRequested = false;
+
+    const streamer = new TextStreamer(generator.tokenizer, {
+      skip_prompt: true,
+      skip_special_tokens: true,
+      callback_function: (token) => {
+        if (stopRequested) return;
+        streamBuffer += token;
+        assistantDiv.innerHTML = marked.parse(streamBuffer);
+        chatEl.scrollTop = chatEl.scrollHeight;
+      },
+    });
+
+    const result = await generator(messages, {
+      max_new_tokens: 256,
+      temperature: 0.7,
+      do_sample: true,
+      repetition_penalty: 1.1,
+      streamer,
+    });
+
+    assistantDiv.classList.remove('streaming');
+
+    const fullReply = result?.[0]?.generated_text?.at(-1)?.content?.trim() ?? streamBuffer;
+    if (!stopRequested) {
+      assistantDiv.innerHTML = marked.parse(fullReply);
+    }
+
+    history.push({ role: 'assistant', content: fullReply });
+  }
+
+  window.sendMessage = async function () {
+    const text = input.value.trim();
+    if (!text || !ready) return;
+    input.value = '';
+    setBusy(true);
+    addMsg('user', text);
+    setStatus('loading', 'Generiere…');
+
+    try {
+      await generate(text);
+    } catch (err) {
+      addMsg('system', '⚠️ ' + err.message);
+      setStatus('error', 'Inferenzfehler');
+    } finally {
+      if (ready) {
+        setStatus('ready', 'Modell bereit — läuft 100% lokal in deinem Browser');
+        setBusy(false);
+      }
+    }
+  };
+
+  window.quickSend = function (btn) {
+    if (!ready) return;
+    input.value = btn.textContent;
+    sendMessage();
+  };
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+
+  init();
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+<div class="snackbar-content snackbar-content--{{ type() }}">
+  <mat-icon class="snackbar-icon">{{ getIcon() }}</mat-icon>
+  <span class="snackbar-message">{{ data.message }}</span>
+  @if (data.showCloseButton) {
+    <button mat-icon-button class="snackbar-close" (click)="close()" aria-label="Close">
+      <mat-icon>close</mat-icon>
+    </button>
+  }
+</div>

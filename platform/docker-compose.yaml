@@ -1,0 +1,45 @@
+networks:
+  default:
+    name: docker-default-network
+    external: true
+
+services:
+  shell:
+    image: shell
+    build:
+      context: .
+      dockerfile: Dockerfile
+      network: host
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.shell.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.shell.entrypoints=web,websecure"
+      - "traefik.http.services.shell.loadbalancer.healthcheck.path=/"
+      - "traefik.http.services.shell.loadbalancer.healthcheck.port=80"
+      - "traefik.http.routers.shell.priority=100"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  forward-ng-shell:
+    image: forward:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.forward-ng-shell.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.forward-ng-shell.entrypoints=web,websecure"
+      - "traefik.http.services.forward-ng-shell.loadbalancer.server.port=4200"
+      - "traefik.http.services.forward-ng-shell.loadbalancer.healthcheck.path=/"
+      - "traefik.http.services.forward-ng-shell.loadbalancer.healthcheck.port=4200"
+      - "traefik.http.routers.forward-ng-shell.priority=101"
+    environment:
+      - LISTEN_PORT=4200
+      - TARGET_HOST=traefik-microstack
+      - TARGET_PORT=4200
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4200/"]
+      interval: 10s
+      timeout: 10s
+      retries: 10

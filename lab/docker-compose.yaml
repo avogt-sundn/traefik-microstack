@@ -1,0 +1,48 @@
+name: lab
+
+networks:
+  default:
+    name: docker-default-network
+    external: true
+
+include:
+  - debezium-cdc/docker-compose.yaml
+  - bulk-index-latency/docker-compose.yaml
+  - browser-llm/docker-compose.yaml
+
+services:
+  postgres-lab:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app-lab-db
+    # wal_level=logical is required by Debezium; harmless for other proofs
+    command: ["postgres", "-c", "wal_level=logical"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - pg-lab-data:/var/lib/postgresql
+
+  proof-bigint-vs-uuid:
+    build:
+      context: ./bigint-vs-uuid
+    depends_on:
+      postgres-lab:
+        condition: service_healthy
+    environment:
+      PGHOST: postgres-lab
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: app-lab-db
+    healthcheck:
+      test: ["CMD", "true"]
+      interval: 10s
+      timeout: 5s
+      retries: 1
+
+volumes:
+  pg-lab-data:

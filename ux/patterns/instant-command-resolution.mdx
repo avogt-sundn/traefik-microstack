@@ -1,0 +1,142 @@
+# Pattern: Instant Command Resolution
+
+**Intent:** Resolve typed tokens to domain objects with no perceptible latency — every keystroke produces a visible preview update within ~50 ms, regardless of backend round-trip time.
+
+---
+
+## When to use
+
+| Use-case characteristic | Indicator |
+|---|---|
+| User types tokens that must resolve to domain objects | yes |
+| Resolution must feel synchronous (command field, typeahead, live search) | yes |
+| Result set per token type is bounded and enumerable | yes |
+| Backend response time is > 20 ms (any real network) | yes |
+| User is on a fast internal network (IHK intranet) | relaxes but does not remove the requirement |
+
+Apply this pattern when the UI **must never wait for the network to show a preview** — the response should already be in the client when the key lands.
+
+---
+
+## Core principle
+
+**The client resolves; the backend prefills.** The command field never fires a request on keydown. All visible suggestions come from data that arrived before the user started typing. The backend's job is to anticipate what the user will need next and ship it ahead of time.
+
+---
+
+## Strategies
+
+### 1. Warm cache on entity anchor lock
+
+When the user locks an entity token (presses Space after a Firma or Carnet resolves), immediately fetch and cache **all data needed for every action on that entity**:
+
+- Related objects (all Carnets for a Firma, all Prüfungen for a Firma)
+- Current field values (Inhaber, Limit, Adresse, Status)
+- Allowed actions for the current user + entity combination
+- All potential parameter values (all active Firmen for Inhaber wechseln, etc.)
+
+This one request — fired the moment Space is pressed — pre-fills everything shown in State B through E4. The user is still typing the action token when the payload arrives; the client is ready before they press Space again.
+
+**Payload shape (example — Carnet anchor):**
+
+```json
+{
+  "carnet": { "id": "2024-00456", "inhaber": "Günther Maschinenbau AG", "limit": 45000, "status": "aktiv" },
+  "actions": ["inhaber_wechseln", "limit_aendern", "sperren"],
+  "parameters": {
+    "inhaber_wechseln": [
+      { "id": "firma-002", "name": "Müller Werkzeugbau GmbH", "kammer": "Aachen", "status": "aktiv" },
+      { "id": "firma-003", "name": "Becker Präzisionstechnik GmbH", "kammer": "München", "status": "aktiv" },
+      { "id": "firma-004", "name": "Schmidt & Söhne Logistik KG", "kammer": "München", "status": "gesperrt" }
+    ],
+    "limit_aendern": { "current": 45000, "currency": "EUR" }
+  }
+}
+```
+
+One round-trip. Client filters and ranks locally on every keystroke.
+
+---
+
+### 2. Speculative prefetch on partial input
+
+While the user is still typing (before Space), begin fetching the top candidate's anchor payload **speculatively**, using the current top autocomplete match:
+
+- Trigger: top match changes AND has been stable for ~150 ms (debounce prevents churn)
+- Cancel: if the user types more and a different match becomes top, cancel the in-flight request and issue a new one
+- On arrival: store in a keyed cache (`entity-type:id`); serve instantly if the user locks that match
+
+This means the warm-cache payload (Strategy 1) often arrives **before** Space is pressed, not after.
+
+---
+
+### 3. Load-ahead on Zone 3 scroll / Offene Vorgänge render
+
+When the Vorgangsstrahl or Offene Vorgänge list renders, prefetch anchor payloads for every entity visible in the viewport:
+
+- Batch the IDs into a single multi-entity request
+- Priority: entities in Offene Vorgänge first (the clerk is most likely to act on those next)
+- Result: clicking any row in Offene Vorgänge pre-fills the command field with a token whose anchor payload is already cached
+
+---
+
+### 4. Global entity index in memory
+
+On session start (or after login), fetch a compact **entity index** — the minimal set of fields needed to match tokens:
+
+| Entity type | Fields to index |
+|---|---|
+| Firma | id, name, kammer, status, alphacode |
+| Carnet | id, number, inhaber_name, inhaber_id, status |
+| Prüfung | id, number, firma_name, firma_id, termin, status |
+
+This index fits in a few hundred KB (typical IHK chamber: < 5000 active entities). All token matching — number prefixes, name substrings, synonym expansion — runs against this in-memory index. Zero network latency for the autocomplete dropdown.
+
+Refresh strategy: subscribe to a server-sent event stream; the backend pushes delta events (`entity_updated`, `entity_created`) so the index stays current without polling.
+
+---
+
+### 5. Co-packaged confirmation payload
+
+When the user locks the final parameter chip (command fully resolved, State C / E4), the confirmation panel must appear instantly. Package the confirmation data **inside the anchor payload** (Strategy 1) so no second request is needed:
+
+- Confirmation text template: `"Inhaber wechseln zu: {parameter.name}"` — rendered client-side from cached data
+- Validation result: include `allowed: true/false` and `reason` for each parameter candidate so the inline error (`gesperrt, nicht erlaubt`) can be shown without a round-trip
+
+---
+
+### 6. Stale-while-revalidate for anchor payloads
+
+Cache anchor payloads with a short TTL (e.g. 30 s). On a cache hit: serve immediately (zero latency), then revalidate in the background. If the background response differs (e.g. Inhaber changed since the payload was cached), update the displayed `Aktueller Inhaber` row in place — no flicker, no re-render of the command field.
+
+Mark stale data visually only if the conflict is action-critical: show a subtle `⟳ Aktualisiert` badge on the affected field if the revalidation changed a value the clerk was about to act on.
+
+---
+
+## Decision table
+
+| Situation | Strategy |
+|---|---|
+| User locks entity token (Space after match) | Warm cache — Strategy 1 |
+| User is typing, top match stable > 150 ms | Speculative prefetch — Strategy 2 |
+| Zone 3 / Offene Vorgänge rendered | Viewport prefetch — Strategy 3 |
+| Session start | Global index load — Strategy 4 |
+| Confirmation panel must appear | Co-packaged payload — Strategy 5 |
+| Cached payload > 30 s old | Stale-while-revalidate — Strategy 6 |
+
+---
+
+## What NOT to do
+
+- Do not fire a request on every keydown — debounce is not enough; the goal is zero keydown requests
+- Do not show a spinner in the autocomplete row — if data is not ready, show the stale suggestion silently; update when it arrives
+- Do not lazy-load action metadata after the action token is locked — it must be in the anchor payload
+- Do not use separate endpoints per action type — co-package all action data in the anchor payload to keep it to one round-trip per entity
+
+---
+
+## When not to use
+
+- Forms where the user fills in free-text fields with no entity resolution (no tokens to match → no prefetch to do)
+- Admin screens used < once per day where latency is acceptable
+- Entity sets too large to index in memory (> ~50 000 active records) → use server-side prefix search with a fast index (Elasticsearch, pg_trgm) and accept one request per token, targeting < 30 ms

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PizzAI — Runtime wählen</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: #1a1a1a;
+      color: #f0ece4;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #c0392b;
+      padding: 28px 20px;
+      text-align: center;
+    }
+    header h1 { font-size: 1.45rem; margin-bottom: 8px; }
+    header p { font-size: 0.85rem; opacity: 0.85; }
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 24px;
+      padding: 48px 20px;
+      flex-wrap: wrap;
+    }
+    .card {
+      background: #2c2c2c;
+      border: 1px solid #3a3a3a;
+      border-radius: 16px;
+      padding: 28px 24px;
+      width: 280px;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .card:hover { border-color: #c0392b; transform: translateY(-3px); }
+    .card-icon { font-size: 2.4rem; margin-bottom: 14px; }
+    .card h2 { font-size: 1.05rem; margin-bottom: 8px; color: #fff; }
+    .card .desc { font-size: 0.83rem; color: #aaa; line-height: 1.55; }
+    .card .model { font-size: 0.78rem; color: #888; margin-top: 10px; }
+    .card .model strong { color: #bbb; font-weight: 500; }
+    .badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-top: 14px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .badge-hf  { background: #f5a623; color: #1a1a1a; }
+    .badge-mlc { background: #2ecc71; color: #1a1a1a; }
+    footer {
+      text-align: center;
+      padding: 16px;
+      font-size: 0.75rem;
+      color: #555;
+      border-top: 1px solid #2a2a2a;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>🍕 PizzAI — Napoli Express</h1>
+  <p>Alle Berechnungen laufen in deinem Browser — keine Daten verlassen dein Gerät. Wähle deine LLM-Runtime.</p>
+</header>
+<main>
+  <a href="transformers.html" class="card">
+    <div class="card-icon">🤗</div>
+    <h2>Transformers.js</h2>
+    <p class="desc">Hugging Face ONNX Runtime — WebGPU-beschleunigt mit automatischem WASM-Fallback. Funktioniert in den meisten modernen Browsern.</p>
+    <p class="model">Modell: <strong id="tj-model">…wird erkannt</strong><br><span id="tj-size"></span> · nach erstem Besuch gecacht</p>
+    <span class="badge badge-hf">@huggingface/transformers</span>
+  </a>
+  <a href="webllm.html" class="card">
+    <div class="card-icon">⚡</div>
+    <h2>WebLLM</h2>
+    <p class="desc">MLC AI TVM-kompilierte Runtime — OpenAI-kompatible API. Benötigt WebGPU (Chrome oder Edge auf Desktop).</p>
+    <p class="model">Modell: <strong id="wl-model">…wird erkannt</strong><br><span id="wl-size"></span> · nach erstem Besuch gecacht</p>
+    <span class="badge badge-mlc">@mlc-ai/web-llm</span>
+  </a>
+  <script>
+    const isMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+      (/Android/i.test(navigator.userAgent) && window.screen.width < 768);
+    document.getElementById('tj-model').textContent = isMobile ? 'Qwen2.5-0.5B' : 'Qwen2.5-3B';
+    document.getElementById('tj-size').textContent  = isMobile ? '~300 MB' : '~1,8 GB';
+    document.getElementById('wl-model').textContent = isMobile ? 'Qwen2.5-0.5B' : 'Qwen2.5-7B';
+    document.getElementById('wl-size').textContent  = isMobile ? '~300 MB' : '~4 GB';
+  </script>
+</main>
+<footer>Beide Runtimes laufen 100% clientseitig — keine Daten verlassen dein Gerät.</footer>
+</body>
+</html>

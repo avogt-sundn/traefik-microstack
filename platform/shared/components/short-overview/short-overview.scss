@@ -1,0 +1,54 @@
+.short-overview-section {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.short-overview-heading {
+  padding-top: 1rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.short-overview-card {
+  background-color: var(--core-finance-surface);
+  border-radius: 0.625rem;
+  padding-top: 1rem;
+  margin-bottom: 1rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.section-title {
+  border-bottom: solid 0.0625rem;
+  width: 65%;
+  margin-left: 1rem;
+  font-size: 1.0rem;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+}
+
+.short-overview-content {
+  line-height: 2.4;
+  padding-top: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.short-overview-field {
+  margin-bottom: 0.5rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  strong {
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
+    margin-right: 0.5rem;
+  }
+}
+

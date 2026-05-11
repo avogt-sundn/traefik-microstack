@@ -1,0 +1,48 @@
+networks:
+  backends:
+  default:
+    name: docker-default-network
+    external: true
+
+services:
+  maven-mirror:
+    profiles: [mirrors]
+    image: dzikoysk/reposilite:3.5.28
+    container_name: maven-mirror
+    hostname: maven-mirror
+    volumes:
+      - maven-mirror-storage:/app/data
+    environment:
+      - REPOSILITE_OPTS=--token=admin:admin123
+      - JAVA_OPTS=-Xmx256m
+    restart: unless-stopped
+    ports:
+      - 8008:8080
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "http://localhost:8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 2
+      start_period: 2s
+
+
+  bootstrap-maven-mirror:
+    profiles: [mirrors]
+    image: maven-mirror-bootstrap
+    build:
+      dockerfile: Dockerfile
+    depends_on:
+      maven-mirror:
+        condition: service_healthy
+    environment:
+      - REPOSILITE_URL=http://maven-mirror:8080
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "http://maven-mirror:8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 2
+      start_period: 2s
+
+volumes:
+  maven-mirror-storage:

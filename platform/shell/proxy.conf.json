@@ -1,0 +1,11 @@
+{
+    "/partner": {
+        "target": "http://localhost:4202",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/partner": ""
+        }
+    }
+}

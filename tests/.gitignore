@@ -1,0 +1,7 @@
+node_modules
+target/
+# Legacy output paths (pre-target migration) — keep ignored in case of leftover files
+playwright/report/
+playwright/results/
+playwright/test-results/
+.last-run.json

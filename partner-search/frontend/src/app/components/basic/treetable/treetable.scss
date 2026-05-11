@@ -1,0 +1,60 @@
+table {
+  background-color: inherit;
+}
+
+.tree-cell {
+  padding-left: calc(var(--tree-level, 0) * 1.5rem);
+}
+
+.cell-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toggle-icon {
+  cursor: pointer;
+}
+
+.leaf-icon {
+  padding-left: 2rem;
+}
+
+.loading-spinner {
+  margin-left: 0.5rem;
+}
+
+.initial-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 12.5rem;
+}
+
+tr.clickable-row,
+tr.mat-mdc-row.clickable-row,
+tr.mat-row.clickable-row {
+  cursor: pointer !important;
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--core-finance-primary-container) 30%, transparent);
+  }
+}
+
+mark {
+  background-color: var(--mat-sys-tertiary-container, #ffd700);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+@for $i from 1 through 2 {
+  [data-level="#{$i}"] {
+    @if $i == 1 {
+      background-color: var(--mat-sys-surface-container-low);
+    } @else if $i == 2 {
+      background-color: var(--mat-sys-surface-container-high);
+    }
+  }
+}

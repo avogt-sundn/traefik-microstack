@@ -1,0 +1,15 @@
+{
+  "name": "ux-storybook",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "storybook": "storybook dev --port 6006",
+    "build-storybook": "storybook build"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "8.6.12",
+    "@storybook/html": "8.6.12",
+    "@storybook/html-vite": "8.6.12",
+    "storybook": "8.6.12"
+  }
+}

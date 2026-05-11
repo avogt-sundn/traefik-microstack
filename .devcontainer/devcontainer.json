@@ -1,0 +1,100 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.217.4/containers/azure-functions-java-11
+{
+  "name": "Java",
+  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers-community/npm-features/prettier:1": {},
+    "ghcr.io/devcontainers-extra/features/curl-apt-get:1": {},
+    "ghcr.io/devcontainers-extra/features/json-server:1": {},
+    "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {},
+    "ghcr.io/devcontainers/features/common-utils:2.5.6": {},
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/devcontainers-extra/features/ripgrep:1": {}
+  },
+  "forwardPorts": [
+    7071,
+    8080,
+    8081,
+    8083,
+    8445,
+    4200,
+    9200
+  ],
+  "mounts": [
+    "source=localcache,target=/home/vscode/.m2,type=volume",
+    "source=aws-local,target=/home/vscode/.aws,type=volume"
+  ],
+  "postCreateCommand": ".devcontainer/scripts/postCreateCommand.sh",
+  "containerEnv": {
+    "DOCKER_NETWORK": "docker-default-network",
+    "NPM_MIRROR": "npm-mirror:4873",
+    "LMSTUDIO": "http://10.10.2.138:1234"
+  },
+  // Use 'initializeCommand' to run commands on the host before container gets created.
+  "initializeCommand": "touch .env && mkdir -p ${localEnv:HOME}/.vscode && touch ${localEnv:HOME}/.vscode/.zsh_history && docker network create docker-default-network || echo Fine. Using existing network.",
+  "runArgs": [
+    "--network=docker-default-network",
+    "--env-file=${localWorkspaceFolder}/.env",
+    "--hostname=${localWorkspaceFolderBasename}"
+  ],
+  // Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+  "remoteUser": "vscode",
+  "containerUser": "vscode",
+  "customizations": {
+    "jetbrains": {
+      "plugins": [
+        "EclipseCodeFormatter"
+      ]
+    },
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-docker",
+        "vscjava.vscode-java-pack",
+        "esbenp.prettier-vscode",
+        "mhutchie.git-graph",
+        "donjayamanne.githistory",
+        "waderyan.gitblame",
+        "SonarSource.sonarlint-vscode",
+        "DotJoshJohnson.xml",
+        "redhat.vscode-xml",
+        "timonwong.shellcheck",
+        "Angular.ng-template",
+        "redhat.vscode-quarkus",
+        "shengchen.vscode-checkstyle",
+        "fwcd.kotlin",
+        "rhalaly.scope-to-this",
+        "yzhang.markdown-all-in-one",
+        "redhat.vscode-yaml",
+        "jebbs.plantuml",
+        "EditorConfig.EditorConfig",
+        "tonybaloney.vscode-pets",
+        "ms-vscode.live-server",
+        "ryanluker.vscode-coverage-gutters",
+        "ms-vsliveshare.vsliveshare",
+        "myml.vscode-markdown-plantuml-preview",
+        "vscjava.vscode-java-test",
+        "redhat.java",
+        "vstirbu.vscode-mermaid-preview",
+        "Continue.continue",
+        "ms-playwright.playwright",
+        "sst-dev.opencode"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "zsh": {
+            "path": "zsh"
+          }
+        },
+        "editor.formatOnSave": true,
+        "editor.cursorBlinking": "solid",
+        "terminal.integrated.cursorBlinking": false
+      }
+    }
+  }
+}

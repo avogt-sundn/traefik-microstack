@@ -1,0 +1,24 @@
+.advisor-tree-container {
+  .selected-advisor-fields {
+    display: flex;
+    flex-direction: column;
+
+    .action-button-row {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+
+  .tree-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    color: var(--core-finance-icon-tertiary);
+  }
+
+  .info-panel-spacing {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "preserve",
+    "resolveJsonModule": true,
+    "declaration": false,
+    "useDefineForClassFields": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "./",
+    "lib": [
+      "ES2022",
+      "dom"
+    ],
+    "paths": {
+      "@shared/*": [
+        "shared/*"
+      ],
+      "@shell/*": [
+        "shell/*"
+      ]
+    }
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true,
+    "fullTemplateTypeCheck": true,
+    "preserveWhiteSpace": false,
+    "typeCheckHostBindings": false
+  },
+  "exclude": [
+    "dist"
+  ],
+  "files": [],
+  "references": [
+    {
+      "path": "./shared/tsconfig.lib.json"
+    },
+    {
+      "path": "./shared/tsconfig.spec.json"
+    },
+    {
+      "path": "./shell/tsconfig.app.json"
+    },
+    {
+      "path": "./shell/tsconfig.spec.json"
+    }
+  ]
+}

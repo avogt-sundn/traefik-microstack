@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sachbearbeiter-Dashboard — Designgrundlagen</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #ffffff;
+    --bg-card:   #f5f5f5;
+    --bg-panel:  #fafafa;
+    --border:    #cccccc;
+    --border-hi: #1565c0;
+    --text:      #1a1a1a;
+    --text-dim:  #4a4a4a;
+    --text-faint:#666666;
+    --blue:      #1565c0;
+    --blue-lt:   #0d47a1;
+    --green:     #2e7d32;
+    --green-lt:  #1b5e20;
+    --amber:     #f57f17;
+    --red-lt:    #b71c1c;
+    --mono:      "JetBrains Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+    --sans:      -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --max:       880px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 44px 24px 90px;
+  }
+
+  .wrapper { max-width: var(--max); margin: 0 auto; }
+
+  /* ── Kopfbereich ── */
+  .doc-header { border-bottom: 2px solid var(--border-hi); padding-bottom: 30px; margin-bottom: 44px; }
+  .doc-header h1 { font-size: 23px; font-weight: 700; color: var(--text); letter-spacing: -0.4px; margin-bottom: 6px; }
+  .doc-header .meta { color: var(--text-faint); font-size: 12px; font-family: var(--mono); margin-bottom: 20px; }
+  .kurzfassung {
+    padding: 18px 22px; background: var(--bg-panel);
+    border-left: 3px solid var(--blue); border-radius: 4px;
+    color: var(--text-dim); font-size: 14px; line-height: 1.7;
+  }
+  .kurzfassung strong { color: var(--text); }
+
+  /* ── Abschnitte ── */
+  h2 {
+    font-size: 17px; font-weight: 600; color: var(--blue-lt);
+    margin: 52px 0 16px;
+    border-bottom: 1px solid var(--border); padding-bottom: 8px;
+    letter-spacing: -0.2px;
+  }
+  h3 {
+    font-size: 13px; font-weight: 600; color: var(--text-faint);
+    margin: 30px 0 10px; text-transform: uppercase; letter-spacing: 0.7px;
+  }
+  p  { color: var(--text-dim); margin-bottom: 14px; }
+  p strong { color: var(--text); }
+  ul, ol { color: var(--text-dim); padding-left: 22px; margin-bottom: 16px; }
+  li { margin-bottom: 7px; }
+  li strong { color: var(--text); }
+  code {
+    font-family: var(--mono); font-size: 12px;
+    background: #fafafa; border: 1px solid var(--border);
+    padding: 1px 5px; border-radius: 3px; color: var(--blue-lt);
+  }
+
+  /* ── Tabellen ── */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 13px; }
+  th {
+    background: var(--bg-panel); color: var(--text-dim); font-weight: 600;
+    padding: 8px 12px; text-align: left; border: 1px solid var(--border);
+  }
+  td { padding: 7px 12px; border: 1px solid var(--border); color: var(--text-dim); vertical-align: top; }
+  td:first-child { color: var(--text); font-size: 13px; }
+  tr:nth-child(even) td { background: #f8f8fb; }
+
+  /* ── Diagramme ── */
+  figure.diagram { margin: 30px 0 34px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+  figure.diagram figcaption {
+    font-size: 12px; color: var(--text-faint); font-family: var(--mono);
+    padding: 9px 16px; background: var(--bg-card); border-top: 1px solid var(--border);
+  }
+  figure.diagram svg { display: block; width: 100%; height: auto; }
+
+  /* ── Code-Blöcke ── */
+  pre {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px;
+    padding: 14px 16px; font-family: var(--mono); font-size: 12px; line-height: 1.6;
+    color: var(--blue-lt); overflow-x: auto; margin: 14px 0 22px;
+    white-space: pre;
+  }
+
+  /* ── Hinweisboxen ── */
+  .box {
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 16px 20px; background: var(--bg-card); margin: 20px 0;
+  }
+  .box.blau  { border-left: 3px solid var(--blue); }
+  .box.gruen { border-left: 3px solid var(--green); }
+  .box.gelb  { border-left: 3px solid var(--amber); }
+  .box.rot   { border-left: 3px solid #ef4444; }
+  .box p { margin: 0; font-size: 13.5px; }
+  .box .label {
+    font-family: var(--mono); font-size: 10px; color: var(--text-faint);
+    text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 7px;
+  }
+
+  /* ── Mitigation-Tabelle ── */
+  .mit td:first-child { color: #b71c1c; }
+  .mit td:nth-child(2) { color: var(--green-lt); }
+
+  /* ── Horizontale Linie ── */
+  hr { border: none; border-top: 1px solid var(--border); margin: 44px 0; }
+
+  /* ── Literatur ── */
+  .lit { font-size: 13px; color: var(--text-faint); }
+  .lit li { margin-bottom: 9px; }
+
+  /* ── Abschnittsnummer ── */
+  .nr {
+    display: inline-block; background: var(--blue); color: #fff;
+    font-size: 11px; font-family: var(--mono); font-weight: 700;
+    padding: 2px 8px; border-radius: 3px; margin-right: 10px; vertical-align: middle;
+  }
+
+  /* ── Zweispaltig (Vor/Nachteil) ── */
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 18px 0 24px; }
+  .zwei .spalte {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 6px; padding: 14px 16px;
+  }
+  .zwei .spalte h4 { font-size: 12px; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .zwei .spalte ul { margin: 0; padding-left: 18px; }
+  .zwei .spalte li { font-size: 13px; margin-bottom: 6px; }
+  .zwei .negativ h4 { color: #c62828; }
+  .zwei .positiv h4 { color: var(--green-lt); }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<!-- ══════════════════════════════ KOPF ══════════════════════════════ -->
+<header class="doc-header">
+  <h1>Sachbearbeiter-Dashboard — Designgrundlagen</h1>
+  <div class="meta">ux/foundations/ · IHK-Carnet-Verwaltung · Mai 2026 · Vers. 2</div>
+  <div class="kurzfassung">
+    <strong>Zusammenfassung.</strong> Das Sachbearbeiter-Dashboard ist eine einzige Seite ohne
+    Navigation, ohne Detailseiten, ohne Wizards. Dieses Dokument fasst die Designgrundlagen
+    zusammen: das Drei-Zonen-Modell, das mentale Modell der Sachbearbeiterin, die
+    Kommandozeile als Metapher, das Strom-Modell mit privaten und gemeinsamen Einträgen, das
+    Reset-Modell mit kausaler Abhängigkeitsanalyse, den URL-Vertrag
+    (<code>pushState</code> statt Seitennavigation), die BITV-2.0-Barrierefreiheitsvorgaben
+    und die Behandlung komplexer Formulare ohne Wizard. Abschließend werden die bekannten
+    Einwände und ihre Mitigationen dokumentiert.
+  </div>
+</header>
+
+
+<!-- ══════════════════════════════ §1 DAS PROBLEM ══════════════════════════════ -->
+<h2><span class="nr">1</span>Das Problem: Kontextwechsel ist der eigentliche Kostentreiber</h2>
+
+<p>Eine Sachbearbeiterin in der IHK-Carnet-Verwaltung bearbeitet <strong>60–100 Vorgänge pro
+Tag</strong> über heterogene Entitätstypen hinweg — Firmen, Carnets, Prüfungen — in
+mehreren Kammerbezirken. Traditionelle Enterprise-UIs erzwingen Navigation zwischen diesen
+Typen. Die Kosten liegen nicht im Klick. Sie liegen in der <strong>Neuorientierung nach der
+Ankunft</strong>: Jeder Bildschirmwechsel zwingt die Sachbearbeiterin, drei Fragen zu
+beantworten — <em>Wo bin ich? Was kann ich hier tun? Wie komme ich zurück?</em> Bei
+hohem Volumen summiert sich dieser Neuorientierungsaufwand auf Stunden verlorener
+Produktivität pro Woche.</p>
+
+<table>
+  <tr><th>System</th><th>Muster</th><th>Kosten</th></tr>
+  <tr><td>SAP GUI</td><td>7400+ Transaktionscodes → eigene Bildschirme</td><td>Sachbearbeiterinnen memorieren Pfade statt zu arbeiten. Einarbeitungszeit: Monate.</td></tr>
+  <tr><td>ServiceNow</td><td>Liste → Detail → Zugehörige Liste → Zurück</td><td>3–5 Seitenladungen pro Ticket. Warteschlangenbewusstsein geht beim Detail-Arbeiten verloren.</td></tr>
+  <tr><td>Oracle Forms</td><td>Menü → Formular → Reiter → Unter­formular → Speichern → Zurück</td><td>4–6 Navigationsschritte je CRUD-Operation. Keine periphere Wahrnehmung des Warteschlangenstands.</td></tr>
+  <tr><td>Jira</td><td>Board → Issue → Sub-task → Zurück zum Board</td><td>Board-Kontext geht im Issue-Detail verloren.</td></tr>
+</table>
+
+<p>Das Designziel ist <strong>null Neuorientierungsaufwand</strong>: ein fixes Drei-Zonen-Layout,
+dessen räumliche Stabilität Orientierungsfragen durch das periphere Sehen beantwortet —
+ohne aktives Lesen.</p>
+
+
+<!-- ══════════════════════════════ §2 DREI ZONEN ══════════════════════════════ -->
+<h2><span class="nr">2</span>Drei Zonen, null Navigation</h2>
+
+<p>Das Dashboard ist eine Seite mit drei vertikal gestapelten Zonen. Jede Zone beantwortet
+eine kognitive Frage, die über alle Aufgaben, alle Entitätstypen und alle Erfahrungsstufen
+hinweg stabil bleibt. Die Zonen bewegen sich nie, verschwinden nie und ändern ihr Layout nie.</p>
+
+<table>
+  <tr><th>Zone</th><th>Kognitive Frage</th><th>Stabilitätsgarantie</th></tr>
+  <tr><td>Zone 1 — Scope-Leiste</td><td>„Wer bin ich? Was kann ich sehen?"</td><td>Scrollt nie, verschwindet nie, ändert Layout nie</td></tr>
+  <tr><td>Zone 3 — Der Strom</td><td>„Was ist passiert? Was wartet auf mich?"</td><td>Immer über Zone 2; scrollt nach oben; unten = jetzt</td></tr>
+  <tr><td>Zone 2 — Kommandofeld</td><td>„Was tue ich gerade?"</td><td>Immer unten verankert, immer dasselbe Interaktionsmodell</td></tr>
+</table>
+
+<figure class="diagram">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 540" font-family="monospace" font-size="13">
+    <rect width="860" height="540" fill="#ffffff"/>
+    <text x="430" y="36" text-anchor="middle" fill="#1a1a1a" font-size="15" font-weight="bold">Eine Seite · Drei Zonen · Null Navigation</text>
+    <!-- Zone 1 -->
+    <rect x="40" y="56" width="780" height="50" rx="6" fill="#f0f4f8" stroke="#1565c0" stroke-width="1.5"/>
+    <text x="60" y="74" fill="#1565c0" font-size="11" font-weight="bold">ZONE 1 — SCOPE-LEISTE</text>
+    <text x="60" y="94" fill="#777777" font-size="11">„Wer bin ich? Was kann ich sehen?"</text>
+    <text x="490" y="84" fill="#666666" font-size="10">Fix. Scrollt nie. Verschwindet nie. Ändert Layout nie.</text>
+    <!-- Zone 3 -->
+    <rect x="40" y="118" width="780" height="260" rx="6" fill="#f5f5f5" stroke="#cccccc" stroke-width="1"/>
+    <text x="60" y="138" fill="#1b5e20" font-size="11" font-weight="bold">ZONE 3 — DER STROM (scrollbar, unten = jetzt)</text>
+    <text x="60" y="156" fill="#777777" font-size="11">„Was habe ich gesagt? Was ist passiert?"</text>
+    <!-- Chat-Paare -->
+    <text x="80" y="184" fill="#1565c0" font-size="10">Sie:</text>
+    <rect x="80" y="190" width="215" height="22" rx="8" fill="#f0f4f8"/>
+    <text x="92" y="206" fill="#0d47a1" font-size="10">günther carnet limit 45000</text>
+    <text x="740" y="184" fill="#1b5e20" font-size="10" text-anchor="end">Aktion:</text>
+    <rect x="440" y="190" width="300" height="22" rx="8" fill="#e8ecf1"/>
+    <rect x="440" y="190" width="3" height="22" rx="1" fill="#1565c0"/>
+    <text x="454" y="206" fill="#1a1a1a" font-size="10">Carnet #456 · Limit: 35.000 → 45.000 €</text>
+    <text x="740" y="226" fill="#555555" font-size="10" text-anchor="end">[System]</text>
+    <rect x="440" y="232" width="300" height="22" rx="8" fill="#e8ecf1"/>
+    <rect x="440" y="232" width="3" height="22" rx="1" fill="#6b7280"/>
+    <text x="454" y="248" fill="#555555" font-size="10">Carnet #789 · Import adjustiert</text>
+    <text x="80" y="270" fill="#1565c0" font-size="10">Sie:</text>
+    <rect x="80" y="276" width="160" height="22" rx="8" fill="#f0f4f8"/>
+    <text x="92" y="292" fill="#0d47a1" font-size="10">becker adresse</text>
+    <text x="740" y="270" fill="#1b5e20" font-size="10" text-anchor="end">Aktion:</text>
+    <rect x="440" y="276" width="300" height="22" rx="8" fill="#f0f0f5"/>
+    <text x="454" y="292" fill="#4a4a4a" font-size="10">T. Klein · Adresse aktualisiert</text>
+    <text x="80" y="314" fill="#1565c0" font-size="10">Sie:</text>
+    <rect x="80" y="320" width="235" height="22" rx="8" fill="#f0f4f8"/>
+    <text x="92" y="336" fill="#0d47a1" font-size="10">prüfung p-012 genehmigen</text>
+    <text x="740" y="314" fill="#1b5e20" font-size="10" text-anchor="end">Aktion:</text>
+    <rect x="440" y="320" width="300" height="22" rx="8" fill="#e8ecf1"/>
+    <rect x="440" y="320" width="3" height="22" rx="1" fill="#1565c0"/>
+    <text x="454" y="336" fill="#1a1a1a" font-size="10">Prüfung #012 · Genehmigt</text>
+    <text x="430" y="368" text-anchor="middle" fill="#666666" font-size="10" font-style="italic">↑ Scroll = älter · unten = neueste Aktion · ↑-Taste = letzten Befehl abrufen</text>
+    <!-- Jetzt-Linie -->
+    <line x1="40" y1="386" x2="820" y2="386" stroke="#1565c0" stroke-width="2.5"/>
+    <text x="430" y="382" text-anchor="middle" fill="#1565c0" font-size="10" font-weight="bold">Jetzt-Linie</text>
+    <!-- Zone 2 -->
+    <rect x="40" y="396" width="780" height="100" rx="6" fill="#fafafa" stroke="#1565c0" stroke-width="1.5"/>
+    <text x="60" y="416" fill="#38bdf8" font-size="11" font-weight="bold">ZONE 2 — KOMMANDOFELD (unten verankert)</text>
+    <text x="60" y="434" fill="#777777" font-size="11">„Was tue ich gerade?"</text>
+    <rect x="60" y="448" width="580" height="28" rx="4" fill="#ffffff" stroke="#cccccc" stroke-width="1"/>
+    <text x="76" y="467" fill="#1a1a1a" font-size="12">günther carnet verschieben müll▌</text>
+    <rect x="60" y="480" width="100" height="18" rx="9" fill="#1565c0"/>
+    <text x="72" y="493" fill="#ffffff" font-size="9">#2024-00456</text>
+    <rect x="168" y="480" width="135" height="18" rx="4" fill="#c8e6c9"/>
+    <text x="176" y="493" fill="#2e7d32" font-size="9">✓ Inhaber wechseln</text>
+    <text x="660" y="467" fill="#666666" font-size="10">LEER=fixieren  ENTER=ausführen  ESC=zurück</text>
+    <text x="430" y="524" text-anchor="middle" fill="#666666" font-size="11" font-style="italic">Eine Seite · Drei Zonen · Null Navigation · Tastatur-First · Alle Erfahrungsstufen</text>
+  </svg>
+  <figcaption>Abb. 1 — Drei-Zonen-Layout. Zone 1 (Scope) bewegt sich nie. Zone 2 (Kommando) ist immer unten verankert. Zone 3 (Strom) füllt den Raum dazwischen und scrollt nach oben.</figcaption>
+</figure>
+
+<p><strong>Designvorbild:</strong> Das Bloomberg Terminal erreicht dasselbe mit einem fixen
+Vier-Panel-Layout, das sich über Tausende verschiedener Datenansichten nie ändert. Die
+Panels sind der kognitive Anker; der Inhalt darin wechselt. Unsere drei Zonen erfüllen
+dieselbe Funktion mit einfacherer Geometrie.</p>
+
+
+<!-- ══════════════════════════════ §3 MENTALES MODELL ══════════════════════════════ -->
+<h2><span class="nr">3</span>Das mentale Modell der Sachbearbeiterin</h2>
+
+<p>Die oberste Schicht jedes Verwaltungssystems ist nicht das Datenmodell oder die API —
+es ist das <strong>mentale Modell, das die Sachbearbeiterin an den Schreibtisch
+mitbringt</strong>. Eine Sachbearbeiterin denkt in Vorgängen, nicht in Datenbankzeilen.
+Sie denkt in erlaubten Handlungen, nicht in CRUD-Operationen. Ein System, das sein
+Datenmodell der Sachbearbeiterin direkt ausliefert, ist gescheitert, bevor die erste
+Interaktion stattfindet.</p>
+
+<table>
+  <tr><th>Konzept</th><th>Bedeutung für die Sachbearbeiterin</th><th>Falsches Systemäquivalent</th></tr>
+  <tr><td>Vorgang</td><td>Ein Fall mit einer Geschichte, einem aktuellen Zustand und ausstehenden Aktionen</td><td>Eine Datenbankzeile</td></tr>
+  <tr><td>Zuständigkeit</td><td>Wofür ich verantwortlich bin und worauf ich handeln darf</td><td>Eine Berechtigungsmaske</td></tr>
+  <tr><td>Arbeitsschritt</td><td>Eine diskrete Aktion, die einen Vorgang voranbringt und eine Spur hinterlässt</td><td>Ein Formular-Submit</td></tr>
+</table>
+
+<h3>Das Kommandofeld als Interpreter</h3>
+
+<p>Das zentrale Kommandofeld ist kein Suchfeld. Es ist die <strong>Kommandozeile der
+Sachbearbeiterin</strong> — ein direkter Ausdruck ihrer Absicht über den
+Domänenobjektgraphen. Jedes Token verengt gleichzeitig die Entitätsmenge und aktualisiert
+die verfügbare Aktionsmenge. Die Sachbearbeiterin sieht keine Ergebnisseite — sie sieht
+eine sich kontinuierlich schärfende Absicht.</p>
+
+<pre>Eingabe                     Was das System zeigt
+──────────────────────      ──────────────────────────────────────────────────────
+„g"                    →    Günther Maschinenbau AG  ·  Gauss Metallbau GmbH
+„gün"                  →    Günther Maschinenbau AG                           [Entität aufgelöst]
+„gün car"              →    Günther Maschinenbau AG  ›  Carnet #2024-00456    [Relation gefolgt]
+„gün car ver"          →    … AKTION: Zu anderer Firma verschieben ↵          [Methode gefunden]
+„gün car ver mül"      →    … verschieben → Müller Werkzeugbau GmbH           [Parameter aufgelöst]
+[ENTER]                →    Arbeitsschritt ausgeführt · Strom aktualisiert</pre>
+
+<figure class="diagram">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 520" font-family="monospace" font-size="13">
+    <rect width="860" height="520" fill="#ffffff"/>
+    <text x="430" y="36" text-anchor="middle" fill="#1a1a1a" font-size="15" font-weight="bold">Kommando-als-Objekt: Metapher → Architektur</text>
+    <rect x="30" y="60" width="800" height="48" rx="6" fill="#fafafa" stroke="#cccccc" stroke-width="1"/>
+    <text x="50" y="79" fill="#777777" font-size="11">EINGABE</text>
+    <text x="50" y="98" fill="#1a1a1a" font-size="14">  günther  </text>
+    <text x="142" y="98" fill="#38bdf8" font-size="14">aachen  </text>
+    <text x="224" y="98" fill="#a78bfa" font-size="14">verschieben  </text>
+    <text x="348" y="98" fill="#34d399" font-size="14">müller</text>
+    <text x="590" y="91" fill="#666666" font-size="11" font-style="italic">Tokens akkumulieren → Ergebnismenge und Aktionen aktualisieren sich je Tastenanschlag</text>
+    <line x1="430" y1="108" x2="430" y2="130" stroke="#666666" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <polygon points="424,128 436,128 430,138" fill="#666666"/>
+    <rect x="30" y="140" width="240" height="80" rx="6" fill="#f0f4f8" stroke="#1565c0" stroke-width="1.5"/>
+    <text x="150" y="162" text-anchor="middle" fill="#1565c0" font-size="11" font-weight="bold">AUFLÖSUNG</text>
+    <text x="150" y="182" text-anchor="middle" fill="#0d47a1" font-size="12">resolve(token)</text>
+    <text x="150" y="200" text-anchor="middle" fill="#777777" font-size="11">„günther" → Firma</text>
+    <text x="150" y="214" text-anchor="middle" fill="#777777" font-size="11">„456" → Carnet</text>
+    <rect x="310" y="140" width="240" height="80" rx="6" fill="#f0f4f8" stroke="#6a1b9a" stroke-width="1.5"/>
+    <text x="430" y="162" text-anchor="middle" fill="#6a1b9a" font-size="11" font-weight="bold">SEMANTIKSCHICHT</text>
+    <text x="430" y="182" text-anchor="middle" fill="#4527a0" font-size="12">synonyms(term)</text>
+    <text x="430" y="200" text-anchor="middle" fill="#777777" font-size="11">anrufen = telefon = call</text>
+    <text x="430" y="214" text-anchor="middle" fill="#777777" font-size="11">verschieben = transfer = move</text>
+    <rect x="590" y="140" width="240" height="80" rx="6" fill="#f0f4f8" stroke="#ff6f00" stroke-width="1.5"/>
+    <text x="710" y="162" text-anchor="middle" fill="#f57f17" font-size="11" font-weight="bold">BERECHTIGUNGSFILTER</text>
+    <text x="710" y="182" text-anchor="middle" fill="#f57f17" font-size="12">actions(user, perms)</text>
+    <text x="710" y="200" text-anchor="middle" fill="#777777" font-size="11">Kammerbezirk-Scope</text>
+    <text x="710" y="214" text-anchor="middle" fill="#777777" font-size="11">rollenbasiertes Aktionsset</text>
+    <line x1="430" y1="220" x2="430" y2="248" stroke="#666666" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <polygon points="424,246 436,246 430,256" fill="#666666"/>
+    <rect x="180" y="258" width="500" height="96" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="430" y="278" text-anchor="middle" fill="#1b5e20" font-size="11" font-weight="bold">DOMÄNENENTITÄT  (einheitliche Schnittstelle)</text>
+    <rect x="198" y="288" width="140" height="52" rx="4" fill="#c8e6c9" stroke="#4caf50" stroke-width="1"/>
+    <text x="268" y="306" text-anchor="middle" fill="#2e7d32" font-size="11">resolve(token)</text>
+    <text x="268" y="322" text-anchor="middle" fill="#777777" font-size="10">Suche per Teileingabe</text>
+    <text x="268" y="334" text-anchor="middle" fill="#777777" font-size="10">Firma · Carnet · Prüfung</text>
+    <rect x="360" y="288" width="140" height="52" rx="4" fill="#c8e6c9" stroke="#4caf50" stroke-width="1"/>
+    <text x="430" y="306" text-anchor="middle" fill="#2e7d32" font-size="11">actions(user,perms)</text>
+    <text x="430" y="322" text-anchor="middle" fill="#777777" font-size="10">typenspezifisches Aktionsset</text>
+    <text x="430" y="334" text-anchor="middle" fill="#777777" font-size="10">gefiltert zur Anfragezeit</text>
+    <rect x="522" y="288" width="140" height="52" rx="4" fill="#c8e6c9" stroke="#4caf50" stroke-width="1"/>
+    <text x="592" y="306" text-anchor="middle" fill="#2e7d32" font-size="11">history()</text>
+    <text x="592" y="322" text-anchor="middle" fill="#777777" font-size="10">unveränderliches Ereignis-Log</text>
+    <text x="592" y="334" text-anchor="middle" fill="#777777" font-size="10">speist den Strom</text>
+    <line x1="430" y1="354" x2="430" y2="378" stroke="#666666" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <polygon points="424,376 436,376 430,386" fill="#666666"/>
+    <rect x="100" y="388" width="660" height="56" rx="6" fill="#f0f0f5" stroke="#303f9f" stroke-width="1.5"/>
+    <text x="430" y="408" text-anchor="middle" fill="#3f51b5" font-size="11" font-weight="bold">EIN API-ENDPUNKT  (Metapher verlangt einen einzigen Round-Trip)</text>
+    <text x="430" y="430" text-anchor="middle" fill="#303f9f" font-size="12">POST /search  { tokens, user, permissions }  →  { entities, actions_per_entity }</text>
+    <line x1="430" y1="444" x2="430" y2="466" stroke="#666666" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <polygon points="424,464 436,464 430,474" fill="#666666"/>
+    <rect x="180" y="476" width="500" height="34" rx="6" fill="#1e1e1e" stroke="#cccccc" stroke-width="1"/>
+    <text x="430" y="499" text-anchor="middle" fill="#777777" font-size="12">UI — dünnes Rendering der Metapher, nicht ihre Implementierung</text>
+    <line x1="270" y1="180" x2="310" y2="180" stroke="#cccccc" stroke-width="1" stroke-dasharray="3,3"/>
+    <line x1="550" y1="180" x2="590" y2="180" stroke="#cccccc" stroke-width="1" stroke-dasharray="3,3"/>
+  </svg>
+  <figcaption>Abb. 2 — Kommandofeld-Architektur: Auflösung → Semantikschicht → Berechtigungsfilter → Domänenentitäts-Schnittstelle → ein API-Endpunkt → dünnes UI.</figcaption>
+</figure>
+
+<div class="box gelb">
+  <div class="label">Berechtigungsregel</div>
+  <p><strong>Aktionen werden zur Anfragezeit gefiltert, nicht zur Renderzeit.</strong> Eine
+  Sachbearbeiterin im Kammerbezirk Aachen sieht keinen ausgegrauten „Limit ändern"-Button.
+  Sie sieht den Button gar nicht. Die UI ist ein berechtigungs-gesteuerter Arbeitsbereich,
+  kein Berechtigungsanzeigesystem.</p>
+</div>
+
+<h3>Auffindbarkeit ohne Menü: Kategorie-Chips</h3>
+
+<p>Eine Sachbearbeiterin, die noch nicht weiß, dass es Carnets gibt, wird das Wort
+<code>carnet</code> nicht eintippen. Um diese Lücke zu schließen, ohne ein Navigationsmenü
+einzuführen, zeigt das Kommandofeld im Leerzustand <strong>Kategorie-Chips</strong> als
+anklickbare Maus-Affordanzen:</p>
+
+<pre>  [ Carnets ]   [ Firmen ]   [ Prüfungen ]   [ Verwaltung ]</pre>
+
+<p>Ein Klick auf <code>[Carnets]</code> entspricht dem Eintippen von <code>carnet</code>.
+Das Token-Modell und das Chip-Modell sind derselbe Mechanismus; die Chips sind ein
+nullvokabular-Einstiegspunkt für den ersten Arbeitstag. Erfahrene Sachbearbeiterinnen
+überspringen die Chips und tippen direkt — die Oberfläche bestraft keine Expertise und
+blockiert keine Anfänger.</p>
+
+
+<!-- ══════════════════════════════ §4 DER STROM ══════════════════════════════ -->
+<h2><span class="nr">4</span>Der Strom — Chat als Geschichte</h2>
+
+<p>Zone 3 ist die Geschichte der Sitzung und aller Ereignisse auf Entitäten im Zuständigkeitsbereich.
+Die räumliche Metapher ist der <strong>Chat-Verlauf</strong>: das am tiefsten verankerte
+Raummodell der Arbeitnehmerschaft der 2020er Jahre. Das Kommandofeld ist die Nachrichteneingabe,
+unten verankert. Die Geschichte fließt darüber nach oben. Der jüngste Austausch ist direkt
+über dem Eingabefeld.</p>
+
+<p>Zwei Sprecher, zwei visuelle Ausrichtungen:</p>
+<ul>
+  <li><strong>Sie: (linksbündig)</strong> — der eingetippte Befehl der Sachbearbeiterin. Was ich gesagt habe.</li>
+  <li><strong>Aktion: (rechtsbündig)</strong> — die Antwort des Systems. Was passiert ist.</li>
+</ul>
+
+<p>Kollegin- oder Systemautomationsereignisse erscheinen als <em>Aktion:</em>-Bubble ohne
+vorangehendes <em>Sie:</em> — genau wie das Empfangen einer Nachricht in einem Gruppen-Chat.
+Nach einem Telefonat sieht die Sachbearbeiterin sofort, was sich verändert hat — durch
+Blick auf den unteren Bereich des Stroms.</p>
+
+<figure class="diagram">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 580" font-family="monospace" font-size="13">
+    <rect width="860" height="580" fill="#ffffff"/>
+    <text x="430" y="36" text-anchor="middle" fill="#1a1a1a" font-size="15" font-weight="bold">Chat-Layout: Sie: (links) / Aktion: (rechts)</text>
+    <rect x="30" y="56" width="800" height="36" rx="6" fill="#fafafa" stroke="#1565c0" stroke-width="1.5"/>
+    <text x="50" y="70" fill="#777777" font-size="10">ZONE 1</text>
+    <text x="50" y="84" fill="#1565c0" font-size="12">Scope-Leiste — Kammer: Aachen  ·  K. Huber  ·  Sachbearbeiterin Carnets</text>
+    <text x="770" y="78" fill="#666666" font-size="10" text-anchor="end">fix</text>
+    <rect x="30" y="104" width="800" height="340" rx="6" fill="#f5f5f5" stroke="#cccccc" stroke-width="1"/>
+    <text x="50" y="122" fill="#777777" font-size="10">ZONE 3 — STROM (scrollt, unten = neueste Aktion)</text>
+    <text x="430" y="142" text-anchor="middle" fill="#666666" font-size="10" font-style="italic">↑ ältere Einträge oben</text>
+    <!-- Paar 1: Sie + Aktion -->
+    <text x="60" y="168" fill="#1565c0" font-size="10" font-weight="bold">Sie:  09:14</text>
+    <text x="170" y="168" fill="#777777" font-size="9" font-style="italic">🔒 Nur für Sie</text>
+    <rect x="60" y="174" width="255" height="28" rx="10" fill="#f0f4f8"/>
+    <text x="76" y="193" fill="#0d47a1" font-size="12">günther carnet limit 45000</text>
+    <text x="780" y="168" text-anchor="end" fill="#1b5e20" font-size="10" font-weight="bold">Aktion:  09:14</text>
+    <rect x="440" y="174" width="370" height="38" rx="10" fill="#e8ecf1"/>
+    <rect x="440" y="174" width="3" height="38" rx="1" fill="#1565c0"/>
+    <text x="456" y="191" fill="#1a1a1a" font-size="11">Carnet #2024-00456 · Günther Maschinenbau AG</text>
+    <text x="456" y="206" fill="#1b5e20" font-size="11">Limit geändert: 35.000 → 45.000 €</text>
+    <!-- System-Ereignis ohne Sie: -->
+    <text x="780" y="228" text-anchor="end" fill="#555555" font-size="10" font-style="italic">Aktion:  09:31  [System]</text>
+    <rect x="440" y="234" width="370" height="30" rx="10" fill="#e8ecf1"/>
+    <rect x="440" y="234" width="3" height="30" rx="1" fill="#6b7280"/>
+    <text x="456" y="254" fill="#555555" font-size="11">Carnet #789 · Import: Limit adjustiert</text>
+    <!-- Paar 2 -->
+    <text x="60" y="282" fill="#1565c0" font-size="10" font-weight="bold">Sie:  10:02</text>
+    <text x="170" y="282" fill="#777777" font-size="9" font-style="italic">🔒 Nur für Sie</text>
+    <rect x="60" y="288" width="180" height="28" rx="10" fill="#f0f4f8"/>
+    <text x="76" y="307" fill="#0d47a1" font-size="12">becker adresse</text>
+    <text x="780" y="282" text-anchor="end" fill="#1b5e20" font-size="10" font-weight="bold">Aktion:  10:02</text>
+    <rect x="440" y="288" width="370" height="38" rx="10" fill="#f0f0f5"/>
+    <text x="456" y="305" fill="#4a4a4a" font-size="11">T. Klein · Firma Becker</text>
+    <text x="456" y="320" fill="#4a4a4a" font-size="11">Adresse aktualisiert: Hauptstr. 14 → Nr. 16</text>
+    <!-- Paar 3 -->
+    <text x="60" y="346" fill="#1565c0" font-size="10" font-weight="bold">Sie:  10:45</text>
+    <text x="170" y="346" fill="#777777" font-size="9" font-style="italic">🔒 Nur für Sie</text>
+    <rect x="60" y="352" width="270" height="28" rx="10" fill="#f0f4f8"/>
+    <text x="76" y="371" fill="#0d47a1" font-size="12">prüfung p-012 genehmigen</text>
+    <text x="780" y="346" text-anchor="end" fill="#1b5e20" font-size="10" font-weight="bold">Aktion:  10:45</text>
+    <rect x="440" y="352" width="370" height="38" rx="10" fill="#e8ecf1"/>
+    <rect x="440" y="352" width="3" height="38" rx="1" fill="#1565c0"/>
+    <text x="456" y="369" fill="#1a1a1a" font-size="11">K. Huber · Prüfung #2024-P-012</text>
+    <text x="456" y="384" fill="#1b5e20" font-size="11">Genehmigt</text>
+    <text x="430" y="416" text-anchor="middle" fill="#666666" font-size="10">↓ jüngstes Paar immer hier, direkt über dem Eingabefeld</text>
+    <!-- Jetzt-Linie -->
+    <line x1="30" y1="440" x2="830" y2="440" stroke="#1565c0" stroke-width="2.5"/>
+    <text x="430" y="436" text-anchor="middle" fill="#1565c0" font-size="10" font-weight="bold">═══ Jetzt-Linie ═══</text>
+    <!-- Zone 2 -->
+    <rect x="30" y="452" width="800" height="80" rx="6" fill="#fafafa" stroke="#1565c0" stroke-width="1.5"/>
+    <text x="50" y="468" fill="#777777" font-size="10">ZONE 2 — KOMMANDOFELD (unten verankert, wie Chat-Eingabe)</text>
+    <rect x="50" y="478" width="640" height="30" rx="4" fill="#ffffff" stroke="#cccccc" stroke-width="1"/>
+    <text x="66" y="498" fill="#666666" font-size="12">Entität oder Befehl eingeben …</text>
+    <text x="710" y="498" fill="#666666" font-size="10">ENTER  ·  ↑ abrufen  ·  ESC</text>
+    <text x="430" y="556" text-anchor="middle" fill="#666666" font-size="11" font-style="italic">Links = was ich gesagt habe · Rechts = was passiert ist · Unten = wo ich als Nächstes tippe</text>
+    <text x="430" y="574" text-anchor="middle" fill="#cccccc" font-size="10">Metaphernquelle: WhatsApp / Slack / iMessage — null Lernaufwand</text>
+  </svg>
+  <figcaption>Abb. 3 — Chat-Layout. Sie: (links, blau) ist der Befehl. Aktion: (rechts, Karte mit Rand) ist die Systemantwort. Sie:-Bubbles tragen „🔒 Nur für Sie" — sie sind privat und kein Bestandteil des Revisionsprotokolls. Systemereignisse erscheinen ohne Sie:.</figcaption>
+</figure>
+
+<h3>Private und gemeinsame Einträge — die Trennlinie</h3>
+
+<p>Der Strom enthält zwei semantisch verschiedene Eintragstypen:</p>
+
+<table>
+  <tr><th>Typ</th><th>Darstellung</th><th>Sichtbarkeit</th><th>Kassenbuch-Vertrag</th></tr>
+  <tr><td>Vorgangsstrahl-Eintrag</td><td>Aktion:-Bubble (rechts)</td><td>Alle Kolleginnen, Revisionsprotokoll</td><td>Ja — append-only, irreversibel, attribuiert</td></tr>
+  <tr><td>Arbeitsstrahl-Eintrag</td><td>Sie:-Bubble (links)</td><td>Nur die eigene Sitzung</td><td>Nein — privates Shell-History-Äquivalent</td></tr>
+</table>
+
+<p>Die Visualisierung macht die Grenze sichtbar: Sie:-Bubbles tragen ein Schloss-Icon und
+beim Hover den Hinweis <em>„Nur für Sie — nicht im Protokoll."</em> Aktion:-Bubbles tragen
+immer ein Quell-Badge (Sachbearbeiterin-Name, <code>[System]</code>, <code>[Portal]</code>,
+<code>[Allianz]</code>). Die Unterscheidung ist visuell, nicht räumlich — beide Typen leben
+im selben Strom, weil sie zeitlich zusammengehören.</p>
+
+<h3>Vorgangshistorie — das Kassenbuch der Entität</h3>
+
+<p>Der Strom zeigt die persönliche Sitzung. Ein Vorgang hat jedoch einen viel breiteren
+Lebenszyklus: Kundenportal-Einreichungen, Kolleginnenaktionen, externe Partnerantworten,
+Systemautomationen. Diese vollständige Geschichte lebt in der <strong>Vorgangshistorie</strong>
+— einem Seitenleisten-Panel, das sich öffnet, wenn eine Entität ausgewählt wird.</p>
+
+<table>
+  <tr><th>Ansicht</th><th>Beantwortete Frage</th><th>Scope</th></tr>
+  <tr><td>Strom (Zone 3)</td><td>„Was habe ich getan?"</td><td>Meine Sitzung, alle Entitäten</td></tr>
+  <tr><td>Vorgangshistorie-Panel</td><td>„Was ist mit dieser Entität passiert?"</td><td>Eine Entität, vollständiger Lebenszyklus, alle Akteure</td></tr>
+</table>
+
+<p>Das Panel öffnet sich als Seitenleiste und überlagert den linken Teil des Stroms, verdeckt
+aber nicht das Kommandofeld. Es ist keine Modal-Ansicht und keine eigene Seite.</p>
+
+
+<!-- ══════════════════════════════ §5 RESET-MODELL ══════════════════════════════ -->
+<h2><span class="nr">5</span>Das Reset-Modell — git reset, nicht Strg+Z</h2>
+
+<p>Der Arbeitsstrahl ist der persönliche Befehlspfad der Sachbearbeiterin. Klassisches Undo
+(Strg+Z) arbeitet in strenger umgekehrter Reihenfolge: Aktion 5 muss rückgängig gemacht
+werden, um Aktion 3 zu korrigieren — auch wenn Aktion 4 völlig unabhängig war. Das
+Arbeitsstrahl-Modell verwendet stattdessen <strong>git reset mit automatischer kausaler
+Abhängigkeitsanalyse</strong>.</p>
+
+<p>Die Sachbearbeiterin klickt eine frühere Sie:-Bubble. Das System bewertet, welche nachfolgenden
+Aktionen davon abhingen (gleiche Entität, oder Ausgabe-als-Eingabe) und welche unabhängig
+waren. Unabhängige Aktionen überleben den Reset automatisch. Nur kausal abhängige Aktionen
+werden rückgängig gemacht. Der Reset selbst ist ein Kassenbuch-Eintrag — nichts wird
+stillschweigend gelöscht.</p>
+
+<figure class="diagram">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 620" font-family="monospace" font-size="13">
+    <rect width="860" height="620" fill="#ffffff"/>
+    <text x="430" y="36" text-anchor="middle" fill="#1a1a1a" font-size="15" font-weight="bold">Arbeitsstrahl-Reset: git reset mit kausaler Abhängigkeit</text>
+    <text x="50" y="68" fill="#777777" font-size="10">VOR DEM RESET — die Sachbearbeiterin sieht einen linearen Pfad:</text>
+    <rect x="50" y="80" width="750" height="30" rx="4" fill="#f0f4f8" stroke="#1565c0" stroke-width="1"/>
+    <text x="66" y="100" fill="#1565c0" font-size="11">09:14</text>
+    <text x="120" y="100" fill="#0d47a1" font-size="11">günther carnet limit 45000</text>
+    <text x="620" y="100" fill="#666666" font-size="10">→ Carnet #456</text>
+    <rect x="50" y="116" width="750" height="30" rx="4" fill="#f0f4f8" stroke="#cccccc" stroke-width="1"/>
+    <text x="66" y="136" fill="#1565c0" font-size="11">09:31</text>
+    <text x="120" y="136" fill="#0d47a1" font-size="11">becker adresse</text>
+    <text x="620" y="136" fill="#666666" font-size="10">→ Firma Becker</text>
+    <rect x="50" y="152" width="750" height="30" rx="4" fill="#f0f4f8" stroke="#cccccc" stroke-width="1"/>
+    <text x="66" y="172" fill="#1565c0" font-size="11">10:02</text>
+    <text x="120" y="172" fill="#0d47a1" font-size="11">prüfung p-012 genehmigen</text>
+    <text x="620" y="172" fill="#666666" font-size="10">→ Prüfung #012</text>
+    <rect x="50" y="188" width="750" height="30" rx="4" fill="#f0f4f8" stroke="#c62828" stroke-width="1.5"/>
+    <text x="66" y="208" fill="#1565c0" font-size="11">10:15</text>
+    <text x="120" y="208" fill="#b71c1c" font-size="11">günther carnet inhaber wechseln müller</text>
+    <text x="620" y="208" fill="#c62828" font-size="10">→ Carnet #456 ⚠</text>
+    <rect x="50" y="224" width="750" height="30" rx="4" fill="#f0f4f8" stroke="#cccccc" stroke-width="1"/>
+    <text x="66" y="244" fill="#1565c0" font-size="11">10:30</text>
+    <text x="120" y="244" fill="#0d47a1" font-size="11">schmidt firma anlegen</text>
+    <text x="620" y="244" fill="#666666" font-size="10">→ Firma Schmidt (neu)</text>
+    <line x1="820" y1="95" x2="820" y2="208" stroke="#c62828" stroke-width="2" stroke-dasharray="4,3"/>
+    <text x="830" y="155" fill="#c62828" font-size="10" transform="rotate(90 830 155)">RESET AUF DIESEN PUNKT</text>
+    <polygon points="815,95 825,95 820,86" fill="#c62828"/>
+    <line x1="50" y1="272" x2="800" y2="272" stroke="#cccccc" stroke-width="1" stroke-dasharray="3,3"/>
+    <text x="430" y="296" text-anchor="middle" fill="#1a1a1a" font-size="12" font-weight="bold">Analyse der kausalen Abhängigkeiten:</text>
+    <rect x="50" y="310" width="360" height="100" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="70" y="330" fill="#1b5e20" font-size="11" font-weight="bold">UNABHÄNGIG (überleben den Reset)</text>
+    <text x="70" y="352" fill="#2e7d32" font-size="11">09:31  becker adresse         → Firma Becker</text>
+    <text x="70" y="370" fill="#2e7d32" font-size="11">10:02  prüfung genehmigen     → Prüfung #012</text>
+    <text x="70" y="388" fill="#2e7d32" font-size="11">10:30  schmidt firma anlegen   → Firma Schmidt</text>
+    <text x="70" y="404" fill="#666666" font-size="10">andere Entitäten — keine Datenabhängigkeit</text>
+    <rect x="450" y="310" width="360" height="100" rx="6" fill="#ffebee" stroke="#c62828" stroke-width="1.5"/>
+    <text x="470" y="330" fill="#b71c1c" font-size="11" font-weight="bold">ABHÄNGIG (werden rückgängig gemacht)</text>
+    <text x="470" y="352" fill="#c62828" font-size="11">10:15  inhaber wechseln       → Carnet #456</text>
+    <text x="470" y="374" fill="#666666" font-size="10">gleiche Entität wie Reset-Punkt (Carnet #456)</text>
+    <text x="470" y="392" fill="#666666" font-size="10">→ ins Reflog verschoben (erhalten, unsichtbar)</text>
+    <line x1="50" y1="428" x2="800" y2="428" stroke="#cccccc" stroke-width="1" stroke-dasharray="3,3"/>
+    <text x="50" y="452" fill="#777777" font-size="10">NACH DEM RESET — sauberer Pfad:</text>
+    <rect x="50" y="464" width="750" height="30" rx="4" fill="#f0f4f8" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="66" y="484" fill="#1565c0" font-size="11">09:14</text>
+    <text x="120" y="484" fill="#1b5e20" font-size="11">günther carnet limit 45000</text>
+    <text x="620" y="484" fill="#2e7d32" font-size="10">← RESET-PUNKT</text>
+    <rect x="50" y="498" width="750" height="30" rx="4" fill="#f0f4f8" stroke="#cccccc" stroke-width="1"/>
+    <text x="66" y="518" fill="#1565c0" font-size="11">09:31</text>
+    <text x="120" y="518" fill="#0d47a1" font-size="11">becker adresse</text>
+    <text x="620" y="518" fill="#2e7d32" font-size="10">erhalten (unabhängig)</text>
+    <rect x="50" y="532" width="750" height="30" rx="4" fill="#f0f4f8" stroke="#cccccc" stroke-width="1"/>
+    <text x="66" y="552" fill="#1565c0" font-size="11">10:02</text>
+    <text x="120" y="552" fill="#0d47a1" font-size="11">prüfung p-012 genehmigen</text>
+    <text x="620" y="552" fill="#2e7d32" font-size="10">erhalten (unabhängig)</text>
+    <rect x="50" y="566" width="750" height="30" rx="4" fill="#f0f4f8" stroke="#cccccc" stroke-width="1"/>
+    <text x="66" y="586" fill="#1565c0" font-size="11">10:30</text>
+    <text x="120" y="586" fill="#0d47a1" font-size="11">schmidt firma anlegen</text>
+    <text x="620" y="586" fill="#2e7d32" font-size="10">erhalten (unabhängig)</text>
+    <text x="430" y="612" text-anchor="middle" fill="#666666" font-size="11" font-style="italic">Kommandofeld wird mit den Tokens des Reset-Punkts vorbefüllt — Sachbearbeiterin ändert und führt erneut aus</text>
+  </svg>
+  <figcaption>Abb. 4 — Reset-Modell. Die Sachbearbeiterin wählt den Reset-Punkt. Kausal abhängige Aktionen werden rückgängig gemacht; unabhängige bleiben erhalten. Der Pfad linearisiert sich neu. Der Reset selbst ist ein Kassenbuch-Eintrag.</figcaption>
+</figure>
+
+<table>
+  <tr><th>Klassisches Strg+Z</th><th>Arbeitsstrahl-Reset</th></tr>
+  <tr><td>Strenge umgekehrte Reihenfolge — muss 5, 4, 3 rückgängig machen, um 3 zu korrigieren</td><td>Direkter Sprung zu einem beliebigen Eintrag — unabhängige Arbeit bleibt erhalten</td></tr>
+  <tr><td>Keine Vorschau, was rückgängig gemacht wird</td><td>Bestätigungspanel zeigt genau, welche Aktionen abhängig sind</td></tr>
+  <tr><td>Still — kein Protokolleintrag, dass Undo stattfand</td><td>Prüfbar — der Reset selbst ist ein Kassenbuch-Eintrag</td></tr>
+  <tr><td>Vernichtet Zwischenzustände</td><td>Rückgängig gemachte Einträge werden im Reflog für Compliance aufbewahrt</td></tr>
+</table>
+
+
+<!-- ══════════════════════════════ §6 SOFORTIGE AUFLÖSUNG ══════════════════════════════ -->
+<h2><span class="nr">6</span>Sofortige Auflösung — der Performance-Vertrag</h2>
+
+<p>Das Versprechen des Kommandofelds: <strong>Jeder Tastenanschlag liefert eine sichtbare
+Vorschau innerhalb ~50 ms</strong> — unabhängig von der Backend-Round-Trip-Zeit. Das ist nur
+erreichbar, wenn der Client <em>niemals</em> eine Anfrage beim Drücken einer Taste auslöst.
+Alle sichtbaren Vorschläge kommen aus Daten, die bereits vor dem Tippen eingetroffen sind.
+Die Aufgabe des Backends ist es, vorherzusagen, was die Nutzerin als Nächstes braucht, und
+es vorab zu liefern.</p>
+
+<table>
+  <tr><th>Auslöser</th><th>Strategie</th><th>Mechanismus</th></tr>
+  <tr><td>Sitzungsstart</td><td>Globaler Entitätsindex</td><td>Kompakter In-Memory-Index aller Firmen/Carnets/Prüfungen — sämtliches Token-Matching läuft lokal, null Netzwerklatenz je Tastenanschlag</td></tr>
+  <tr><td>Tippen, Top-Treffer stabil &gt;150 ms</td><td>Spekulativer Prefetch</td><td>Anchor-Payload des Top-Treffers wird abgerufen, bevor Leerzeichen gedrückt wird; Abbruch bei Trefferänderung</td></tr>
+  <tr><td>Entitäts-Token fixiert (Leerzeichen)</td><td>Warm Cache</td><td>Alle Aktionen, verknüpfte Objekte und Parameter-Kandidaten in einem Round-Trip — Client ist bereit, bevor das Aktions-Token getippt wird</td></tr>
+  <tr><td>Zone 3 / Offene Vorgänge gerendert</td><td>Viewport-Prefetch</td><td>Anchor-Payloads aller sichtbaren Entitäten werden gebündelt abgerufen; Klick auf eine Zeile füllt ein bereits gecachtes Token vor</td></tr>
+  <tr><td>Bestätigungspanel muss erscheinen</td><td>Mitgepacktes Payload</td><td>Bestätigungstext und Validierungsergebnisse stecken im Anchor-Payload — kein zweiter Request nötig</td></tr>
+</table>
+
+<div class="box blau">
+  <div class="label">Regel</div>
+  <p>Keine Anfragen bei Tastenanschlägen auslösen. Debounce reicht nicht —
+  das Ziel ist <strong>null Tastenanschlag-Anfragen</strong>. Das Netzwerk bewegt
+  sich nur, wenn die Entität aufgelöst wird (Leerzeichen), nicht beim Tippen.</p>
+</div>
+
+
+<!-- ══════════════════════════════ §7 URL-VERTRAG ══════════════════════════════ -->
+<h2><span class="nr">7</span>Der URL-Vertrag: Ein Bildschirm bedeutet nicht null URLs</h2>
+
+<p>Eine Single-Screen-Anwendung, die die URL aufgibt, verliert Teilbarkeit, Browser-History,
+Back-Button-Verhalten und Testadressierbarkeit. All das setzt keine Seitennavigation voraus
+— es setzt <code>history.pushState()</code> voraus.</p>
+
+<p>Das Design verpflichtet sich zum folgenden URL-Vertrag:</p>
+
+<table>
+  <tr><th>Zustandsübergang</th><th>URL-Aktualisierung</th></tr>
+  <tr><td>Entität im Kommandofeld fokussiert</td><td><code>/vorgang/{typ}/{id}</code>&nbsp;&nbsp;z.B.&nbsp;<code>/vorgang/carnet/2024-00456</code></td></tr>
+  <tr><td>Inline-Panel geöffnet (Formular oder Detail)</td><td><code>/vorgang/{typ}/{id}/{aktion}</code>&nbsp;&nbsp;z.B.&nbsp;<code>/vorgang/carnet/2024-00456/inhaber-wechseln</code></td></tr>
+  <tr><td>Vorgangshistorie-Seitenleiste geöffnet</td><td><code>/vorgang/{typ}/{id}/historie</code></td></tr>
+  <tr><td>Vollbreites Panel (Zone 3 verborgen)</td><td><code>/vorgang/{typ}/{id}/{panel}</code>&nbsp;&nbsp;z.B.&nbsp;<code>/vorgang/carnet/2024-00456/warenpositionen</code></td></tr>
+  <tr><td>Panel oder Seitenleiste geschlossen</td><td>Kehrt zur Entitäts-URL zurück</td></tr>
+</table>
+
+<p><code>pushState</code> feuert bei jedem Übergang. Es feuert kein Navigation-Event — der
+Bildschirm wird nie entladen. Das <code>popstate</code>-Event wird abgefangen und als
+Zustand-Wiederherstellung innerhalb des aktuellen Bildschirms behandelt: Kommandofeld und
+Zonen rekonstruieren sich aus den URL-Parametern ohne Neuladen.</p>
+
+<div class="box gruen">
+  <div class="label">Konsequenzen</div>
+  <p>
+    Eine Sachbearbeiterin kann einen Vorgang durch Kopieren der Adressleiste oder per
+    Kopier-Button am Entitäts-Header-Chip teilen. Die Browser-History spiegelt
+    Entitäts-Übergänge wider — Supervisorinnen können Sitzungen rekonstruieren. Support
+    kann Fehlermeldungen aus einer URL reproduzieren. Automatisierte Tests navigieren
+    direkt zu <code>/vorgang/carnet/2024-00456</code> — kein Token-Tippen pro Test nötig.
+    Der Back-Button stellt den vorherigen Entitätszustand wieder her, nicht die vorherige Seite.
+  </p>
+</div>
+
+<p>Dies löst den stärksten strukturellen Einwand gegen das Einzelbildschirm-Modell. Die
+Wahl ist nicht „ein Bildschirm vs. URLs" — sie ist „ein Bildschirm mit pushState" gegenüber
+„Multi-Route-SPA mit Seitenübergängen." Beide haben URLs. Nur eines eliminiert den
+Neuorientierungsaufwand.</p>
+
+
+<!-- ══════════════════════════════ §8 BITV 2.0 ══════════════════════════════ -->
+<h2><span class="nr">8</span>Barrierefreiheitsvertrag: BITV 2.0</h2>
+
+<p>Der deutsche öffentliche Sektor ist an die BITV 2.0 gebunden, die WCAG 2.1 AA umsetzt.
+Eine Kommandopaletten-primäre Oberfläche ist BITV-konform, wenn sie korrekt implementiert
+wird. Die folgenden Punkte sind erstklassige Anforderungen, keine Nachgedanken:</p>
+
+<ul>
+  <li><strong>Kommandofeld:</strong> <code>&lt;input role="combobox" aria-autocomplete="list" aria-expanded aria-owns="suggestion-list"&gt;</code>. Die Vorschlagsliste ist ein korrektes <code>role="listbox"</code> mit <code>role="option"</code>-Kindern. Screenreader kündigen die Trefferanzahl und den aktuell markierten Vorschlag bei jedem Tastenanschlag an.</li>
+  <li><strong>Zonen-Landmarks:</strong> Zone 1 → <code>&lt;header&gt;</code>, Zone 2 → <code>&lt;main&gt;</code>, Zone 3 → <code>&lt;region aria-label="Vorgangsstrahl"&gt;</code>. Screenreader-Nutzerinnen navigieren per Landmark ohne zusätzliche Affordanz.</li>
+  <li><strong>Kategorie-Chips</strong> im leeren Kommandofeld sind Standard-<code>&lt;button&gt;</code>-Elemente, keine Custom-Widgets — Maus- und Screenreader-Einstiegspunkt für Nutzerinnen ohne Token-Vokabular.</li>
+  <li><strong>Inline-Panels</strong> verwenden <code>role="dialog"</code> mit <code>aria-modal="false"</code> und <code>aria-labelledby</code>, das auf das aufgelöste Befehlslabel zeigt. Fokus wechselt beim Öffnen zum ersten Panel-Feld; ESC gibt den Fokus an das Kommandofeld zurück.</li>
+  <li><strong>Der Tastatur-Vertrag ist der Barrierefreiheits-Vertrag.</strong> TAB, SHIFT+TAB, ENTER, ESC und ↑ sind Standard-Browser-Tasten. Keine nicht-standardmäßigen Tastenbelegungen für Pflichtaktionen.</li>
+</ul>
+
+
+<!-- ══════════════════════════════ §9 KOMPLEXE FORMULARE ══════════════════════════════ -->
+<h2><span class="nr">9</span>Komplexe Formulare ohne Wizard</h2>
+
+<p>Der härteste Einwand gegen das Einzelbildschirm-Modell: „Wir haben ein 12-Felder-Carnet-Antragsformular.
+Das kann man nicht in eine Kommandozeile eintippen." Richtig — und die Antwort ist nicht
+„12 Tokens tippen." Die Antwort ist, dass komplexe Dateneingabe ein <em>anderer
+Interaktionsmodus</em> ist, den Zone 2 unterstützt, ohne den Einzelbildschirm-Vertrag zu
+brechen.</p>
+
+<h3>Warum Wizards existieren — und was sie eigentlich lösen</h3>
+
+<p>Ein Wizard löst zwei Probleme: <strong>Sequenzierung</strong> (Felder in einer bestimmten Reihenfolge
+ausfüllen, weil spätere Felder von früheren Entscheidungen abhängen) und <strong>kognitive
+Portionierung</strong> (12 Felder auf einmal überfordern; 3 auf einmal fühlen sich handhabbar
+an). Beide Probleme sind real. Aber die Lösung des Wizards — ein getrennter mehrseitiger
+Ablauf mit Weiter/Zurück-Navigation — führt drei neue Probleme ein:</p>
+
+<div class="zwei">
+  <div class="spalte negativ">
+    <h4>Wizard-Kosten</h4>
+    <ul>
+      <li>Kontextverlust: kein Strom, keine Warteschlange sichtbar</li>
+      <li>Nicht reversibles Commitment: Zurück vernichtet Folgeschritte</li>
+      <li>Exit-Ambiguität: Jeder Wizard erfindet seine eigene Antwort</li>
+      <li>Neuorientierung nach Abschluss nötig</li>
+    </ul>
+  </div>
+  <div class="spalte positiv">
+    <h4>Inline-Expansion löst das</h4>
+    <ul>
+      <li>Zone 1 und Zone 3 bleiben peripher sichtbar</li>
+      <li>TAB/SHIFT+TAB — Tasten, die die Sachbearbeiterin überall kennt</li>
+      <li>ESC bedeutet immer „verwerfen und zurück zu den Tokens"</li>
+      <li>Auto-Speichern als Entwurf in Offene Vorgänge</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Progressives Inline-Expanding</h3>
+
+<pre>Befehl:     firma neu anlegen
+Zeile 2:    ✓ Neue Firma anlegen
+
+Unter Zone 2 (expandiertes Panel):
+┌─────────────────────────────────────────────────────────────────┐
+│  Neue Firma anlegen                                       1 / 3 │
+│                                                                 │
+│  Firmenname     [ ________________________________ ]             │
+│  Rechtsform     [ GmbH ▾ ]                                      │
+│  Kammerbezirk   [ Aachen ▾ ]                                    │
+│                                                                 │
+│  [TAB → weiter]                           [ESC Abbrechen]       │
+└─────────────────────────────────────────────────────────────────┘
+
+Nach TAB auf dem letzten Feld ersetzt das Panel seinen eigenen Inhalt:
+┌─────────────────────────────────────────────────────────────────┐
+│  Neue Firma anlegen                                       2 / 3 │
+│  ✓ Günther Maschinenbau AG · GmbH · Aachen                      │
+│                                                                 │
+│  Straße         [ ________________________________ ]             │
+│  Hausnummer     [ ____ ]                                        │
+│  PLZ            [ _____ ]   Ort  [ __________________ ]         │
+│                                                                 │
+│  [TAB → weiter]   [SHIFT+TAB ← zurück]    [ESC Abbrechen]       │
+└─────────────────────────────────────────────────────────────────┘</pre>
+
+<h3>Hierarchie der Wizard-Ersatzmuster</h3>
+
+<table>
+  <tr><th>Komplexität</th><th>Muster</th><th>Felder</th><th>Beispiel</th></tr>
+  <tr><td>1 Parameter</td><td>Inline-Token (Zustand B/C)</td><td>1</td><td>Limit ändern, Termin verschieben</td></tr>
+  <tr><td>2–4 Felder</td><td>D3-Mini-Formular</td><td>2–4</td><td>Adresse bearbeiten, Ansprechpartner</td></tr>
+  <tr><td>5–12 Felder, sequenziell</td><td>Progressives Inline-Expanding</td><td>5–12, in Abschnitte unterteilt</td><td>Firma neu anlegen, Carnet beantragen</td></tr>
+  <tr><td>Räumliches/tabellarisches Layout</td><td>Vollbreites Panel (Zone 3 verborgen)</td><td>Beliebig</td><td>Warenpositionen, Vergleichsansicht</td></tr>
+  <tr><td>&gt;12 Felder, verzweigte Logik</td><td>Progressives Expanding + Auto-Entwurf</td><td>12+</td><td>Vollständiger Carnet-Antrag mit Warenprüfung</td></tr>
+</table>
+
+<p>Jede Stufe verwendet denselben Tastatur-Vertrag (TAB vorwärts, SHIFT+TAB zurück, ENTER
+ausführen, ESC beenden), denselben räumlichen Anker (Zone 2 expandiert nach unten, verdrängt
+nie die Scope-Leiste) und dasselbe Wiederaufnahme-Modell (Tokens bleiben, Entwürfe
+erscheinen in Offene Vorgänge).</p>
+
+
+<!-- ══════════════════════════════ §10 WAS AUSGESCHLOSSEN IST ══════════════════════════════ -->
+<h2><span class="nr">10</span>Was dieses Design ausschließt</h2>
+
+<p>Die Designentscheidung hat Konsequenzen, die akzeptiert werden müssen — sie sind nicht verhandelbar:</p>
+
+<ul>
+  <li><strong>Keine Detailseiten als eigene Routen.</strong> Alle Details werden inline in Zone 2 (Kommandoauflösung + Inline-Panels) oder Zone 3 (Strom-Einträge + Vorgangshistorie-Seitenleiste) angezeigt.</li>
+  <li><strong>Keine Einstellungsseite.</strong> Scope wird in Zone 1 gesetzt. Präferenzen sind ein Befehl: <code>einstellungen sprache deutsch</code>.</li>
+  <li><strong>Kein Onboarding-Wizard.</strong> Eine neue Sachbearbeiterin startet mit demselben Bildschirm wie eine Veteranin. Die Kategorie-Chips und der Vorschlagsmechanismus des Kommandofelds sind das Onboarding.</li>
+  <li><strong>Keine modalen Bestätigungsdialoge.</strong> Die Vorschau-Zeile in Zone 2 ist die Bestätigung. Wenn die Vorschau genau zeigt, was passieren wird, hat ein Modal nichts mehr hinzuzufügen.</li>
+  <li><strong>Keine Dashboard-Widgets oder KPI-Kacheln.</strong> Die Offene-Vorgänge-Seitenleiste ist der einzige „Dashboard"-Inhalt — und er ist handlungsrelevant, nicht dekorativ.</li>
+</ul>
+
+
+<!-- ══════════════════════════════ §11 BEKANNTE EINWÄNDE ══════════════════════════════ -->
+<h2><span class="nr">11</span>Bekannte Einwände und ihre Mitigationen</h2>
+
+<p>Ein traditioneller Webapplikations-Designer erhebt strukturelle Einwände gegen das
+Einzelbildschirm-Modell. Die folgende Tabelle klassifiziert jeden Einwand nach dem Grad
+seiner Lösung.</p>
+
+<h3>Vollständig mitigiert — durch den URL-Vertrag</h3>
+
+<table class="mit">
+  <tr><th>Einwand</th><th>Mitigation</th></tr>
+  <tr><td>Sachbearbeiterin kann keinen Vorgang per URL teilen</td><td>pushState bei Entitätsfokus; Kopier-URL-Button am Entitäts-Header-Chip</td></tr>
+  <tr><td>Back-Button wirft Sachbearbeiterin zur Login-Seite</td><td>popstate abfangen; als Zustand-Wiederherstellung im aktuellen Bildschirm behandeln, nicht als Navigation</td></tr>
+  <tr><td>Supervisorin kann Browser-History nicht für Audit nutzen</td><td>Folgt aus pushState — Entitäts-Übergänge erscheinen in der History</td></tr>
+  <tr><td>Support kann Bug nicht aus URL reproduzieren</td><td>Folgt aus stabilem URL-Schema je Entitätstyp und Zustand</td></tr>
+  <tr><td>Automatisierte Tests können keine Entität direkt adressieren</td><td>Navigation zu /vorgang/carnet/2024-00456; Bildschirm stellt diesen Zustand wieder her</td></tr>
+  <tr><td>Vollbreites Panel hat keine URL</td><td>pushState bei Panel-Öffnung; Schließen stellt vorherige URL wieder her</td></tr>
+</table>
+
+<h3>Teilweise mitigiert — erfordern Designergänzungen</h3>
+
+<table class="mit">
+  <tr><th>Einwand</th><th>Mitigation</th></tr>
+  <tr><td>Anfängerin weiß nicht, „carnet" zu tippen, um Carnets zu entdecken</td><td>Kategorie-Chips im leeren Kommandofeld als Maus-Affordanzen ohne Token-Vokabular</td></tr>
+  <tr><td>Zone 3: Ist dieser Eintrag Revisionsprotokoll oder private Sitzungshistorie?</td><td>Visuelle Unterscheidung: Sie:-Bubbles mit 🔒-Icon und Hover-Hinweis „Nur für Sie — nicht im Protokoll"; Aktion:-Bubbles mit Quell-Badge</td></tr>
+  <tr><td>BITV 2.0: Screenreader können Kommandofeld nicht parsen</td><td>Implementierung als combobox mit korrekten ARIA-Rollen; Zonen als HTML-Landmarks — BITV-Konformität ist erstklassige Designanforderung (→ §8)</td></tr>
+</table>
+
+<h3>Echte Spannungen — anerkannt, nicht aufgelöst</h3>
+
+<table>
+  <tr><th style="color:var(--amber)">Spannung</th><th>Ehrliche Position</th></tr>
+  <tr><td style="color:var(--amber)">Nicht-Blindtipper sind mit Tokens langsamer als mit Klick-Zielen</td><td>Die mausbedienbaren Vorschlagslisten und Kategorie-Chips verringern den Unterschied, aber das Token-Modell bevorzugt Tipperinnen. Akzeptierter Kompromiss für professionelle Hochvolumenarbeit.</td></tr>
+  <tr><td style="color:var(--amber)">Keine Nutzerstudien mit echten IHK-Carnet-Sachbearbeiterinnen</td><td>Alle Zitierungen sind theoretisch. Das Design muss mit 5 repräsentativen Sachbearbeiterinnen validiert werden, bevor eine Implementierungsverpflichtung eingegangen wird. Dies ist eine offene empirische Frage.</td></tr>
+  <tr><td style="color:var(--amber)">Vollbreites Panel (Zone 3 verborgen) ist nominell „ein Bildschirm"</td><td>Zone 1 (Scope) bleibt sichtbar; der Vertrag gilt dort. Zone 3 wird unter den Viewport geschoben. Ehrliche Position: der Einzelbildschirm-Anspruch gilt für „Zone 1 immer sichtbar" und „ESC beendet immer" — nicht für simultane Sichtbarkeit aller drei Zonen bei maximaler Komplexität.</td></tr>
+</table>
+
+
+<!-- ══════════════════════════════ §12 AUFBAUREIHENFOLGE ══════════════════════════════ -->
+<h2><span class="nr">12</span>Empfohlene Aufbaureihenfolge</h2>
+
+<p>Das Design hat eine strikte Abhängigkeitsreihenfolge. Das UI vor dem Domänenmodell zu
+bauen, produziert ein UI, das die falschen Abstraktionen eincodiert.</p>
+
+<ol>
+  <li><strong>Die drei Konzepte benennen</strong> — Vorgang, Zuständigkeit, Arbeitsschritt — und auf Domänenentitäten abbilden. Keine UI-Arbeit, bevor das stabil ist.</li>
+  <li><strong>Die einheitliche Entitätsschnittstelle definieren:</strong> <code>resolve()</code>, <code>actions(user, perms)</code>, <code>synonyms</code>, <code>history()</code>. Jeder Entitätstyp implementiert denselben Vertrag.</li>
+  <li><strong>Den Kommando-Interpreter als Domänen-Service entwerfen</strong> — nicht als UI-Komponente. Die Vorschlagsliste ist das Typsystem, sichtbar gemacht.</li>
+  <li><strong>Autorisierung zur Anfragezeit verdrahten.</strong> Die API gibt nur zurück, was die Sachbearbeiterin sehen und tun darf. Niemals zur Renderzeit filtern.</li>
+  <li><strong>Den Strom als append-only-Ledger</strong> auf Datenschicht-Ebene mit Quellenattribuierung je Eintrag bauen.</li>
+  <li><strong>Das UI zuletzt bauen</strong> — drei Zonen, die das Domänenmodell rendern, nichts weiter.</li>
+  <li><strong>Mit fünf echten IHK-Carnet-Sachbearbeiterinnen validieren</strong>, bevor eine Produktionsimplementierung eingegangen wird.</li>
+</ol>
+
+
+<!-- ══════════════════════════════ LITERATUR ══════════════════════════════ -->
+<hr>
+<h2><span class="nr">Lit</span>Literatur</h2>
+<ul class="lit">
+  <li>Raskin, J. (2000). <em>The Humane Interface.</em> Addison-Wesley. — Monotone Oberflächen, Gewohnheitsbildung, null-kognitiver-Overhead-Interaktion.</li>
+  <li>Carroll, J. M. &amp; Rosson, M. B. (1987). The Paradox of the Active User. In <em>Interfacing Thought.</em> MIT Press. — Nutzerinnen wenden bekannte Metaphern an; Oberflächen mit den vorhandenen Metaphern gestalten.</li>
+  <li>Miller, G. A. (1956). The Magical Number Seven, Plus or Minus Two. <em>Psychological Review</em>, 63(2). — Arbeitsgedächtnis-Grenzen; drei Zonen bleiben im kognitiven Budget.</li>
+  <li>Sweller, J. (1988). Cognitive Load During Problem Solving. <em>Cognitive Science</em>, 12(2). — Extrinsische Last (Navigation) konkurriert mit lernbezogener Last (die eigentliche Aufgabe).</li>
+  <li>Nielsen, J. (1994). 10 Usability Heuristics. — #1 Sichtbarkeit des Systemstatus, #3 Nutzerkontrolle (ESC funktioniert immer), #7 Flexibilität und Effizienz.</li>
+  <li>Cooper, A. (2004). <em>The Inmates Are Running the Asylum.</em> — Perpetual Intermediates: für den Nutzer entwerfen, der über Anfänger hinaus, aber kein Experte ist.</li>
+  <li>BITV 2.0 — Barrierefreie-Informationstechnik-Verordnung (2019). Implementiert WCAG 2.1 AA für Software des deutschen öffentlichen Sektors.</li>
+</ul>
+
+<p style="margin-top: 44px; font-size: 12px; color: var(--text-faint); font-family: var(--mono); line-height: 1.8;">
+  Quellen: ux/foundations/single-screen-rationale.md ·
+  ux/foundations/clerk-mental-model.md ·
+  ux/foundations/single-screen-counterargument.md ·
+  ux/patterns/instant-command-resolution.mdx ·
+  ux/screens/sachbearbeiter-dashboard/SCREEN.md
+</p>
+
+</div>
+</body>
+</html>

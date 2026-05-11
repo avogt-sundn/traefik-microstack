@@ -1,0 +1,44 @@
+# Pattern: Comparison View
+
+**Intent:** Present the output of multiple competing implementations (backends, algorithms, frameworks) side-by-side so the user can evaluate differences directly.
+
+---
+
+## When to use
+
+| Use-case characteristic | Indicator |
+|---|---|
+| Multiple alternatives exist for the same operation (CLAUDE-13) | yes |
+| User or developer needs to evaluate correctness, performance, or style differences | yes |
+| Alternatives are additive — none is canonical yet | yes |
+| One alternative must be designated canonical for production | → switch to A/B Testing mode instead |
+
+Apply this pattern during **evaluation and development phases** of competing alternatives.
+
+---
+
+## Structure
+
+```
+[Alternative selector tabs: Spring | Quarkus | …]
+[Shared query / filter controls]
+[Side-by-side panels  —or—  stacked panels with delta highlight]
+  └── [Panel per {A}]
+      ├── [Response data]
+      ├── [Latency / metadata badge]
+      └── [Error state if alternative unavailable]
+```
+
+---
+
+## Implementation note
+
+The Angular service fires all alternatives in parallel and aggregates into a typed response keyed by `{A}`. Each panel subscribes to its own slice. Reference: `PartnerFrameworkSearchService` in `partner-search/frontend`.
+
+---
+
+## When not to use
+
+- Only one implementation exists → use Search Results or Detail Form directly
+- Alternatives differ in data shape (no common schema) → not comparable, don't force side-by-side
+- Production: one alternative has been chosen → retire the others, remove this pattern from the route

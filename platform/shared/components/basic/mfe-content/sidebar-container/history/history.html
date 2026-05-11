@@ -1,0 +1,14 @@
+<mat-card class="history-card">
+    <mat-card-header>
+        <mat-card-title>
+            <mat-icon>history</mat-icon>Historie
+        </mat-card-title>
+    </mat-card-header>
+    <mat-list dense>
+        @for (item of history; track $index) {
+            <a mat-list-item [routerLink]="item.pathname" [queryParams]="item.params">
+                {{item.entity + ' ' + item.identifier}}
+            </a>
+        }
+    </mat-list>
+</mat-card>

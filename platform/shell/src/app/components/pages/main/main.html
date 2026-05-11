@@ -1,0 +1,60 @@
+<div class="shell-frame">
+
+  <!-- ── Top bar ─────────────────────────────────────────────────────── -->
+  <div class="top-bar">
+    <button class="nav-toggle" mat-icon-button (click)="toggleMobileNav()"
+            [attr.aria-label]="(mobileNavOpen() ? 'nav.closeMenu' : 'nav.openMenu') | transloco"
+            aria-controls="shell-nav">
+      <mat-icon>{{ mobileNavOpen() ? 'close' : 'menu' }}</mat-icon>
+    </button>
+
+    <a class="brand" routerLink="/welcome" (click)="closeMobileNav()">
+      <span class="brand-icon"><mat-icon>home</mat-icon></span>
+      <span class="brand-name">{{ 'app.title' | transloco }}</span>
+    </a>
+
+    <div class="top-bar-actions">
+      <shell-header></shell-header>
+    </div>
+  </div>
+
+  <!-- ── Body ────────────────────────────────────────────────────────── -->
+  <div class="shell-body">
+
+    <!-- Mobile backdrop -->
+    @if (mobileNavOpen()) {
+      <div class="nav-backdrop" (click)="closeMobileNav()" aria-hidden="true"></div>
+    }
+
+    <!-- Left navigation rail -->
+    <nav id="shell-nav" class="nav-rail" [class.nav-rail--open]="mobileNavOpen()"
+         [attr.aria-label]="'navigation.menu' | transloco">
+      <div class="nav-items">
+        <a class="nav-item"
+           routerLink="partner"
+           routerLinkActive="nav-item--active"
+           [routerLinkActiveOptions]="{exact: false}"
+           [attr.cypressid]="'cypress-shellNavPartner'"
+           (click)="closeMobileNav()">
+          <mat-icon class="nav-icon">people</mat-icon>
+          <span class="nav-label">{{ 'nav.partner' | transloco }}</span>
+        </a>
+        <a class="nav-item"
+           routerLink="partner-edit"
+           routerLinkActive="nav-item--active"
+           [routerLinkActiveOptions]="{exact: false}"
+           [attr.cypressid]="'cypress-shellNavPartnerEdit'"
+           (click)="closeMobileNav()">
+          <mat-icon class="nav-icon">edit</mat-icon>
+          <span class="nav-label">{{ 'nav.partnerEdit' | transloco }}</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Content canvas -->
+    <main class="content-canvas">
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+</div>

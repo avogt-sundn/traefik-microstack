@@ -1,0 +1,78 @@
+{
+  "name": "traefik-microstack",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "npm run serve:all",
+    "serve:shell": "ng serve shell --port 4200",
+    "serve:partner": "ng serve partner --port 4202",
+    "serve:all": "npm run serve:shell & npm run serve:partner",
+    "build:shared": "ng build shared",
+    "publish:shared": "npm run build:shared && cd ../dist/shared && npm publish",
+    "build:shell": "ng build shell",
+    "build:partner": "ng build partner",
+    "build:all": "npm run build:shell & npm run build:partner",
+    "compress:shell": "gzipper compress dist/shell --gzip --brotli -e json",
+    "compress:partner": "gzipper compress dist/partner --gzip --brotli -e json",
+    "compress:all": "gzipper compress dist/shell dist/partner --gzip --brotli -e json",
+    "lint": "ng lint",
+    "lint:fix": "ng lint --fix",
+    "test": "ng test --no-watch",
+    "sheriff:verify": "npx sheriff verify",
+    "sheriff:list": "npx sheriff list",
+    "sheriff:export": "npx sheriff export",
+    "api:partner": "node scripts/generate-openapi.js partner && node scripts/generate-validators.js partner",
+    "api:all": "npm run api:partner"
+  },
+  "prettier": {
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "dependencies": {
+    "@angular-architects/native-federation": "20.1.7",
+    "@angular/animations": "21.0.6",
+    "@angular/cdk": "21.0.5",
+    "@angular/common": "21.0.6",
+    "@angular/compiler": "21.0.6",
+    "@angular/core": "21.0.6",
+    "@angular/forms": "21.0.6",
+    "@angular/material": "21.0.5",
+    "@angular/platform-browser": "21.0.6",
+    "@angular/router": "21.0.6",
+    "@jsverse/transloco": "8.2.0",
+    "@softarc/native-federation-node": "3.3.6",
+    "es-module-shims": "2.6.2",
+    "rxjs": "7.8.2"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "21.0.3",
+    "@angular-eslint/builder": "21.1.0",
+    "@angular-eslint/eslint-plugin": "21.1.0",
+    "@angular-eslint/eslint-plugin-template": "21.1.0",
+    "@angular-eslint/template-parser": "21.1.0",
+    "@angular/build": "21.0.3",
+    "@angular/cli": "^21.0.3",
+    "@angular/compiler-cli": "21.0.6",
+    "@angular/platform-browser-dynamic": "21.0.6",
+    "@eslint/js": "9.39.2",
+    "@openapitools/openapi-generator-cli": "2.25.2",
+    "@softarc/eslint-plugin-sheriff": "0.19.6",
+    "@softarc/sheriff-core": "0.19.6",
+    "@typescript-eslint/eslint-plugin": "8.48.0",
+    "@typescript-eslint/parser": "8.48.0",
+    "@vitest/coverage-v8": "4.0.15",
+    "eslint": "9.39.1",
+    "gzipper": "8.2.1",
+    "jsdom": "27.2.0",
+    "ng-packagr": "21.0.0",
+    "ts-node": "10.9.2",
+    "typescript": "5.9.3",
+    "vitest": "4.0.15"
+  }
+}
